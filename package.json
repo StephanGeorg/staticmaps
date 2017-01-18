@@ -26,7 +26,12 @@
   },
   "homepage": "https://github.com/StephanGeorg/staticmaps#readme",
   "dependencies": {
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "node-png": "^0.4.3",
+    "pngjs": "^3.0.0",
+    "pngjs2": "^2.0.0",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1"
   },
   "devDependencies": {
     "mocha": "*",
