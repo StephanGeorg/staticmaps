@@ -48,6 +48,29 @@ describe('StaticMap', function(){
 
     });
 
+    it('render w/ center from custom', function(done) {
+
+      this.timeout(3000);
+
+      var options = {
+        width: 600,
+        height: 400,
+        url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",
+        tile_size: 512
+      };
+
+      map = new StaticMaps(options);
+      map.render(13, [13.437524,52.4945528])
+        .then(function(values) {
+          var save = map.image.save( 'center_osm.png');
+          save.on('finish', function () {
+            done();
+          });
+        })
+        .catch(function(err) { console.log(err); });
+
+    });
+
     it('render w/ bbox', function(done) {
 
       this.timeout(3000);
