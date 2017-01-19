@@ -1,6 +1,6 @@
 {
   "name": "staticmaps",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A small, node.js library for creating map images with lines and markers.",
   "main": "index.js",
   "directories": {
@@ -26,10 +26,8 @@
   },
   "homepage": "https://github.com/StephanGeorg/staticmaps#readme",
   "dependencies": {
+    "jimp": "^0.2.27",
     "lodash": "^4.17.4",
-    "node-png": "^0.4.3",
-    "pngjs": "^3.0.0",
-    "pngjs2": "^2.0.0",
     "request": "^2.79.0",
     "request-promise": "^4.1.1"
   },
