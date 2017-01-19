@@ -15,7 +15,7 @@ describe('StaticMap', function(){
 
         var options = {
           width: 600,
-          height: 400
+          height: 200
         };
         map = new StaticMaps(options);
 
@@ -33,13 +33,13 @@ describe('StaticMap', function(){
 
       var options = {
         width: 600,
-        height: 400
+        height: 200
       };
 
       map = new StaticMaps(options);
       map.render(13, [13.437524,52.4945528])
         .then(function(values) {
-          var save = map.image.save( 'test/out/01-center.png', function (){
+          var save = map.image.save( 'sample/01-center.png', function (){
             done();
           });
         })
@@ -53,7 +53,7 @@ describe('StaticMap', function(){
 
       var options = {
         width: 600,
-        height: 400,
+        height: 200,
         url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",
         tile_size: 512
       };
@@ -61,7 +61,7 @@ describe('StaticMap', function(){
       map = new StaticMaps(options);
       map.render(13, [13.437524,52.4945528])
         .then(function(values) {
-          var save = map.image.save( 'test/out/02-center_osm.png', function (){
+          var save = map.image.save( 'sample/02-center_osm.png', function (){
             done();
           });
         })
@@ -81,7 +81,7 @@ describe('StaticMap', function(){
       map = new StaticMaps(options);
       map.render(null, [11.414795,51.835778,11.645164,51.733833])
         .then(function(values) {
-          var save = map.image.save('test/out/03-bbox.png', function (){
+          var save = map.image.save('sample/03-bbox.png', function (){
             done();
           });
         })
@@ -118,7 +118,7 @@ describe('StaticMap', function(){
 
       map.render(12, [13.437524,52.4945528])
         .then(function(values) {
-          var save = map.image.save('test/out/04-marker.png', function (){
+          var save = map.image.save('sample/04-marker.png', function (){
             done();
           });
         })
@@ -153,7 +153,7 @@ describe('StaticMap', function(){
 
       map.render()
         .then(function(values) {
-          var save = map.image.save('test/out/05-marker-nocenter.png', function (){
+          var save = map.image.save('sample/05-marker-nocenter.png', function (){
             done();
           });
         })
