@@ -130,4 +130,4 @@ map.render()
 
 ```
 #### Output
-![Map with multiple markers](https://stephangeorg.github.io/staticmaps/sample/multiple-marker.png)
+![Map with multiple markers](https://stephangeorg.github.io/staticmaps/sample/multiple-marker2.png)
