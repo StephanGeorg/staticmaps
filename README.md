@@ -21,12 +21,12 @@ var map = new StaticMaps(options);
 #### Options
 parameter           | description
 ------------------- | -------------
-width               | width of the image in pixels
-height              | height of the image in pixels
-padding_x           | (optional) minimum distance in pixel between map features and map border
-padding_y           | (optional) minimum distance in pixel between map features and map border
-url_template        | (optional) the tile server URL for the map base layer, e.g. <code>http://a.tile.osm.org/{z}/{x}/{y}.png</code>
-tile_size           | (optional) tile size in pixel, usually 256
+width               | Width of the output image in pixels
+height              | Height of the output image in pixels
+padding_x           | (optional) Minimum distance in pixel between map features and map border
+padding_y           | (optional) Minimum distance in pixel between map features and map border
+url_template        | (optional) Tile server URL for the map base layer, e.g. <code>http://a.tile.osm.org/{z}/{x}/{y}.png</code>
+tile_size           | (optional) tile size in pixel (default: 256)
 tile_request_timeout| (optional) timeout for the tiles request
 
 ## Usage
