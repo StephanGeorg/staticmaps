@@ -39,7 +39,7 @@ describe('StaticMap', function(){
       map = new StaticMaps(options);
       map.render([13.437524,52.4945528], 13)
         .then(function(values) {
-          var save = map.image.save( 'sample/01-center.png', function (){
+          var save = map.image.save( 'sample/center.png', function (){
             done();
           });
         })
@@ -74,14 +74,14 @@ describe('StaticMap', function(){
       this.timeout(3000);
 
       var options = {
-        width: 1200,
-        height: 800
+        width: 600,
+        height: 200
       };
 
       map = new StaticMaps(options);
       map.render([11.414795,51.835778, 11.645164,51.733833])
         .then(function(values) {
-          var save = map.image.save('sample/03-bbox.png', function (){
+          var save = map.image.save('sample/bbox.png', function (){
             done();
           });
         })
@@ -94,10 +94,10 @@ describe('StaticMap', function(){
      this.timeout(3000);
 
       var options = {
-        width: 500,
-        height: 500,
-        url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",   // this tiles server is not for public use!
-        tile_size: 512
+        width: 600,
+        height: 200,
+        //url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",   // this tiles server is not for public use!
+        //tile_size: 512
       };
 
       map = new StaticMaps(options);
@@ -113,12 +113,9 @@ describe('StaticMap', function(){
       marker.coord = [13.437524,52.4945528];
       map.addMarker(marker);
 
-      marker.coord = [13.430524,52.4995528];
-      map.addMarker(marker);
-
-      map.render([13.437524,52.4945528], 12)
+      map.render()
         .then(function(values) {
-          var save = map.image.save('sample/04-marker.png', function (){
+          var save = map.image.save('sample/marker.png', function (){
             done();
           });
         })
@@ -131,8 +128,8 @@ describe('StaticMap', function(){
      this.timeout(3000);
 
       var options = {
-        width: 1200,
-        height: 800
+        width: 600,
+        height: 300
       };
       map = new StaticMaps(options);
 
@@ -153,7 +150,7 @@ describe('StaticMap', function(){
 
       map.render()
         .then(function(values) {
-          var save = map.image.save('sample/05-marker-nocenter.png', function (){
+          var save = map.image.save('sample/multiple-marker.png', function (){
             done();
           });
         })
