@@ -95,17 +95,19 @@ describe('StaticMap', function(){
 
       var options = {
         width: 500,
-        height: 500
+        height: 500,
+        url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",
+        tile_size: 512
       };
 
       map = new StaticMaps(options);
 
       var marker = {
         filePath: markerPath,
-        offset_x: 32,
-        offset_y: 64,
-        width: 64,
-        height: 64
+        offset_x: 24,
+        offset_y: 48,
+        width: 48,
+        height: 48
       };
 
       marker.coord = [13.437524,52.4945528];
