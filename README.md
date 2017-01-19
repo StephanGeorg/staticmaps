@@ -48,7 +48,7 @@ map.render(center, zoom)
    });
 ```
 #### Output
-![Map with zoom and center](https://stephangeorg.github.io/staticmaps/sample/01-center.png)
+![Map with zoom and center](https://stephangeorg.github.io/staticmaps/sample/center.png)
 
 ### Simple map with bounding box
 
@@ -62,7 +62,7 @@ var bbox = [
 
 map.render(bbox)
   .then(function(values) {
-    var save = map.image.save( 'center.png', function (){
+    var save = map.image.save( 'bbox.png', function (){
       console.log("Map saved!")  
     });  
    })
@@ -70,4 +70,64 @@ map.render(bbox)
       console.log("Something went wrong!");   
    });
 ```
+#### Output
+![Map with bbox](https://stephangeorg.github.io/staticmaps/sample/bbox.png)
 
+### Map with single marker
+
+```javascript
+var marker = {
+  filePath: __dirname + '/marker.png',
+  offset_x: 24,
+  offset_y: 48,
+  width: 48,
+  height: 48
+};
+
+marker.coord = [13.437524,52.4945528];
+map.addMarker(marker);
+
+map.render()
+  .then(function(values) {
+    var save = map.image.save('marker.png', function (){
+      console.log("Done!");
+    });
+  })
+  .catch(function(err) { console.log(err); });
+
+```
+You're free to specify a center as well, otherwise the marker will be centered.
+
+#### Output
+![Map with marker](https://stephangeorg.github.io/staticmaps/sample/marker.png)
+
+### Map with multiple marker
+```javascript
+
+var marker = {
+  filePath: __dirname + '/marker.png',
+  offset_x: 24,
+  offset_y: 48,
+  width: 48,
+  height: 48
+};
+
+marker.coord = [13.437524,52.4945528];
+map.addMarker(marker);
+marker.coord = [13.430524,52.4995528];
+map.addMarker(marker);
+marker.coord = [13.410524,52.5195528];
+map.addMarker(marker);
+
+map.render()
+  .then(function(values) {
+    var save = map.image.save('multiple-marker.png', function (){
+      console.log("Done!");
+    });
+  })
+  .catch(function(err) { console.log(err); });
+});
+
+```
+#### Output
+![Map with multiple markers](https://stephangeorg.github.io/staticmaps/sample/multiple-marker.png)
