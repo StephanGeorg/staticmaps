@@ -96,7 +96,7 @@ describe('StaticMap', function(){
       var options = {
         width: 500,
         height: 500,
-        url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",
+        url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",   // this tiles server is not for public use!
         tile_size: 512
       };
 
