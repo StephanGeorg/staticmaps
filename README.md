@@ -46,5 +46,4 @@ map.render(zoom, center)
       console.log("Something went wrong!");   
    });
 ```
-#### Output
-![Map with zoom and center](https://stephangeorg.github.io/staticmaps/sample/01-center.png)
+
