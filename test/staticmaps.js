@@ -25,7 +25,7 @@ describe('StaticMap', function(){
   });
 
 
-  describe('Rendering ...', function() {
+  /*describe('Rendering ...', function() {
 
     it('render w/ center', function(done) {
 
@@ -89,6 +89,11 @@ describe('StaticMap', function(){
 
     });
 
+
+  }); */
+
+  describe('Rendering w/ marker ...', function() {
+
     it('render w/ icon', function(done) {
 
      this.timeout(3000);
@@ -116,7 +121,7 @@ describe('StaticMap', function(){
       marker.coord = [13.430524,52.4995528];
       map.addMarker(marker);
 
-      map.render([13.437524,52.4945528], 12)
+      map.render()
         .then(function(values) {
           var save = map.image.save('test/out/04-marker.png', function (){
             done();
@@ -126,7 +131,7 @@ describe('StaticMap', function(){
 
     });
 
-    it('render w/out center', function(done) {
+    /*it('render w/out center', function(done) {
 
      this.timeout(3000);
 
@@ -154,6 +159,42 @@ describe('StaticMap', function(){
       map.render()
         .then(function(values) {
           var save = map.image.save('test/out/05-marker-nocenter.png', function (){
+            done();
+          });
+        })
+        .catch(function(err) { console.log(err); });
+
+    });
+
+    */
+  });
+
+  describe('Rendering w/ lines ...', function() {
+
+    it('render w/ single line', function(done) {
+
+     this.timeout(3000);
+
+      var options = {
+        width: 500,
+        height: 500,
+        url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",   // this tiles server is not for public use!
+        tile_size: 512
+      };
+
+      map = new StaticMaps(options);
+
+      var line = {
+        coords: [
+          [13.437524,52.4945528],
+          [13.430524,52.4995528]
+        ]
+      };
+
+      map.addLine(line);
+      map.render()
+        .then(function(values) {
+          var save = map.image.save('test/out/05-line.png', function (){
             done();
           });
         })
