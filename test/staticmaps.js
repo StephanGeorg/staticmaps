@@ -25,7 +25,7 @@ describe('StaticMap', function(){
   });
 
 
-  /*describe('Rendering ...', function() {
+  describe('Rendering ...', function() {
 
     it('render w/ center', function(done) {
 
@@ -89,11 +89,6 @@ describe('StaticMap', function(){
 
     });
 
-
-  }); */
-
-  describe('Rendering w/ marker ...', function() {
-
     it('render w/ icon', function(done) {
 
      this.timeout(3000);
@@ -115,10 +110,13 @@ describe('StaticMap', function(){
         height: 48
       };
 
-      marker.coord = [13.399259,52.482659];
+      marker.coord = [13.437524,52.4945528];
       map.addMarker(marker);
 
-      map.render()
+      marker.coord = [13.430524,52.4995528];
+      map.addMarker(marker);
+
+      map.render([13.437524,52.4945528], 12)
         .then(function(values) {
           var save = map.image.save('test/out/04-marker.png', function (){
             done();
@@ -128,7 +126,7 @@ describe('StaticMap', function(){
 
     });
 
-    /*it('render w/out center', function(done) {
+    it('render w/out center', function(done) {
 
      this.timeout(3000);
 
@@ -163,7 +161,6 @@ describe('StaticMap', function(){
 
     });
 
-    */
   });
 
   describe('Rendering w/ lines ...', function() {
@@ -213,7 +210,7 @@ describe('StaticMap', function(){
 
       map.render()
         .then(function(values) {
-          var save = map.image.save('test/out/05-line.png', function (){
+          var save = map.image.save('test/out/06-line.png', function (){
 
             done();
           });
@@ -221,7 +218,5 @@ describe('StaticMap', function(){
         .catch(function(err) { console.log(err); });
 
     });
-
   });
-
 });
