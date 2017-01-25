@@ -1,7 +1,11 @@
 # staticmaps
-A small, node.js library for creating map images with ~~lines and~~ markers.
+A node.js library for creating map images with lines and markers.
+
+This library is 
 
 ## Installation
+
+Image manupulation is based on [GraphicsMagick](http://www.graphicsmagick.org/). You **need to [install](http://www.graphicsmagick.org/README.html#documentation) it before** using staticmaps.
 
 ```bash
 npm i staticmaps
@@ -131,3 +135,29 @@ map.render()
 ```
 #### Output
 ![Map with multiple markers](https://stephangeorg.github.io/staticmaps/sample/multiple-marker.png?raw=true)
+
+### Map with polyline
+```javascript
+
+var line = {
+  coords: [
+    [13.399259,52.482659],
+    [13.387849,52.477144],
+    [13.40538,52.510632]
+  ],
+  color: '#0000FFBB',
+  width: 3
+};
+
+map.addLine(line);
+map.render()
+  .then(function(values) {
+    map.image.save('test/out/polyline.png', function (){
+      done();
+    });
+  })
+  .catch(function(err) { console.log(err); });
+
+```
+#### Output
+![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true)
