@@ -42,12 +42,10 @@ var center = [13.437524,52.4945528];
 map.render(center, zoom)
   .then(function(values) {
     var save = map.image.save( 'center.png', function (){
-      console.log("Map saved!")  
+      console.log("Map saved!");  
     });  
    })
    .catch(function(err) { console.log(err); });
-      console.log("Something went wrong!");   
-   });
 ```
 #### Output
 ![Map with zoom and center](https://stephangeorg.github.io/staticmaps/sample/center.png)
