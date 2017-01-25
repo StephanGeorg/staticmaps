@@ -203,4 +203,29 @@ describe('StaticMap', function(){
 
     });
   });
+
+  describe('Rendering buffer ...', function() {
+
+    it('render w/ center', function(done) {
+
+      this.timeout(3000);
+
+      var options = {
+        width: 600,
+        height: 200
+      };
+
+      map = new StaticMaps(options);
+      map.render([13.437524,52.4945528], 13)
+        .then(function(values) {
+          map.image.buffer('image/png', function (error, buffer){
+            if (buffer) done();
+          });
+        })
+        .catch(function(err) { console.log(err); });
+
+    });
+  });
+
+
 });
