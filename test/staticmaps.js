@@ -115,10 +115,7 @@ describe('StaticMap', function(){
         height: 48
       };
 
-      marker.coord = [13.437524,52.4945528];
-      map.addMarker(marker);
-
-      marker.coord = [13.430524,52.4995528];
+      marker.coord = [13.399259,52.482659];
       map.addMarker(marker);
 
       map.render()
@@ -173,28 +170,51 @@ describe('StaticMap', function(){
 
     it('render w/ single line', function(done) {
 
-     this.timeout(3000);
+      this.timeout(5000);
 
       var options = {
         width: 500,
         height: 500,
         url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",   // this tiles server is not for public use!
-        tile_size: 512
+        tile_size: 512,
+        paddingX: 50,
+        paddingY: 50
       };
 
       map = new StaticMaps(options);
 
       var line = {
         coords: [
-          [13.437524,52.4945528],
-          [13.430524,52.4995528]
-        ]
+          [13.399259,52.482659],
+          [13.387849,52.477144],
+          //[13.40538,52.510632]
+        ],
+        color: '#0000FFBB',
+        width: 3
       };
 
+      //map.addLine(line);
+
+      line.coords = [
+       [13.40332,52.449314],
+       [13.402956,52.449193],
+       [13.403272,52.449108],
+       [13.403642,52.449118],
+       [13.404152,52.448932],
+       [13.404597,52.44934],
+       [13.404742,52.449291],
+       [13.406512,52.451031],
+       [13.408642,52.45089]
+      ];
+      line.color = '#FF000077';
+
       map.addLine(line);
+
+
       map.render()
         .then(function(values) {
           var save = map.image.save('test/out/05-line.png', function (){
+
             done();
           });
         })

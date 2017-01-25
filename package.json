@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/StephanGeorg/staticmaps#readme",
   "dependencies": {
+    "gm": "^1.23.0",
     "jimp": "^0.2.27",
     "lodash": "^4.17.4",
     "request": "^2.79.0",
