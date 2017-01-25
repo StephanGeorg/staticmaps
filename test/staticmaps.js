@@ -61,7 +61,7 @@ describe('StaticMap', function(){
       map = new StaticMaps(options);
       map.render([13.437524,52.4945528], 13)
         .then(function(values) {
-          var save = map.image.save( 'sample/02-center_osm.png', function (){
+          var save = map.image.save( 'test/out/02-center_osm.png', function (){
             done();
           });
         })
@@ -160,4 +160,40 @@ describe('StaticMap', function(){
 
   });
 
+  describe('Rendering w/ lines ...', function() {
+
+    it('render w/ single line', function(done) {
+
+      this.timeout(5000);
+
+      var options = {
+        width: 600,
+        height: 300,
+      };
+
+      map = new StaticMaps(options);
+
+      var line = {
+        coords: [
+          [13.399259,52.482659],
+          [13.387849,52.477144],
+          [13.40538,52.510632]
+        ],
+        color: '#0000FFBB',
+        width: 3
+      };
+
+      map.addLine(line);
+
+      map.render()
+        .then(function(values) {
+          var save = map.image.save('sample/polyline.png', function (){
+
+            done();
+          });
+        })
+        .catch(function(err) { console.log(err); });
+
+    });
+  });
 });
