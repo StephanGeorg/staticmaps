@@ -64,13 +64,11 @@ var bbox = [
 
 map.render(bbox)
   .then(function(values) {
-    var save = map.image.save( 'bbox.png', function (){
-      console.log("Map saved!")  
+    map.image.save( 'bbox.png', function (){
+      console.log("Map saved!");  
     });  
    })
    .catch(function(err) { console.log(err); });
-      console.log("Something went wrong!");   
-   });
 ```
 #### Output
 ![Map with bbox](https://stephangeorg.github.io/staticmaps/sample/bbox.png)
