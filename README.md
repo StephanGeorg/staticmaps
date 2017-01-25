@@ -1,7 +1,5 @@
 # staticmaps
-A node.js library for creating map images with lines and markers.
-
-This library is 
+A node.js library for creating map images with lines and markers. This library is a node.js implementation of [Static Map](https://github.com/komoot/staticmap).
 
 ## Installation
 
