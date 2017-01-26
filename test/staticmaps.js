@@ -103,7 +103,7 @@ describe('StaticMap', function(){
       map = new StaticMaps(options);
 
       var marker = {
-        filePath: markerPath,
+        img: markerPath,
         offset_x: 24,
         offset_y: 48,
         width: 48,
@@ -137,7 +137,7 @@ describe('StaticMap', function(){
       map = new StaticMaps(options);
 
       var marker = {
-        filePath: markerPath,
+        img: markerPath,
         offset_x: 24,
         offset_y: 48,
         width: 48,
