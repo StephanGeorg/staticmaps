@@ -160,7 +160,7 @@ map.render()
 ### Usage example
 ```javascript
 var marker = {
-  filePath: __dirname + '/marker.png',
+  img: __dirname + '/marker.png',
   offset_x: 24,
   offset_y: 48,
   width: 48,
