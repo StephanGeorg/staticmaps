@@ -75,7 +75,7 @@ map.render(bbox)
 
 ```javascript
 var marker = {
-  img: __dirname + '/marker.png',
+  img: __dirname + '/marker.png', // can also be a URL
   offset_x: 24,
   offset_y: 48,
   width: 48,
