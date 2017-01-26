@@ -41,7 +41,7 @@ var center = [13.437524,52.4945528];
 
 map.render(center, zoom)
   .then(function(values) {
-    var save = map.image.save( 'center.png', function (){
+    map.image.save( 'center.png', function (){
       console.log("Map saved!");  
     });  
    })
@@ -75,7 +75,7 @@ map.render(bbox)
 
 ```javascript
 var marker = {
-  filePath: __dirname + '/marker.png',
+  img: __dirname + '/marker.png',
   offset_x: 24,
   offset_y: 48,
   width: 48,
@@ -103,7 +103,7 @@ You're free to specify a center as well, otherwise the marker will be centered.
 ```javascript
 
 var marker = {
-  filePath: __dirname + '/marker.png',
+  img: __dirname + '/marker.png',
   offset_x: 24,
   offset_y: 48,
   width: 48,
@@ -155,3 +155,30 @@ map.render()
 ```
 #### Output
 ![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true)
+
+## Marker 
+### Usage example
+```javascript
+var marker = {
+  filePath: __dirname + '/marker.png',
+  offset_x: 24,
+  offset_y: 48,
+  width: 48,
+  height: 48,
+  coord = [13.437524,52.4945528]
+};
+map.addMarker(marker);
+```
+
+### Options
+Parameter           | Description
+------------------- | -------------
+coord               | Coordinates of the marker [lng,lat]
+img                 | Path or URL of the marker icon image
+width               | Width of the marker icon image
+height              | Height of the marker icon image
+offset_x            | (optional) X offset for image (default: width/2) 
+offset_y            | (optional) Y offset for image (default: height)
+
+
+
