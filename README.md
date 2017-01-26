@@ -180,5 +180,27 @@ height              | Height of the marker icon image
 offset_x            | (optional) X offset for image (default: width/2) 
 offset_y            | (optional) Y offset for image (default: height)
 
+## Polyline 
+### Usage example
+```javascript
+  var line = {
+    coords: [
+      [13.399259,52.482659],
+      [13.387849,52.477144],
+      [13.40538,52.510632]
+    ],
+    color: '#0000FFBB',
+    width: 3
+  };
+
+  map.addLine(line);
+```
+
+### Options
+Parameter           | Description
+------------------- | -------------
+coords              | Coordinates of the polyline [[lng,lat],...,[lat,lng]]
+color               | Color of the polyline (#RRGGBBAA)
+width               | Stroke width
 
 
