@@ -103,7 +103,7 @@ You're free to specify a center as well, otherwise the marker will be centered.
 ```javascript
 
 var marker = {
-  img: __dirname + '/marker.png',
+  img: __dirname + '/marker.png', // can also be a URL
   offset_x: 24,
   offset_y: 48,
   width: 48,
@@ -160,7 +160,7 @@ map.render()
 ### Usage example
 ```javascript
 var marker = {
-  img: __dirname + '/marker.png',
+  img: __dirname + '/marker.png', // can also be a URL
   offset_x: 24,
   offset_y: 48,
   width: 48,
