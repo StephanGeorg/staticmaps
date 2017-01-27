@@ -200,7 +200,7 @@ offset_y            | (optional) Y offset for image (default: height)
 Parameter           | Description
 ------------------- | -------------
 coords              | Coordinates of the polyline [[lng,lat],...,[lat,lng]]
-color               | Color of the polyline (#RRGGBBAA)
-width               | Stroke width
+color               | (optional) Color of the polyline #RRGGBBAA (default: #000000BB)
+width               | (optional) Stroke width (default: 2)
 
 
