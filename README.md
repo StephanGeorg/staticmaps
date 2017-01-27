@@ -26,11 +26,11 @@ Parameter           | Description
 ------------------- | -------------
 width               | Width of the output image in px
 height              | Height of the output image in px
-padding_x           | (optional) Minimum distance in px between map features and map border
-padding_y           | (optional) Minimum distance in px between map features and map border
-url_template        | (optional) Tile server URL for the map base layer
-tile_size           | (optional) tile size in pixel (default: 256)
-tile_request_timeout| (optional) timeout for the tiles request
+paddingX           | (optional) Minimum distance in px between map features and map border
+paddingY           | (optional) Minimum distance in px between map features and map border
+tileUrl        | (optional) Tile server URL for the map base layer
+tileSize           | (optional) tile size in pixel (default: 256)
+tileRequestTimeout| (optional) timeout for the tiles request
 
 ## Usage
 
@@ -76,8 +76,8 @@ map.render(bbox)
 ```javascript
 var marker = {
   img: __dirname + '/marker.png',
-  offset_x: 24,
-  offset_y: 48,
+  offsetX: 24,
+  offsetY: 48,
   width: 48,
   height: 48
 };
@@ -104,8 +104,8 @@ You're free to specify a center as well, otherwise the marker will be centered.
 
 var marker = {
   img: __dirname + '/marker.png',
-  offset_x: 24,
-  offset_y: 48,
+  offsetX: 24,
+  offsetY: 48,
   width: 48,
   height: 48
 };
@@ -161,8 +161,8 @@ map.render()
 ```javascript
 var marker = {
   img: __dirname + '/marker.png',
-  offset_x: 24,
-  offset_y: 48,
+  offsetX: 24,
+  offsetY: 48,
   width: 48,
   height: 48,
   coord = [13.437524,52.4945528]
@@ -177,8 +177,8 @@ coord               | Coordinates of the marker [lng,lat]
 img                 | Path or URL of the marker icon image
 width               | Width of the marker icon image
 height              | Height of the marker icon image
-offset_x            | (optional) X offset for image (default: width/2) 
-offset_y            | (optional) Y offset for image (default: height)
+offsetX            | (optional) X offset for image (default: width/2) 
+offsetY            | (optional) Y offset for image (default: height)
 
 ## Polyline 
 ### Usage example

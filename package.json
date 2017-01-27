@@ -1,7 +1,7 @@
 {
   "name": "staticmaps",
-  "version": "0.2.2",
-  "description": "A small, node.js library for creating map images with lines and markers.",
+  "version": "0.3.0",
+  "description": "A node.js library for creating map images with polylines and markers.",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -17,7 +17,9 @@
     "openstreetmap",
     "osm",
     "staticmaps",
-    "staticmap"
+    "staticmap",
+    "map",
+    "maps"
   ],
   "author": "Stephan Georg <s.georg@nearest.place>",
   "license": "ISC",
@@ -28,7 +30,6 @@
   "dependencies": {
     "gm": "^1.23.0",
     "jimp": "^0.2.27",
-    "lodash": "^4.17.4",
     "request": "^2.79.0",
     "request-promise": "^4.1.1"
   },

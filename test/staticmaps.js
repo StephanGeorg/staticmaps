@@ -54,8 +54,8 @@ describe('StaticMap', function(){
       var options = {
         width: 600,
         height: 200,
-        url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",
-        tile_size: 512
+        tileUrl: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",
+        tileSize: 512
       };
 
       map = new StaticMaps(options);
@@ -96,16 +96,16 @@ describe('StaticMap', function(){
       var options = {
         width: 500,
         height: 500,
-        url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",   // this tiles server is not for public use!
-        tile_size: 512
+        tileUrl: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",   // this tiles server is not for public use!
+        tileSize: 512
       };
 
       map = new StaticMaps(options);
 
       var marker = {
         img: markerPath,
-        offset_x: 24,
-        offset_y: 48,
+        offsetX: 24,
+        offsetY: 48,
         width: 48,
         height: 48
       };
@@ -138,8 +138,8 @@ describe('StaticMap', function(){
 
       var marker = {
         img: markerPath,
-        offset_x: 24,
-        offset_y: 48,
+        offsetX: 24,
+        offsetY: 48,
         width: 48,
         height: 48
       };
@@ -172,8 +172,8 @@ describe('StaticMap', function(){
       var options = {
         width: 600,
         height: 300,
-        url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",   // this tiles server is not for public use!
-        tile_size: 512,
+        tileUrl: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",   // this tiles server is not for public use!
+        tileSize: 512,
         paddingX: 50,
         paddingY: 50
       };
