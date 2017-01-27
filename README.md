@@ -75,7 +75,7 @@ map.render(bbox)
 
 ```javascript
 var marker = {
-  img: __dirname + '/marker.png',
+  img: __dirname + '/marker.png', // can also be a URL
   offsetX: 24,
   offsetY: 48,
   width: 48,
@@ -103,7 +103,7 @@ You're free to specify a center as well, otherwise the marker will be centered.
 ```javascript
 
 var marker = {
-  img: __dirname + '/marker.png',
+  img: __dirname + '/marker.png', // can also be a URL
   offsetX: 24,
   offsetY: 48,
   width: 48,
@@ -156,11 +156,11 @@ map.render()
 #### Output
 ![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true)
 
-## Marker 
+## Marker
 ### Usage example
 ```javascript
 var marker = {
-  img: __dirname + '/marker.png',
+  img: __dirname + '/marker.png', // can also be a URL
   offsetX: 24,
   offsetY: 48,
   width: 48,
@@ -177,10 +177,10 @@ coord               | Coordinates of the marker [lng,lat]
 img                 | Path or URL of the marker icon image
 width               | Width of the marker icon image
 height              | Height of the marker icon image
-offsetX            | (optional) X offset for image (default: width/2) 
+offsetX            | (optional) X offset for image (default: width/2)
 offsetY            | (optional) Y offset for image (default: height)
 
-## Polyline 
+## Polyline
 ### Usage example
 ```javascript
   var line = {
@@ -200,7 +200,5 @@ offsetY            | (optional) Y offset for image (default: height)
 Parameter           | Description
 ------------------- | -------------
 coords              | Coordinates of the polyline [[lng,lat],...,[lat,lng]]
-color               | Color of the polyline (#RRGGBBAA)
-width               | Stroke width
-
-
+color               | (optional) Color of the polyline #RRGGBBAA (default: #000000BB)
+width               | (optional) Stroke width (default: 2)
