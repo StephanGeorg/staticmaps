@@ -32,6 +32,12 @@ tileUrl        | (optional) Tile server URL for the map base layer
 tileSize           | (optional) tile size in pixel (default: 256)
 tileRequestTimeout| (optional) timeout for the tiles request
 
+#### Methods
+
+addMarker (options)
+addLine (options)
+render (center, zoom)
+
 ## Usage
 
 ### Simple map w/ zoom and center
