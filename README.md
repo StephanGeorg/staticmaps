@@ -34,9 +34,9 @@ tileRequestTimeout| (optional) timeout for the tiles request
 
 #### Methods
 
-addMarker (options)
-addLine (options)
-render (center, zoom)
++ addMarker (options)
++ addLine (options)
++ render (center, zoom)
 
 ## Usage
 
