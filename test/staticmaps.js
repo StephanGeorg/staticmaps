@@ -54,8 +54,6 @@ describe('StaticMap', function(){
       var options = {
         width: 600,
         height: 200,
-        tileUrl: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",
-        tileSize: 512
       };
 
       map = new StaticMaps(options);
@@ -95,9 +93,7 @@ describe('StaticMap', function(){
 
       var options = {
         width: 500,
-        height: 500,
-        tileUrl: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",   // this tiles server is not for public use!
-        tileSize: 512
+        height: 500
       };
 
       map = new StaticMaps(options);
@@ -172,8 +168,6 @@ describe('StaticMap', function(){
       var options = {
         width: 600,
         height: 300,
-        tileUrl: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",   // this tiles server is not for public use!
-        tileSize: 512,
         paddingX: 50,
         paddingY: 50
       };
