@@ -1,4 +1,4 @@
-# staticmaps
+# Staticmaps [![npm version](https://badge.fury.io/js/staticmaps.svg)](https://badge.fury.io/js/staticmaps)
 A node.js library for creating map images with polylines and markers. This library is a node.js implementation of [Static Map](https://github.com/komoot/staticmap).
 
 ## Installation
@@ -6,7 +6,7 @@ A node.js library for creating map images with polylines and markers. This libra
 Image manupulation is based on [GraphicsMagick](http://www.graphicsmagick.org/). You **need to [install](http://www.graphicsmagick.org/README.html#documentation) it before** using staticmaps.
 
 ```bash
-npm i staticmaps
+> npm i staticmaps
 ```
 ## Getting Started
 
@@ -31,6 +31,12 @@ paddingY           | (optional) Minimum distance in px between map features and 
 tileUrl        | (optional) Tile server URL for the map base layer
 tileSize           | (optional) tile size in pixel (default: 256)
 tileRequestTimeout| (optional) timeout for the tiles request
+
+#### Methods
+
++ addMarker (options)
++ addLine (options)
++ render (center, zoom)
 
 ## Usage
 
