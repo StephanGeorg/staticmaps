@@ -1,8 +1,8 @@
 var should = require('should');
 var StaticMaps = require('../lib/staticmaps');
+var path = require('path');
 
-var markerPath = __dirname + '/marker.png';
-
+var markerPath = path.join(__dirname, 'marker.png');
 
 describe('StaticMap', function(){
   var geocoder;

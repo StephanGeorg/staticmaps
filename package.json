@@ -1,6 +1,6 @@
 {
   "name": "staticmaps",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A node.js library for creating map images with polylines and markers.",
   "main": "index.js",
   "directories": {
