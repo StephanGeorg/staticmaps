@@ -38,12 +38,11 @@ describe('StaticMap', function(){
 
       map = new StaticMaps(options);
       map.render([13.437524,52.4945528], 13)
-        .then(function(values) {
-          var save = map.image.save( 'test/out/01-center.jpg', function (){
-            done();
-          });
+        .then(function() {
+          return map.image.save('test/out/01-center.jpg');
         })
-        .catch(function(err) { console.log(err); });
+        .then(done)
+        .catch(done);
 
     });
 
@@ -58,12 +57,11 @@ describe('StaticMap', function(){
 
       map = new StaticMaps(options);
       map.render([13.437524,52.4945528], 13)
-        .then(function(values) {
-          var save = map.image.save( 'test/out/02-center_osm.png', function (){
-            done();
-          });
+        .then(function () {
+          return map.image.save('test/out/02-center_osm.png');
         })
-        .catch(function(err) { console.log(err); });
+        .then(done)
+        .catch(done);
 
     });
 
@@ -78,12 +76,11 @@ describe('StaticMap', function(){
 
       map = new StaticMaps(options);
       map.render([11.414795,51.835778, 11.645164,51.733833])
-        .then(function(values) {
-          var save = map.image.save('test/out/03-bbox.png', function (){
-            done();
-          });
+        .then(function() {
+          return map.image.save('test/out/03-bbox.png');
         })
-        .catch(function(err) { console.log(err); });
+        .then(done)
+        .catch(done);
 
     });
 
@@ -113,12 +110,11 @@ describe('StaticMap', function(){
       map.addMarker(marker);
 
       map.render([13.437524,52.4945528], 12)
-        .then(function(values) {
-          var save = map.image.save('test/out/04-marker.png', function (){
-            done();
-          });
+        .then(function () {
+          return map.image.save('test/out/04-marker.png');
         })
-        .catch(function(err) { console.log(err); });
+        .then(done)
+        .catch(done);
 
     });
 
@@ -148,12 +144,11 @@ describe('StaticMap', function(){
       map.addMarker(marker);
 
       map.render()
-        .then(function(values) {
-          var save = map.image.save('test/out/05-marker-nocenter.png', function (){
-            done();
-          });
+        .then(function() {
+          return map.image.save('test/out/05-marker-nocenter.png');
         })
-        .catch(function(err) { console.log(err); });
+        .then(done)
+        .catch(done);
 
     });
 
@@ -188,12 +183,10 @@ describe('StaticMap', function(){
 
       map.render()
         .then(function(values) {
-          var save = map.image.save('test/out/06-line.png', function (){
-
-            done();
-          });
+          return map.image.save('test/out/06-line.png');
         })
-        .catch(function(err) { console.log(err); });
+        .then(done)
+        .catch(done);
 
     });
   });
@@ -211,12 +204,13 @@ describe('StaticMap', function(){
 
       map = new StaticMaps(options);
       map.render([13.437524,52.4945528], 13)
-        .then(function(values) {
-          map.image.buffer('image/png', function (error, buffer){
-            if (buffer) done();
-          });
+        .then(function() {
+          map.image.buffer('image/png');
         })
-        .catch(function(err) { console.log(err); });
+        .then(function (buffer) {
+          done();
+        })
+        .catch(done);
 
     });
   });
