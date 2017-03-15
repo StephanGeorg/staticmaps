@@ -1,11 +1,12 @@
-var request = require("request-promise");
-var gm = require("gm");
-var Jimp = require("jimp");
-var _ = require("lodash");
-
-var Image = require("./image");
-var IconMarker = require("./marker");
-var Line = require("./line");
+// npm
+const request = require("request-promise");
+const gm = require("gm");
+const Jimp = require("jimp");
+const _ = require("lodash");
+// local
+const Image = require("./image");
+const IconMarker = require("./marker");
+const Line = require("./line");
 
 var StaticMaps = function (options) {
 
@@ -100,7 +101,7 @@ StaticMaps.prototype.determineExtent = function (zoom) {
 
   // Add lines to extent
   if (this.lines.length) {
-    this.lines.forEach(function (line){
+    this.lines.forEach(line => {
       extents.push(line.extent());
     });
   } //extents.push(this.lines.map(function(line){ return line.extent(); }));
@@ -138,10 +139,10 @@ StaticMaps.prototype.determineExtent = function (zoom) {
   if (this.polygons.length) extents.push(this.polygons.map(function(polygon){ return polygon.extent; }));
 
   return [
-    extents.map(function(e){ return e[0]; }).min(),
-    extents.map(function(e){ return e[1]; }).min(),
-    extents.map(function(e){ return e[2]; }).max(),
-    extents.map(function(e){ return e[3]; }).max()
+    extents.map(e => { return e[0]; }).min(),
+    extents.map(e => { return e[1]; }).min(),
+    extents.map(e => { return e[2]; }).max(),
+    extents.map(e => { return e[3]; }).max()
   ];
 
 };
@@ -220,29 +221,18 @@ StaticMaps.prototype._drawBaselayer = function () {
 
   var tilePromises = [];
 
-  result.forEach(function(r){
-    tilePromises.push(this.getTile(r));
-  }.bind(this));
+  result.forEach(r => { tilePromises.push(this.getTile(r)); });
 
-  return new Promise(function(resolve,reject) {
+  return new Promise((resolve,reject) => {
 
     Promise.all(tilePromises)
-      .then(function (tiles) {
+      .then(tiles => {
+        return this.image.draw(tiles);
+      })
+      .then(resolve)
+      .catch(reject);
 
-        this.image.draw(tiles)
-          .then(function(){
-            resolve(true);
-          })
-          .catch(function(err){
-            reject(err);
-          });
-
-      }.bind(this))
-      .catch(function (error) {
-        reject(error);
-      });
-
-  }.bind(this));
+  });
 
 };
 
@@ -257,15 +247,15 @@ StaticMaps.prototype._drawFeatures = function (image) {
 
 StaticMaps.prototype._drawLines = function () {
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
 
     if (!this.lines.length) resolve(true);
 
     // Due to gm limitations, we need to chunk coordinates
     var chunkedLines = [];
-    this.lines.forEach(function (line) {
+    this.lines.forEach(line => {
       var coords = _.chunk(line.coords, 120);
-      coords.forEach(function (c) {
+      coords.forEach(c => {
         var chunkedLine = _.clone(line);
         chunkedLine.coords = c;
         chunkedLines.push(chunkedLine);
@@ -273,17 +263,10 @@ StaticMaps.prototype._drawLines = function () {
     });
 
     processArray(chunkedLines, this.__draw.bind(this))
-      .then(function(result) {
-        resolve(result);
+      .then(resolve, reject)
+      .catch(reject);
 
-      }, function(reason) {
-        reject(reason);
-    })
-    .catch(function(err){
-      reject(err);
-    });
-
-  }.bind(this));
+  });
 
 };
 
@@ -295,16 +278,16 @@ StaticMaps.prototype.__draw = function (line) {
   var type = line.type;
   var baseImage = this.image.image;
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
 
-      var points = line.coords.map(function(coord){
+      var points = line.coords.map(coord =>{
         return [
           this._x_to_px(_lon_to_x(coord[0], this.zoom)),
           this._y_to_px(_lat_to_y(coord[1], this.zoom)),
         ];
-      }.bind(this));
+      });
 
-      baseImage.getBuffer(Jimp.AUTO, function (err,result) {
+      baseImage.getBuffer(Jimp.AUTO, (err,result) => {
 
         if (err) reject(err);
 
@@ -314,14 +297,14 @@ StaticMaps.prototype.__draw = function (line) {
             .fill(0)
             .stroke(line.color,line.width)
             .drawPolyline(points)
-            .toBuffer(function(err, buffer) {
+            .toBuffer((err, buffer) => {
               if (err) reject(err);
-              Jimp.read(buffer, function(err,image){
+              Jimp.read(buffer, (err,image) => {
                 if (err) reject(err);
                 this.image.image = image;
                 resolve(image);
-              }.bind(this));
-            }.bind(this));
+              });
+            });
 
         } else if (type === 'poygon') {
 
@@ -329,19 +312,19 @@ StaticMaps.prototype.__draw = function (line) {
             .fill(0)
             .stroke(line.color,line.width)
             .drawPolygon(points)
-            .toBuffer(function(err, buffer) {
+            .toBuffer((err, buffer) => {
               if (err) reject(err);
-              Jimp.read(buffer, function(err,image){
+              Jimp.read(buffer, (err,image) => {
                 if (err) reject(err);
                 this.image.image = image;
                 resolve(image);
-              }.bind(this));
-            }.bind(this));
+              });
+            });
 
         }
 
-      }.bind(this));
-    }.bind(this));
+      });
+    });
 };
 
 StaticMaps.prototype._drawMarker = function () {
