@@ -1,53 +1,57 @@
-var _ = require("lodash");
-var Jimp = require("jimp");
+const _ = require("lodash");
+const Jimp = require("jimp");
 
-var IconMarker = function (options) {
+class IconMarker  {
 
-  this.options = options || {};
+  constructor (options = {}) {
 
-  if (!(options.width && options.height)) throw new Error("Please specify width and height of the marker image.");
+    this.options = options;
 
-  this.coord = this.options.coord;
-  this.img = this.options.img;
-  this.offsetX = this.options.offsetX || options.width/2;
-  this.offsetY = this.options.offsetY || options.height;
-  this.offset = [this.offsetX, this.offsetY];
-  this.height = this.options.height;
-  this.width = this.options.width;
+    if (!(options.width && options.height)) throw new Error("Please specify width and height of the marker image.");
 
-};
+    this.coord = this.options.coord;
+    this.img = this.options.img;
+    this.offsetX = this.options.offsetX || options.width/2;
+    this.offsetY = this.options.offsetY || options.height;
+    this.offset = [this.offsetX, this.offsetY];
+    this.height = this.options.height;
+    this.width = this.options.width;
+
+  }
+
+  /**
+   * Load icon image from fs or remote request
+   */
+  load (path) {
+
+    return new Promise((resolve,reject) => {
+      Jimp.read(this.img, (err, tile) => {
+          if (err) reject(err);
+          this.imgData = tile;
+          resolve(true);
+      });
+    });
+
+  }
+
+  /**
+   *  Set icon data
+   */
+  set (img) {
+    this.imgData = img;
+  }
+
+  extentPx () {
+
+    return [
+      this.offset[0],
+      (this.height - this.offset[1]),
+      (this.width - this.offset[0]),
+      this.offset[1]
+    ];
+
+  }
+
+}
 
 module.exports = IconMarker;
-
-/**
- * Load icon image from fs or remote request
- */
-IconMarker.prototype.load = function (path) {
-
-  return new Promise(function (resolve,reject){
-    Jimp.read(this.img, function (err, tile) {
-        if (err) reject(err);
-        this.imgData = tile;
-        resolve(true);
-    }.bind(this));
-  }.bind(this));
-
-};
-
-/**
- *  Set icon data
- */
-IconMarker.prototype.set = function (img) {
-  this.imgData = img;
-};
-
-IconMarker.prototype.extentPx = function () {
-
-  return [
-    this.offset[0],
-    (this.height - this.offset[1]),
-    (this.width - this.offset[0]),
-    this.offset[1]
-  ];
-
-};

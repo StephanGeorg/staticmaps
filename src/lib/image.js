@@ -1,93 +1,92 @@
-var Jimp = require("jimp");
-var _ = require("lodash");
+const Jimp = require("jimp");
+const _ = require("lodash");
 
-var Image = function (options) {
+class Image  {
 
-    this.options = options || {};
+  constructor (options = {}) {
+
+    this.options = options;
     this.width = this.options.width;
     this.height = this.options.height;
 
-};
+  }
 
-module.exports = Image;
+  draw (tiles) {
 
-Image.prototype.draw = function (tiles) {
+    return new Promise ((resolve, reject) => {
 
-  return new Promise (function(resolve, reject) {
+      let key = 0;
+      const image = new Jimp(this.width, this.height, (err, image) => {
 
-    var key = 0;
+        if (err) reject(err);
 
-    var image = new Jimp(this.width, this.height, function (err, image) {
+        this.image = image;
 
-      if (err) reject(err);
+        tiles.forEach(data => {
 
-      this.image = image;
+          Jimp.read(data.body, (err, tile) => {
 
-      tiles.forEach(function (data) {
+              if (err) reject(err);
 
-        Jimp.read(data.body, function (err, tile) {
+              const x = data.box[0];
+              const y = data.box[1];
+              const sx = x < 0 ? 0 : x;
+              const sy = y < 0 ? 0 : y;
+              const dx = x < 0 ? -x : 0;
+              const dy = y < 0 ? -y : 0;
+              const extraWidth = x + tile.bitmap.width - this.width;
+              const extraHeight = y + tile.bitmap.width - this.height;
+              const w = tile.bitmap.width + (x < 0 ? x : 0) - (extraWidth > 0 ? extraWidth : 0);
+              const h = tile.bitmap.height + (y < 0 ? y : 0) - (extraHeight > 0 ? extraHeight : 0);
 
-            if (err) reject(err);
+              image.blit(tile, sx, sy, dx, dy, w, h);
+              this.image = image;
 
-            var x = data.box[0];
-            var y = data.box[1];
+              if (key === tiles.length-1) resolve(true);
+              key++;
 
-            var sx = x < 0 ? 0 : x;
-            var sy = y < 0 ? 0 : y;
+          });
+        });
+      });
+    });
+  }
 
-            var dx = x < 0 ? -x : 0;
-            var dy = y < 0 ? -y : 0;
+  /**
+   * Save image to file
+   */
+  save (fileName, cb) {
 
-            var extraWidth = x + tile.bitmap.width - this.width;
-            var extraHeight = y + tile.bitmap.width - this.height;
+    if (_.isFunction(cb)) {
+      this.image.write(fileName, cb);
+    } else {
 
-            var w = tile.bitmap.width + (x < 0 ? x : 0) - (extraWidth > 0 ? extraWidth : 0);
-            var h = tile.bitmap.height + (y < 0 ? y : 0) - (extraHeight > 0 ? extraHeight : 0);
-
-            image.blit(tile, sx, sy, dx, dy, w, h);
-            this.image = image;
-
-            if (key === tiles.length-1) resolve(true);
-            key++;
-
-        }.bind(this));
-      },this);
-    }.bind(this));
-  }.bind(this));
-
-};
-
-/**
- * Save image to file
- */
-Image.prototype.save = function (fileName, cb) {
-
-  if (_.isFunction(cb)) {
-    this.image.write(fileName, cb);
-  } else {
-
-    return new Promise(function(resolve, reject) {
-        this.image.write(fileName, function () {
+      return new Promise((resolve, reject) => {
+        this.image.write(fileName, () => {
           resolve();
         });
-    }.bind(this));
-
-  }
-};
-/**
- * Return image as buffer
- */
-Image.prototype.buffer = function (mime, cb) {
-
-  if (_.isFunction(cb)) {
-    this.image.getBuffer(mime, cb);
-  } else {
-    return new Promise(function(resolve, reject) {
-      this.image.getBuffer(mime, function (err,result) {
-        if (err) reject (err);
-        else resolve(result);
       });
-    }.bind(this));
+
+    }
   }
 
-};
+  /**
+   * Return image as buffer
+   */
+  buffer (mime, cb) {
+
+    if (_.isFunction(cb)) {
+      this.image.getBuffer(mime, cb);
+    } else {
+      return new Promise((resolve, reject) => {
+        this.image.getBuffer(mime, (err,result) => {
+          if (err) reject (err);
+          else resolve(result);
+        });
+      });
+    }
+
+  }
+
+}
+
+module.exports = Image;

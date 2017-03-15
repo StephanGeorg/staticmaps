@@ -69,11 +69,11 @@ class StaticMaps  {
     } else {
 
       // # get extent of all lines
-      var extent = this.determineExtent(this.zoom);
+      let extent = this.determineExtent(this.zoom);
 
       // # calculate center point of map
-      var centerLon = (extent[0] + extent[2]) / 2;
-      var centerLat = (extent[1] + extent[3]) / 2;
+      const centerLon = (extent[0] + extent[2]) / 2;
+      const centerLat = (extent[1] + extent[3]) / 2;
 
       this.centerX = _lon_to_x(centerLon, this.zoom);
       this.centerY = _lat_to_y(centerLat, this.zoom);
@@ -96,7 +96,7 @@ class StaticMaps  {
     **/
   determineExtent (zoom) {
 
-    var extents = [];
+    let extents = [];
 
     // Add bbox to extent
     if (this.center && this.center.length >= 4) extents.push(this.center);
@@ -109,10 +109,10 @@ class StaticMaps  {
     } //extents.push(this.lines.map(function(line){ return line.extent(); }));
 
     // Add marker to extent
-    for (var i=0;i<this.markers.length;i++) {
+    for (let i=0;i<this.markers.length;i++) {
 
-      var marker = this.markers[i];
-      var e = [marker.coord[0],marker.coord[1]];
+      const marker = this.markers[i];
+      const e = [marker.coord[0],marker.coord[1]];
 
       if (!zoom) {
         extents.push([
@@ -125,9 +125,9 @@ class StaticMaps  {
       }
 
       // # consider dimension of marker
-      var e_px = marker.extentPx();
-      var x = _lon_to_x(e[0], zoom);
-      var y = _lat_to_y(e[1], zoom);
+      const e_px = marker.extentPx();
+      const x = _lon_to_x(e[0], zoom);
+      const y = _lat_to_y(e[1], zoom);
 
       extents.push([
         _x_to_lon(x - parseFloat(e_px[0]) / this.tileSize, zoom),
@@ -138,7 +138,7 @@ class StaticMaps  {
     }
 
     // Add polygons to extent
-    if (this.polygons.length) extents.push(this.polygons.map(function(polygon){ return polygon.extent; }));
+    if (this.polygons.length) extents.push(this.polygons.map(polygon => { return polygon.extent; }));
 
     return [
       extents.map(e => { return e[0]; }).min(),
@@ -154,14 +154,14 @@ class StaticMaps  {
     */
   _calculateZoom () {
 
-    for (var z=17; z>0; z-- ) {
+    for (let z=17; z>0; z-- ) {
 
-      var extent = this.determineExtent(z);
+      const extent = this.determineExtent(z);
 
-      var width = (_lon_to_x(extent[2], z) - _lon_to_x(extent[0], z)) * this.tileSize ;
+      const width = (_lon_to_x(extent[2], z) - _lon_to_x(extent[0], z)) * this.tileSize ;
       if (width > (this.width - this.padding[0] * 2) ) continue;
 
-      var height = (_lat_to_y(extent[1], z)  - _lat_to_y(extent[3], z)) * this.tileSize;
+      const height = (_lat_to_y(extent[1], z)  - _lat_to_y(extent[3], z)) * this.tileSize;
       if (height > (this.height - this.padding[1] * 2) ) continue;
 
       return z;
@@ -175,7 +175,7 @@ class StaticMaps  {
     **/
   _x_to_px (x) {
 
-    var px = (x - this.centerX) * this.tileSize + this.width / 2;
+    const px = (x - this.centerX) * this.tileSize + this.width / 2;
     return parseInt(Math.round(px));
 
   }
@@ -185,28 +185,28 @@ class StaticMaps  {
     **/
   _y_to_px (y) {
 
-    var px = (y - this.centerY) * this.tileSize + this.height / 2;
+    const px = (y - this.centerY) * this.tileSize + this.height / 2;
     return parseInt(Math.round(px));
 
   }
 
   _drawBaselayer () {
 
-    var x_min = Math.floor(this.centerX - ( 0.5 * this.width / this.tileSize ));
-    var y_min = Math.floor(this.centerY - ( 0.5 * this.height / this.tileSize ));
-    var x_max = Math.ceil(this.centerX + (0.5 * this.width / this.tileSize ));
-    var y_max = Math.ceil(this.centerY + (0.5 * this.height / this.tileSize ));
+    const x_min = Math.floor(this.centerX - ( 0.5 * this.width / this.tileSize ));
+    const y_min = Math.floor(this.centerY - ( 0.5 * this.height / this.tileSize ));
+    const x_max = Math.ceil(this.centerX + (0.5 * this.width / this.tileSize ));
+    const y_max = Math.ceil(this.centerY + (0.5 * this.height / this.tileSize ));
 
-    var result = [];
+    let result = [];
 
-    for (var x = x_min; x<x_max; x++) {
-      for (var y = y_min; y<y_max; y++) {
+    for (let x = x_min; x<x_max; x++) {
+      for (let y = y_min; y<y_max; y++) {
 
         // # x and y may have crossed the date line
-        var max_tile = Math.pow(2,this.zoom);
-        var tile_x = (x + max_tile) % max_tile;
-        var tile_y = (y + max_tile) % max_tile;
-        if (this.reverseY) tile_y = ((1<<this.zoom)-tile_y)-1;
+        const max_tile = Math.pow(2,this.zoom);
+        let tile_x = (x + max_tile) % max_tile;
+        let tile_y = (y + max_tile) % max_tile;
+        if (this.reverseY) tile_y = ((1 << this.zoom) - tile_y) - 1;
 
         result.push({
           url: this.tileUrl.replace('{z}', this.zoom).replace('{x}', tile_x).replace('{y}', tile_y),
@@ -220,7 +220,7 @@ class StaticMaps  {
       }
     }
 
-    var tilePromises = [];
+    let tilePromises = [];
 
     result.forEach(r => { tilePromises.push(this.getTile(r)); });
 
@@ -254,11 +254,11 @@ class StaticMaps  {
       if (!this.lines.length) resolve(true);
 
       // Due to gm limitations, we need to chunk coordinates
-      var chunkedLines = [];
+      let chunkedLines = [];
       this.lines.forEach(line => {
-        var coords = _.chunk(line.coords, 120);
+        const coords = _.chunk(line.coords, 120);
         coords.forEach(c => {
-          var chunkedLine = _.clone(line);
+          let chunkedLine = _.clone(line);
           chunkedLine.coords = c;
           chunkedLines.push(chunkedLine);
         });
@@ -277,12 +277,12 @@ class StaticMaps  {
    */
   __draw (line) {
 
-    var type = line.type;
-    var baseImage = this.image.image;
+    const type = line.type;
+    let baseImage = this.image.image;
 
     return new Promise((resolve, reject) => {
 
-        var points = line.coords.map(coord =>{
+        const points = line.coords.map(coord => {
           return [
             this._x_to_px(_lon_to_x(coord[0], this.zoom)),
             this._y_to_px(_lat_to_y(coord[1], this.zoom)),
@@ -331,7 +331,7 @@ class StaticMaps  {
 
   _drawMarker () {
 
-    var baseImage = this.image.image;
+    let baseImage = this.image.image;
 
     return new Promise ((resolve,reject) => {
 
@@ -356,8 +356,8 @@ class StaticMaps  {
 
       if (!this.markers.length) resolve(true);
 
-      var icons = _.uniqBy(this.markers.map(m => { return { file: m.img }; }), 'file');
-      var count = 1;
+      const icons = _.uniqBy(this.markers.map(m => { return { file: m.img }; }), 'file');
+      let count = 1;
 
       icons.forEach(i => {
 
@@ -374,7 +374,7 @@ class StaticMaps  {
                 this._y_to_px(_lat_to_y(icon.coord[1], this.zoom)) - icon.offset[1]
               ];
 
-              var imgData = _.find(icons, {file: icon.img});
+              let imgData = _.find(icons, {file: icon.img});
               icon.set(imgData.data);
 
             }, this);
@@ -394,7 +394,7 @@ class StaticMaps  {
 
     return new Promise((resolve, reject) => {
 
-      var options = {
+      const options = {
         url: data.url,
         encoding: null,
         resolveWithFullResponse: true
@@ -417,31 +417,24 @@ class StaticMaps  {
 
 module.exports = StaticMaps;
 
-
-
-/**
-  * transform longitude to tile number
-  **/
-function _lon_to_x (lon, zoom) {
+/* transform longitude to tile number */
+const _lon_to_x = function (lon, zoom) {
   return ((lon + 180) / 360) * Math.pow(2, zoom);
-}
-/**
-  * transform latitude to tile number
-  **/
-function _lat_to_y (lat, zoom) {
+};
+/* transform latitude to tile number */
+const _lat_to_y = function (lat, zoom) {
   return (1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom);
-}
-function _y_to_lat (y, zoom) {
+};
+const _y_to_lat = function (y, zoom) {
   return Math.atan(Math.sinh(Math.PI * (1 - 2 * y / Math.pow(2, zoom)))) / Math.PI * 180;
-}
-function _x_to_lon (x, zoom) {
+};
+const _x_to_lon = function (x, zoom) {
   return x / Math.pow(2, zoom) * 360 - 180;
-}
+};
 
 // Helper functions
-
-function processArray(array, fn) {
-   var results = [];
+const processArray = function (array, fn) {
+   let results = [];
    return array.reduce((p, item) => {
        return p.then(() => {
            return fn(item).then(data => {
@@ -450,7 +443,7 @@ function processArray(array, fn) {
            });
        });
    }, Promise.resolve());
-}
+};
 
 Array.prototype.last = function(){
   return this[this.length - 1];
