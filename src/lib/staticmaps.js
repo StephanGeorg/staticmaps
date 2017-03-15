@@ -221,8 +221,8 @@ StaticMaps.prototype._drawBaselayer = function () {
   var tilePromises = [];
 
   result.forEach(function(r){
-    tilePromises.push(getTile(r));
-  });
+    tilePromises.push(this.getTile(r));
+  }.bind(this));
 
   return new Promise(function(resolve,reject) {
 
@@ -403,6 +403,34 @@ StaticMaps.prototype._loadMarker = function () {
 };
 
 /**
+ *  Fetching tiles from endpoint
+ */
+StaticMaps.prototype.getTile = function (data) {
+
+  return new Promise(function (resolve, reject) {
+
+    var options = {
+      url: data.url,
+      encoding: null,
+      resolveWithFullResponse: true
+    };
+
+    if (this.tileRequestTimeout) options.timeout = this.tileRequestTimeout;
+
+    request.get(options).then(function (res) {
+      resolve({
+        url: data.url,
+        box: data.box,
+        body: res.body
+      });
+    }).catch(function (err) {
+      reject(err);
+    });
+  }.bind(this));
+
+};
+
+/**
   * transform longitude to tile number
   **/
 function _lon_to_x (lon, zoom) {
@@ -419,32 +447,6 @@ function _y_to_lat (y, zoom) {
 }
 function _x_to_lon (x, zoom) {
   return x / Math.pow(2, zoom) * 360 - 180;
-}
-
-function getTile(data) {
-
-  return new Promise(function (resolve,reject) {
-
-    var options = {
-      url: data.url,
-      encoding: null,
-      resolveWithFullResponse: true
-    };
-
-    if (this.tileRequestTimeout) options.timeout = this.tileRequestTimeout;
-
-    request.get(options)
-      .then(function (res){
-        resolve({
-          url: data.url,
-          box: data.box,
-          body: res.body
-        });
-      })
-      .catch(function (err) { reject(err); });
-
-  }.bind(this));
-
 }
 
 // Helper functions
