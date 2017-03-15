@@ -1,6 +1,7 @@
 var should = require('should');
-var StaticMaps = require('../lib/staticmaps');
 var path = require('path');
+
+var StaticMaps = require('../dist/lib/staticmaps');
 
 var markerPath = path.join(__dirname, 'marker.png');
 
