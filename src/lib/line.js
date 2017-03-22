@@ -1,30 +1,26 @@
-const _ = require("lodash");
+const _ = require('lodash');
 
 class Line {
 
-  constructor (options = {}) {
-
+  constructor(options = {}) {
     this.options = options;
     this.coords = this.options.coords;
     this.color = this.options.color || '#000000BB';
-    this.width = this.options.width || 3;
+    this.width = this.options.width || 3;
     this.simplify = this.options.simplify || false;
     this.type = 'polyline';
-
   }
 
   /**
    * calculate the coordinates of the envelope / bounding box: (min_lon, min_lat, max_lon, max_lat)
    */
-  extent () {
-
+  extent() {
     return [
-      this.coords.map(c => { return c[0]; }).min(),
-      this.coords.map(c => { return c[1]; }).min(),
-      this.coords.map(c => { return c[0]; }).max(),
-      this.coords.map(c => { return c[1]; }).max()
+      this.coords.map((c) => { return c[0]; }).min(),
+      this.coords.map((c) => { return c[1]; }).min(),
+      this.coords.map((c) => { return c[0]; }).max(),
+      this.coords.map((c) => { return c[1]; }).max()
     ];
-
   }
 
 }

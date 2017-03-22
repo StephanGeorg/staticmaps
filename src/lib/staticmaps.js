@@ -1,28 +1,27 @@
 // npm
-const request = require("request-promise");
-const gm = require("gm");
-const Jimp = require("jimp");
-const _ = require("lodash");
+const request = require('request-promise');
+const gm = require('gm');
+const Jimp = require('jimp');
+const _ = require('lodash');
 // local
-const Image = require("./image");
-const IconMarker = require("./marker");
-const Line = require("./line");
+const Image = require('./image');
+const IconMarker = require('./marker');
+const Line = require('./line');
 
-class StaticMaps  {
+class StaticMaps {
 
-  constructor (options = {}) {
-
+  constructor(options = {}) {
     this.options = options;
 
     this.width = this.options.width;
     this.height = this.options.height;
-    this.paddingX = this.options.paddingX || 0;
-    this.paddingY = this.options.paddingY || 0;
+    this.paddingX = this.options.paddingX || 0;
+    this.paddingY = this.options.paddingY || 0;
     this.padding = [this.paddingX, this.paddingY];
-    this.tileUrl = this.options.tileUrl || "http://tile.openstreetmap.org/{z}/{x}/{y}.png";
-    this.tileSize = this.options.tileSize || 256;
+    this.tileUrl = this.options.tileUrl || 'http://tile.openstreetmap.org/{z}/{x}/{y}.png';
+    this.tileSize = this.options.tileSize || 256;
     this.tileRequestTimeout = this.options.tileRequestTimeout;
-    this.reverseY = this.options.reverseY || false;
+    this.reverseY = this.options.reverseY || false;
 
     // # features
     this.markers = [];
@@ -34,85 +33,75 @@ class StaticMaps  {
     this.centerX = 0;
     this.centerY = 0;
     this.zoom = 0;
-
   }
 
-  addLine (options) {
+  addLine(options) {
     this.lines.push(new Line(options));
   }
 
-  addMarker (options) {
+  addMarker(options) {
     this.markers.push(new IconMarker(options));
   }
 
-  addPolygon (polygon) {
+  addPolygon(polygon) {
     this.polygons.push(polygon);
   }
 
   /**
     * render static map with all map features that were added to map before
     **/
-  render (center, zoom) {
-
+  render(center, zoom) {
     if (!this.lines && !this.markers && !this.polygons && !(center && zoom)) {
-      throw new Error("Cannot render empty map: Add  center || lines || markers || polygons.");
+      throw new Error('Cannot render empty map: Add  center || lines || markers || polygons.');
     }
 
     this.center = center;
-    this.zoom = zoom || this._calculateZoom();
+    this.zoom = zoom || this.calculateZoom();
 
     if (center && center.length === 2) {
-
-      this.centerX = _lon_to_x(center[0], this.zoom);
-      this.centerY = _lat_to_y(center[1], this.zoom);
-
+      this.centerX = lonToX(center[0], this.zoom);
+      this.centerY = latToY(center[1], this.zoom);
     } else {
-
       // # get extent of all lines
-      let extent = this.determineExtent(this.zoom);
+      const extent = this.determineExtent(this.zoom);
 
       // # calculate center point of map
       const centerLon = (extent[0] + extent[2]) / 2;
       const centerLat = (extent[1] + extent[3]) / 2;
 
-      this.centerX = _lon_to_x(centerLon, this.zoom);
-      this.centerY = _lat_to_y(centerLat, this.zoom);
-
+      this.centerX = lonToX(centerLon, this.zoom);
+      this.centerY = latToY(centerLat, this.zoom);
     }
 
     this.image = new Image({
       width: this.width,
-      height: this.height
+      height: this.height,
     });
 
-
-    return this._drawBaselayer()
-      .then(this._drawFeatures.bind(this));
-
+    return this.drawBaselayer()
+      .then(this.drawFeatures.bind(this));
   }
 
   /**
     * calculate common extent of all current map features
     **/
-  determineExtent (zoom) {
-
-    let extents = [];
+  determineExtent(zoom) {
+    const extents = [];
 
     // Add bbox to extent
     if (this.center && this.center.length >= 4) extents.push(this.center);
 
     // Add lines to extent
     if (this.lines.length) {
-      this.lines.forEach(line => {
+      this.lines.forEach((line) => {
         extents.push(line.extent());
       });
-    } //extents.push(this.lines.map(function(line){ return line.extent(); }));
+    } // extents.push(this.lines.map(function(line){ return line.extent(); }));
 
     // Add marker to extent
-    for (let i=0;i<this.markers.length;i++) {
-
+    for (let i = 0; i < this.markers.length; i++) {
       const marker = this.markers[i];
-      const e = [marker.coord[0],marker.coord[1]];
+      const e = [marker.coord[0], marker.coord[1]];
 
       if (!zoom) {
         extents.push([
@@ -125,262 +114,223 @@ class StaticMaps  {
       }
 
       // # consider dimension of marker
-      const e_px = marker.extentPx();
-      const x = _lon_to_x(e[0], zoom);
-      const y = _lat_to_y(e[1], zoom);
+      const ePx = marker.extentPx();
+      const x = lonToX(e[0], zoom);
+      const y = latToY(e[1], zoom);
 
       extents.push([
-        _x_to_lon(x - parseFloat(e_px[0]) / this.tileSize, zoom),
-        _y_to_lat(y + parseFloat(e_px[1]) / this.tileSize, zoom),
-        _x_to_lon(x + parseFloat(e_px[2]) / this.tileSize, zoom),
-        _y_to_lat(y - parseFloat(e_px[3]) / this.tileSize, zoom)
+        xToLon(x - parseFloat(ePx[0]) / this.tileSize, zoom),
+        yToLat(y + parseFloat(ePx[1]) / this.tileSize, zoom),
+        xToLon(x + parseFloat(ePx[2]) / this.tileSize, zoom),
+        yToLat(y - parseFloat(ePx[3]) / this.tileSize, zoom)
       ]);
     }
 
     // Add polygons to extent
-    if (this.polygons.length) extents.push(this.polygons.map(polygon => { return polygon.extent; }));
+    if (this.polygons.length) {
+      extents.push(this.polygons.map((polygon) => { return polygon.extent; }));
+    }
 
     return [
-      extents.map(e => { return e[0]; }).min(),
-      extents.map(e => { return e[1]; }).min(),
-      extents.map(e => { return e[2]; }).max(),
-      extents.map(e => { return e[3]; }).max()
+      extents.map((e) => { return e[0]; }).min(),
+      extents.map((e) => { return e[1]; }).min(),
+      extents.map((e) => { return e[2]; }).max(),
+      extents.map((e) => { return e[3]; }).max(),
     ];
-
   }
 
   /**
     * calculate the best zoom level for given extent
     */
-  _calculateZoom () {
-
-    for (let z=17; z>0; z-- ) {
-
+  calculateZoom() {
+    for (let z = 17; z > 0; z-- ) {
       const extent = this.determineExtent(z);
+      const width = (lonToX(extent[2], z) - lonToX(extent[0], z)) * this.tileSize;
+      if (width > (this.width - (this.padding[0] * 2))) continue;
 
-      const width = (_lon_to_x(extent[2], z) - _lon_to_x(extent[0], z)) * this.tileSize ;
-      if (width > (this.width - this.padding[0] * 2) ) continue;
-
-      const height = (_lat_to_y(extent[1], z)  - _lat_to_y(extent[3], z)) * this.tileSize;
-      if (height > (this.height - this.padding[1] * 2) ) continue;
+      const height = (latToY(extent[1], z)  - latToY(extent[3], z)) * this.tileSize;
+      if (height > (this.height - (this.padding[1] * 2))) continue;
 
       return z;
-
     }
-
   }
 
   /**
     * transform tile number to pixel on image canvas
     **/
-  _x_to_px (x) {
-
-    const px = (x - this.centerX) * this.tileSize + this.width / 2;
+  xToPx(x) {
+    const px = ((x - this.centerX) * this.tileSize) + (this.width / 2);
     return parseInt(Math.round(px));
-
   }
 
   /**
     * transform tile number to pixel on image canvas
     **/
-  _y_to_px (y) {
-
-    const px = (y - this.centerY) * this.tileSize + this.height / 2;
+  yToPx(y) {
+    const px = ((y - this.centerY) * this.tileSize) + (this.height / 2);
     return parseInt(Math.round(px));
-
   }
 
-  _drawBaselayer () {
+  drawBaselayer() {
 
-    const x_min = Math.floor(this.centerX - ( 0.5 * this.width / this.tileSize ));
-    const y_min = Math.floor(this.centerY - ( 0.5 * this.height / this.tileSize ));
-    const x_max = Math.ceil(this.centerX + (0.5 * this.width / this.tileSize ));
-    const y_max = Math.ceil(this.centerY + (0.5 * this.height / this.tileSize ));
+    const xMin = Math.floor(this.centerX - ( 0.5 * this.width / this.tileSize));
+    const yMin = Math.floor(this.centerY - ( 0.5 * this.height / this.tileSize));
+    const xMax = Math.ceil(this.centerX + (0.5 * this.width / this.tileSize));
+    const yMax = Math.ceil(this.centerY + (0.5 * this.height / this.tileSize));
 
-    let result = [];
+    const result = [];
 
-    for (let x = x_min; x<x_max; x++) {
-      for (let y = y_min; y<y_max; y++) {
-
+    for (let x = xMin; x < xMax; x++) {
+      for (let y = yMin; y < yMax; y++) {
         // # x and y may have crossed the date line
-        const max_tile = Math.pow(2,this.zoom);
-        let tile_x = (x + max_tile) % max_tile;
-        let tile_y = (y + max_tile) % max_tile;
-        if (this.reverseY) tile_y = ((1 << this.zoom) - tile_y) - 1;
+        const maxTile = (2 ** this.zoom);
+        const tileX = (x + maxTile) % maxTile;
+        let tileY = (y + maxTile) % maxTile;
+        if (this.reverseY) tileY = ((1 << this.zoom) - tileY) - 1;
 
         result.push({
-          url: this.tileUrl.replace('{z}', this.zoom).replace('{x}', tile_x).replace('{y}', tile_y),
+          url: this.tileUrl.replace('{z}', this.zoom).replace('{x}', tileX).replace('{y}', tileY),
           box: [
-              this._x_to_px(x),
-              this._y_to_px(y),
-              this._x_to_px(x + 1),
-              this._y_to_px(y + 1),
-          ]
+            this.xToPx(x),
+            this.yToPx(y),
+            this.xToPx(x + 1),
+            this.yToPx(y + 1),
+          ],
         });
       }
     }
 
-    let tilePromises = [];
+    const tilePromises = [];
 
-    result.forEach(r => { tilePromises.push(this.getTile(r)); });
+    result.forEach((r) => { tilePromises.push(this.getTile(r)); });
 
-    return new Promise((resolve,reject) => {
-
+    return new Promise((resolve, reject) => {
       Promise.all(tilePromises)
-        .then(tiles => {
+        .then((tiles) => {
           return this.image.draw(tiles);
         })
         .then(resolve)
         .catch(reject);
-
     });
+  }
 
+  drawFeatures() {
+    return this.drawLines()
+      .then(this.loadMarker.bind(this))
+      .then(this.drawMarker.bind(this));
   }
 
 
-  _drawFeatures (image) {
-
-    return this._drawLines()
-      .then(this._loadMarker.bind(this))
-      .then(this._drawMarker.bind(this));
-
-  }
-
-
-  _drawLines () {
-
+  drawLines() {
     return new Promise((resolve, reject) => {
-
       if (!this.lines.length) resolve(true);
 
       // Due to gm limitations, we need to chunk coordinates
-      let chunkedLines = [];
-      this.lines.forEach(line => {
+      const chunkedLines = [];
+      this.lines.forEach((line) => {
         const coords = _.chunk(line.coords, 120);
-        coords.forEach(c => {
-          let chunkedLine = _.clone(line);
+        coords.forEach((c) => {
+          const chunkedLine = _.clone(line);
           chunkedLine.coords = c;
           chunkedLines.push(chunkedLine);
         });
       });
 
-      processArray(chunkedLines, this.__draw.bind(this))
+      processArray(chunkedLines, this.draw.bind(this))
         .then(resolve, reject)
         .catch(reject);
-
     });
-
   }
 
   /**
    * Draw a polyline/polygon on a baseimage
    */
-  __draw (line) {
-
+  draw(line) {
     const type = line.type;
-    let baseImage = this.image.image;
+    const baseImage = this.image.image;
 
     return new Promise((resolve, reject) => {
-
-        const points = line.coords.map(coord => {
-          return [
-            this._x_to_px(_lon_to_x(coord[0], this.zoom)),
-            this._y_to_px(_lat_to_y(coord[1], this.zoom)),
-          ];
-        });
-
-        baseImage.getBuffer(Jimp.AUTO, (err,result) => {
-
-          if (err) reject(err);
-
-          if (type === 'polyline') {
-
-            gm(result)
-              .fill(0)
-              .stroke(line.color,line.width)
-              .drawPolyline(points)
-              .toBuffer((err, buffer) => {
-                if (err) reject(err);
-                Jimp.read(buffer, (err,image) => {
-                  if (err) reject(err);
-                  this.image.image = image;
-                  resolve(image);
-                });
-              });
-
-          } else if (type === 'poygon') {
-
-            gm(result)
-              .fill(0)
-              .stroke(line.color,line.width)
-              .drawPolygon(points)
-              .toBuffer((err, buffer) => {
-                if (err) reject(err);
-                Jimp.read(buffer, (err,image) => {
-                  if (err) reject(err);
-                  this.image.image = image;
-                  resolve(image);
-                });
-              });
-
-          }
-
-        });
+      const points = line.coords.map((coord) => {
+        return [
+          this.xToPx(lonToX(coord[0], this.zoom)),
+          this.yToPx(latToY(coord[1], this.zoom)),
+        ];
       });
+
+      baseImage.getBuffer(Jimp.AUTO, (err, result) => {
+        if (err) reject(err);
+        if (type === 'polyline') {
+          gm(result)
+            .fill(0)
+            .stroke(line.color, line.width)
+            .drawPolyline(points)
+            .toBuffer((err, buffer) => {
+              if (err) reject(err);
+              Jimp.read(buffer, (err, image) => {
+                if (err) reject(err);
+                this.image.image = image;
+                resolve(image);
+              });
+            });
+        } else if (type === 'poygon') {
+          gm(result)
+            .fill(0)
+            .stroke(line.color, line.width)
+            .drawPolygon(points)
+            .toBuffer((err, buffer) => {
+              if (err) reject(err);
+              Jimp.read(buffer, (err, image) => {
+                if (err) reject(err);
+                this.image.image = image;
+                resolve(image);
+              });
+            });
+        }
+      });
+    });
   }
 
-  _drawMarker () {
+  drawMarker() {
+    const baseImage = this.image.image;
 
-    let baseImage = this.image.image;
-
-    return new Promise ((resolve,reject) => {
-
-      this.markers.forEach(marker => {
-
+    return new Promise((resolve) => {
+      this.markers.forEach((marker) => {
         baseImage.composite(marker.imgData, marker.position[0], marker.position[1]);
-
       });
 
       resolve(true);
-
     });
-
   }
 
   /**
     *   Preloading the icon image
     */
-  _loadMarker () {
-
-    return new Promise ((resolve,reject) => {
-
+  loadMarker() {
+    return new Promise ((resolve, reject) => {
       if (!this.markers.length) resolve(true);
 
-      const icons = _.uniqBy(this.markers.map(m => { return { file: m.img }; }), 'file');
+      const icons = _.uniqBy(this.markers.map((m) => {
+        return { file: m.img };
+      }), 'file');
+
       let count = 1;
-
-      icons.forEach(i => {
-
+      icons.forEach((i) => {
         Jimp.read(i.file, (err, tile) => {
           if (err) reject(err);
           i.data = tile;
           if (count++ === icons.length) {
-
             // Pre loaded all icons
-            this.markers.forEach(icon => {
-
+            this.markers.forEach((icon) => {
               icon.position = [
-                this._x_to_px(_lon_to_x(icon.coord[0], this.zoom)) - icon.offset[0],
-                this._y_to_px(_lat_to_y(icon.coord[1], this.zoom)) - icon.offset[1]
+                this.xToPx(lonToX(icon.coord[0], this.zoom)) - icon.offset[0],
+                this.yToPx(latToY(icon.coord[1], this.zoom)) - icon.offset[1],
               ];
 
-              let imgData = _.find(icons, {file: icon.img});
+              const imgData = _.find(icons, { file: icon.img });
               icon.set(imgData.data);
-
-            }, this);
+            });
 
             resolve(true);
-
           }
         });
       });
@@ -390,59 +340,55 @@ class StaticMaps  {
   /**
    *  Fetching tiles from endpoint
    */
-  getTile (data) {
-
+  getTile(data) {
     return new Promise((resolve, reject) => {
-
       const options = {
         url: data.url,
         encoding: null,
-        resolveWithFullResponse: true
+        resolveWithFullResponse: true,
       };
 
       if (this.tileRequestTimeout) options.timeout = this.tileRequestTimeout;
 
-      request.get(options).then(res => {
+      request.get(options).then((res) => {
         resolve({
           url: data.url,
           box: data.box,
-          body: res.body
+          body: res.body,
         });
       }).catch(reject);
     });
-
   }
-
 }
 
 module.exports = StaticMaps;
 
 /* transform longitude to tile number */
-const _lon_to_x = function (lon, zoom) {
-  return ((lon + 180) / 360) * Math.pow(2, zoom);
+const lonToX = function (lon, zoom) {
+  return ((lon + 180) / 360) * (2 ** zoom);
 };
 /* transform latitude to tile number */
-const _lat_to_y = function (lat, zoom) {
-  return (1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom);
+const latToY = function (lat, zoom) {
+  return (1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * (2 ** zoom);
 };
-const _y_to_lat = function (y, zoom) {
-  return Math.atan(Math.sinh(Math.PI * (1 - 2 * y / Math.pow(2, zoom)))) / Math.PI * 180;
+const yToLat = function (y, zoom) {
+  return Math.atan(Math.sinh(Math.PI * (1 - 2 * y / (2 ** zoom)))) / Math.PI * 180;
 };
-const _x_to_lon = function (x, zoom) {
-  return x / Math.pow(2, zoom) * 360 - 180;
+const xToLon = function (x, zoom) {
+  return x / (2 ** zoom) * 360 - 180;
 };
 
 // Helper functions
 const processArray = function (array, fn) {
-   let results = [];
-   return array.reduce((p, item) => {
-       return p.then(() => {
-           return fn(item).then(data => {
-             results.push(data);
-             return results;
-           });
-       });
-   }, Promise.resolve());
+  const results = [];
+  return array.reduce((p, item) => {
+    return p.then(() => {
+      return fn(item).then((data) => {
+        results.push(data);
+        return results;
+      });
+    });
+  }, Promise.resolve());
 };
 
 Array.prototype.last = function(){
