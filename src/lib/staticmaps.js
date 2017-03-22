@@ -172,9 +172,8 @@ class StaticMaps {
   }
 
   drawBaselayer() {
-
-    const xMin = Math.floor(this.centerX - ( 0.5 * this.width / this.tileSize));
-    const yMin = Math.floor(this.centerY - ( 0.5 * this.height / this.tileSize));
+    const xMin = Math.floor(this.centerX - (0.5 * this.width / this.tileSize));
+    const yMin = Math.floor(this.centerY - (0.5 * this.height / this.tileSize));
     const xMax = Math.ceil(this.centerX + (0.5 * this.width / this.tileSize));
     const yMax = Math.ceil(this.centerY + (0.5 * this.height / this.tileSize));
 
