@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const Jimp = require('jimp');
 
 class IconMarker {

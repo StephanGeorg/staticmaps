@@ -1,4 +1,3 @@
-const _ = require('lodash');
 
 class Line {
 
@@ -16,10 +15,10 @@ class Line {
    */
   extent() {
     return [
-      this.coords.map((c) => { return c[0]; }).min(),
-      this.coords.map((c) => { return c[1]; }).min(),
-      this.coords.map((c) => { return c[0]; }).max(),
-      this.coords.map((c) => { return c[1]; }).max()
+      this.coords.map(c => c[0]).min(),
+      this.coords.map(c => c[1]).min(),
+      this.coords.map(c => c[0]).max(),
+      this.coords.map(c => c[1]).max(),
     ];
   }
 

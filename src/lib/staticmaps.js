@@ -128,14 +128,14 @@ class StaticMaps {
 
     // Add polygons to extent
     if (this.polygons.length) {
-      extents.push(this.polygons.map((polygon) => { return polygon.extent; }));
+      extents.push(this.polygons.map(polygon => polygon.extent));
     }
 
     return [
-      extents.map((e) => { return e[0]; }).min(),
-      extents.map((e) => { return e[1]; }).min(),
-      extents.map((e) => { return e[2]; }).max(),
-      extents.map((e) => { return e[3]; }).max(),
+      extents.map(e => e[0]).min(),
+      extents.map(e => e[1]).min(),
+      extents.map(e => e[2]).max(),
+      extents.map(e => e[3]).max(),
     ];
   }
 
@@ -143,7 +143,7 @@ class StaticMaps {
     * calculate the best zoom level for given extent
     */
   calculateZoom() {
-    for (let z = 17; z > 0; z-- ) {
+    for (let z = 17; z > 0; z--) {
       const extent = this.determineExtent(z);
       const width = (lonToX(extent[2], z) - lonToX(extent[0], z)) * this.tileSize;
       if (width > (this.width - (this.padding[0] * 2))) continue;
@@ -205,9 +205,7 @@ class StaticMaps {
 
     return new Promise((resolve, reject) => {
       Promise.all(tilePromises)
-        .then((tiles) => {
-          return this.image.draw(tiles);
-        })
+        .then(tiles => this.image.draw(tiles))
         .then(resolve)
         .catch(reject);
     });
@@ -249,12 +247,10 @@ class StaticMaps {
     const baseImage = this.image.image;
 
     return new Promise((resolve, reject) => {
-      const points = line.coords.map((coord) => {
-        return [
-          this.xToPx(lonToX(coord[0], this.zoom)),
-          this.yToPx(latToY(coord[1], this.zoom)),
-        ];
-      });
+      const points = line.coords.map(coord => [
+        this.xToPx(lonToX(coord[0], this.zoom)),
+        this.yToPx(latToY(coord[1], this.zoom)),
+      ]);
 
       baseImage.getBuffer(Jimp.AUTO, (err, result) => {
         if (err) reject(err);
@@ -305,12 +301,10 @@ class StaticMaps {
     *   Preloading the icon image
     */
   loadMarker() {
-    return new Promise ((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       if (!this.markers.length) resolve(true);
 
-      const icons = _.uniqBy(this.markers.map((m) => {
-        return { file: m.img };
-      }), 'file');
+      const icons = _.uniqBy(this.markers.map(m => ({ file: m.img })), 'file');
 
       let count = 1;
       icons.forEach((i) => {
@@ -363,22 +357,23 @@ class StaticMaps {
 module.exports = StaticMaps;
 
 /* transform longitude to tile number */
-const lonToX = function (lon, zoom) {
+function lonToX(lon, zoom) {
   return ((lon + 180) / 360) * (2 ** zoom);
-};
+}
 /* transform latitude to tile number */
-const latToY = function (lat, zoom) {
-  return (1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * (2 ** zoom);
-};
-const yToLat = function (y, zoom) {
+function latToY(lat, zoom) {
+  return (1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) /
+    Math.PI) / 2 * (2 ** zoom);
+}
+function yToLat(y, zoom) {
   return Math.atan(Math.sinh(Math.PI * (1 - 2 * y / (2 ** zoom)))) / Math.PI * 180;
-};
-const xToLon = function (x, zoom) {
+}
+function xToLon(x, zoom) {
   return x / (2 ** zoom) * 360 - 180;
-};
+}
 
 // Helper functions
-const processArray = function (array, fn) {
+function processArray(array, fn) {
   const results = [];
   return array.reduce((p, item) => {
     return p.then(() => {
@@ -388,7 +383,7 @@ const processArray = function (array, fn) {
       });
     });
   }, Promise.resolve());
-};
+}
 
 Array.prototype.last = function(){
   return this[this.length - 1];
