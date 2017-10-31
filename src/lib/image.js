@@ -1,7 +1,7 @@
-const Jimp = require('jimp');
-const _ = require('lodash');
+import Jimp from 'jimp';
+import { _ } from 'lodash';
 
-class Image {
+export default class {
   constructor(options = {}) {
     this.options = options;
     this.width = this.options.width;
@@ -11,12 +11,12 @@ class Image {
   draw(tiles) {
     return new Promise((resolve, reject) => {
       let key = 0;
-      const image = new Jimp(this.width, this.height, (err, image) => {
+      Jimp(this.width, this.height, (err, img) => {
         if (err) reject(err);
-        this.image = image;
+        this.image = img;
         tiles.forEach((data) => {
-          Jimp.read(data.body, (err, tile) => {
-            if (err) reject(err);
+          Jimp.read(data.body, (errRead, tile) => {
+            if (errRead) reject(errRead);
 
             const x = data.box[0];
             const y = data.box[1];
@@ -29,8 +29,8 @@ class Image {
             const w = tile.bitmap.width + (x < 0 ? x : 0) - (extraWidth > 0 ? extraWidth : 0);
             const h = tile.bitmap.height + (y < 0 ? y : 0) - (extraHeight > 0 ? extraHeight : 0);
 
-            image.blit(tile, sx, sy, dx, dy, w, h);
-            this.image = image;
+            img.blit(tile, sx, sy, dx, dy, w, h);
+            this.image = img;
 
             if (key === tiles.length - 1) resolve(true);
             key++;
@@ -53,6 +53,7 @@ class Image {
         });
       });
     }
+    return null;
   }
 
   /**
@@ -69,7 +70,6 @@ class Image {
         });
       });
     }
+    return null;
   }
 }
-
-module.exports = Image;

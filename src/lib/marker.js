@@ -1,7 +1,6 @@
-const Jimp = require('jimp');
+import Jimp from 'jimp';
 
-class IconMarker {
-
+export default class {
   constructor(options = {}) {
     this.options = options;
 
@@ -45,5 +44,3 @@ class IconMarker {
     ];
   }
 }
-
-module.exports = IconMarker;

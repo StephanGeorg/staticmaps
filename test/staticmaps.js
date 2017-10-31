@@ -1,8 +1,8 @@
 import path from 'path';
 
-const { expect } = require('chai');
+import StaticMaps from '../dist/lib/staticmaps';
 
-const StaticMaps = require('../dist/lib/staticmaps');
+const { expect } = require('chai');
 
 const markerPath = path.join(__dirname, 'marker.png');
 

@@ -1,15 +1,24 @@
-// npm
-const request = require('request-promise');
-const gm = require('gm');
-const Jimp = require('jimp');
-const _ = require('lodash');
-// local
-const Image = require('./image');
-const IconMarker = require('./marker');
-const Line = require('./line');
+import request from 'request-promise';
+import gm from 'gm';
+import Jimp from 'jimp';
+import { _ } from 'lodash';
+
+import Image from './image';
+import IconMarker from './marker';
+import Line from './line';
+
+/* transform longitude to tile number */
+const lonToX = (lon, zoom) => ((lon + 180) / 360) * (2 ** zoom);
+/* transform latitude to tile number */
+const latToY = (lat, zoom) => (1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 /
+  Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * (2 ** zoom);
+
+const yToLat = (y, zoom) => Math.atan(Math.sinh(Math.PI * (1 - 2 * y / (2 ** zoom)))) /
+  Math.PI * 180;
+
+const xToLon = (x, zoom) => x / (2 ** zoom) * 360 - 180;
 
 class StaticMaps {
-
   constructor(options = {}) {
     this.options = options;
 
@@ -48,8 +57,8 @@ class StaticMaps {
   }
 
   /**
-    * render static map with all map features that were added to map before
-    **/
+    * Render static map with all map features that were added to map before
+    */
   render(center, zoom) {
     if (!this.lines && !this.markers && !this.polygons && !(center && zoom)) {
       throw new Error('Cannot render empty map: Add  center || lines || markers || polygons.');
@@ -84,7 +93,7 @@ class StaticMaps {
 
   /**
     * calculate common extent of all current map features
-    **/
+    */
   determineExtent(zoom) {
     const extents = [];
 
@@ -127,9 +136,7 @@ class StaticMaps {
     }
 
     // Add polygons to extent
-    if (this.polygons.length) {
-      extents.push(this.polygons.map(polygon => polygon.extent));
-    }
+    if (this.polygons.length) extents.push(this.polygons.map(polygon => polygon.extent));
 
     return [
       extents.map(e => e[0]).min(),
@@ -153,22 +160,23 @@ class StaticMaps {
 
       return z;
     }
+    return null;
   }
 
   /**
     * transform tile number to pixel on image canvas
-    **/
+    */
   xToPx(x) {
     const px = ((x - this.centerX) * this.tileSize) + (this.width / 2);
-    return parseInt(Math.round(px));
+    return Number(Math.round(px));
   }
 
   /**
     * transform tile number to pixel on image canvas
-    **/
+    */
   yToPx(y) {
     const px = ((y - this.centerY) * this.tileSize) + (this.height / 2);
-    return parseInt(Math.round(px));
+    return Number(Math.round(px));
   }
 
   drawBaselayer() {
@@ -219,7 +227,7 @@ class StaticMaps {
 
 
   drawLines() {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve) => {
       if (!this.lines.length) resolve(true);
 
       // Due to gm limitations, we need to chunk coordinates
@@ -232,18 +240,19 @@ class StaticMaps {
           chunkedLines.push(chunkedLine);
         });
       });
-
-      processArray(chunkedLines, this.draw.bind(this))
-        .then(resolve, reject)
-        .catch(reject);
+      // eslint-disable-next-line no-restricted-syntax
+      for (const chunkedLine of chunkedLines) {
+        await this.draw(chunkedLine); // eslint-disable-line no-await-in-loop
+      }
+      resolve(true);
     });
   }
 
   /**
    * Draw a polyline/polygon on a baseimage
    */
-  draw(line) {
-    const type = line.type;
+  async draw(line) {
+    const { type } = line;
     const baseImage = this.image.image;
 
     return new Promise((resolve, reject) => {
@@ -259,23 +268,23 @@ class StaticMaps {
             .fill(0)
             .stroke(line.color, line.width)
             .drawPolyline(points)
-            .toBuffer((err, buffer) => {
-              if (err) reject(err);
-              Jimp.read(buffer, (err, image) => {
-                if (err) reject(err);
+            .toBuffer((errBuf, buffer) => {
+              if (errBuf) reject(err);
+              Jimp.read(buffer, (errRead, image) => {
+                if (errRead) reject(err);
                 this.image.image = image;
                 resolve(image);
               });
             });
-        } else if (type === 'poygon') {
+        } else if (type === 'polygon') {
           gm(result)
             .fill(0)
             .stroke(line.color, line.width)
             .drawPolygon(points)
-            .toBuffer((err, buffer) => {
-              if (err) reject(err);
-              Jimp.read(buffer, (err, image) => {
-                if (err) reject(err);
+            .toBuffer((errBuf, buffer) => {
+              if (errBuf) reject(err);
+              Jimp.read(buffer, (errRead, image) => {
+                if (errRead) reject(err);
                 this.image.image = image;
                 resolve(image);
               });
@@ -354,36 +363,8 @@ class StaticMaps {
   }
 }
 
+export default StaticMaps;
 module.exports = StaticMaps;
-
-/* transform longitude to tile number */
-function lonToX(lon, zoom) {
-  return ((lon + 180) / 360) * (2 ** zoom);
-}
-/* transform latitude to tile number */
-function latToY(lat, zoom) {
-  return (1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) /
-    Math.PI) / 2 * (2 ** zoom);
-}
-function yToLat(y, zoom) {
-  return Math.atan(Math.sinh(Math.PI * (1 - 2 * y / (2 ** zoom)))) / Math.PI * 180;
-}
-function xToLon(x, zoom) {
-  return x / (2 ** zoom) * 360 - 180;
-}
-
-// Helper functions
-function processArray(array, fn) {
-  const results = [];
-  return array.reduce((p, item) => {
-    return p.then(() => {
-      return fn(item).then((data) => {
-        results.push(data);
-        return results;
-      });
-    });
-  }, Promise.resolve());
-}
 
 Array.prototype.last = function () {
   return this[this.length - 1];

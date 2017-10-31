@@ -1,6 +1,5 @@
 
-class Line {
-
+export default class {
   constructor(options = {}) {
     this.options = options;
     this.coords = this.options.coords;
@@ -21,10 +20,8 @@ class Line {
       this.coords.map(c => c[1]).max(),
     ];
   }
-
 }
 
-module.exports = Line;
 
 // Helper functions
 Array.prototype.max = function() {
