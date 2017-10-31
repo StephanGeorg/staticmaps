@@ -5,7 +5,7 @@ import { _ } from 'lodash';
 
 import Image from './image';
 import IconMarker from './marker';
-import Line from './line';
+import Polyline from './polyline';
 
 /* transform longitude to tile number */
 const lonToX = (lon, zoom) => ((lon + 180) / 360) * (2 ** zoom);
@@ -45,15 +45,15 @@ class StaticMaps {
   }
 
   addLine(options) {
-    this.lines.push(new Line(options));
+    this.lines.push(new Polyline(options));
   }
 
   addMarker(options) {
     this.markers.push(new IconMarker(options));
   }
 
-  addPolygon(polygon) {
-    this.polygons.push(polygon);
+  addPolygon(options) {
+    this.lines.push(new Polyline(options));
   }
 
   /**
@@ -100,7 +100,7 @@ class StaticMaps {
     // Add bbox to extent
     if (this.center && this.center.length >= 4) extents.push(this.center);
 
-    // Add lines to extent
+    // Add polylines and polygons to extent
     if (this.lines.length) {
       this.lines.forEach((line) => {
         extents.push(line.extent());
@@ -136,7 +136,7 @@ class StaticMaps {
     }
 
     // Add polygons to extent
-    if (this.polygons.length) extents.push(this.polygons.map(polygon => polygon.extent));
+    // if (this.polygons.length) extents.push(this.polygons.map(polygon => polygon.extent));
 
     return [
       extents.map(e => e[0]).min(),
@@ -155,7 +155,7 @@ class StaticMaps {
       const width = (lonToX(extent[2], z) - lonToX(extent[0], z)) * this.tileSize;
       if (width > (this.width - (this.padding[0] * 2))) continue;
 
-      const height = (latToY(extent[1], z)  - latToY(extent[3], z)) * this.tileSize;
+      const height = (latToY(extent[1], z) - latToY(extent[3], z)) * this.tileSize;
       if (height > (this.height - (this.padding[1] * 2))) continue;
 
       return z;

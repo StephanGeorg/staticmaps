@@ -1,7 +1,7 @@
 import Jimp from 'jimp';
 import { _ } from 'lodash';
 
-export default class {
+export default class Image {
   constructor(options = {}) {
     this.options = options;
     this.width = this.options.width;
@@ -11,9 +11,9 @@ export default class {
   draw(tiles) {
     return new Promise((resolve, reject) => {
       let key = 0;
-      Jimp(this.width, this.height, (err, img) => {
+      const img = new Jimp(this.width, this.height, (err, image) => {
         if (err) reject(err);
-        this.image = img;
+        this.image = image;
         tiles.forEach((data) => {
           Jimp.read(data.body, (errRead, tile) => {
             if (errRead) reject(errRead);
@@ -30,7 +30,7 @@ export default class {
             const h = tile.bitmap.height + (y < 0 ? y : 0) - (extraHeight > 0 ? extraHeight : 0);
 
             img.blit(tile, sx, sy, dx, dy, w, h);
-            this.image = img;
+            this.image = image;
 
             if (key === tiles.length - 1) resolve(true);
             key++;
@@ -53,7 +53,6 @@ export default class {
         });
       });
     }
-    return null;
   }
 
   /**
@@ -70,6 +69,7 @@ export default class {
         });
       });
     }
-    return null;
   }
 }
+
+module.exports = Image;

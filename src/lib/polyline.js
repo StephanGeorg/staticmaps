@@ -1,12 +1,15 @@
+import { _ } from 'lodash';
 
-export default class {
+
+export default class Polyline {
   constructor(options = {}) {
     this.options = options;
     this.coords = this.options.coords;
     this.color = this.options.color || '#000000BB';
     this.width = this.options.width || 3;
     this.simplify = this.options.simplify || false;
-    this.type = 'polyline';
+    this.type = (_.isEqual(_.first(this.coords), _.last(this.coords))) ?
+      'polygon' : 'polyline';
   }
 
   /**

@@ -1,6 +1,6 @@
 import path from 'path';
 
-import StaticMaps from '../dist/lib/staticmaps';
+import StaticMaps from '../src/lib/staticmaps';
 
 const { expect } = require('chai');
 
@@ -115,7 +115,7 @@ describe('StaticMap', () => {
   });
 
   describe('Rendering w/ lines ...', () => {
-    it('render w/ single line', (done) => {
+    it('Render StaticMap w/ single polyline', (done) => {
       const options = {
         width: 600,
         height: 300,
@@ -125,19 +125,48 @@ describe('StaticMap', () => {
 
       const map = new StaticMaps(options);
 
-      const line = {
+      const polyline = {
         coords: [
-          [13.399259, 52.482659],
-          [13.387849, 52.477144],
-          [13.40538, 52.510632],
+          [13.415336608886719, 52.520764737491305],
+          [13.417696952819824, 52.518571202030884],
+          [13.418126106262207, 52.51734381893015],
         ],
         color: '#0000FFBB',
         width: 3,
       };
 
-      map.addLine(line);
+      map.addLine(polyline);
       map.render()
-        .then(() => map.image.save('test/out/06-line.png'))
+        .then(() => map.image.save('test/out/06-polyline.png'))
+        .then(done)
+        .catch(done);
+    }).timeout(5000);
+
+    it('Render StaticMap w/ polygon', (done) => {
+      const options = {
+        width: 600,
+        height: 300,
+        paddingX: 50,
+        paddingY: 50,
+      };
+
+      const map = new StaticMaps(options);
+
+      const polygon = {
+        coords: [
+          [10.898437, 46.0732306],
+          [30.234375, 46.0732306],
+          [30.234375, 52.2681573],
+          [10.898437, 52.2681573],
+          [10.898437, 46.0732306],
+        ],
+        color: '#0000FFBB',
+        width: 3,
+      };
+
+      map.addPolygon(polygon);
+      map.render()
+        .then(() => map.image.save('test/out/07-polygon.png'))
         .then(done)
         .catch(done);
     }).timeout(5000);
