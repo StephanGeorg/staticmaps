@@ -123,6 +123,7 @@ describe('StaticMap', () => {
         height: 800,
         paddingX: 0,
         paddingY: 0,
+        quality: 10,
       };
 
       const map = new StaticMaps(options);
@@ -143,7 +144,7 @@ describe('StaticMap', () => {
       map.addLine(polyline2);
       map.addLine(polyline);
       map.render()
-        .then(() => map.image.save('test/out/06-polyline.png'))
+        .then(() => map.image.save('test/out/06-polyline.jpg'))
         .then(done)
         .catch(done);
     }).timeout(10000);

@@ -26,11 +26,12 @@ Parameter           | Description
 ------------------- | -------------
 width               | Width of the output image in px
 height              | Height of the output image in px
-paddingX           | (optional) Minimum distance in px between map features and map border
-paddingY           | (optional) Minimum distance in px between map features and map border
-tileUrl        | (optional) Tile server URL for the map base layer
-tileSize           | (optional) tile size in pixel (default: 256)
-tileRequestTimeout| (optional) timeout for the tiles request
+quality             | (optional) Set quality of output JPEG, 0 - 100 (default: 100)
+paddingX            | (optional) Minimum distance in px between map features and map border
+paddingY            | (optional) Minimum distance in px between map features and map border
+tileUrl             | (optional) Tile server URL for the map base layer
+tileSize            | (optional) tile size in pixel (default: 256)
+tileRequestTimeout  | (optional) timeout for the tiles request
 
 #### Methods
 

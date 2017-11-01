@@ -6,6 +6,7 @@ export default class Image {
     this.options = options;
     this.width = this.options.width;
     this.height = this.options.height;
+    this.quality = this.options.quality || 100;
   }
 
   draw(tiles) {
@@ -45,12 +46,16 @@ export default class Image {
    */
   save(fileName, cb) {
     if (_.isFunction(cb)) {
-      this.image.write(fileName, cb);
+      this.image
+        .quality(this.quality)
+        .write(fileName, cb);
     } else {
       return new Promise((resolve) => {
-        this.image.write(fileName, () => {
-          resolve();
-        });
+        this.image
+          .quality(this.quality)
+          .write(fileName, () => {
+            resolve();
+          });
       });
     }
     return null;

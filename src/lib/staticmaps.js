@@ -82,10 +82,7 @@ class StaticMaps {
       this.centerY = latToY(centerLat, this.zoom);
     }
 
-    this.image = new Image({
-      width: this.width,
-      height: this.height,
-    });
+    this.image = new Image(this.options);
 
     return this.drawBaselayer()
       .then(this.drawFeatures.bind(this));
