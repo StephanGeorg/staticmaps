@@ -43,7 +43,7 @@ coord               | Coordinates of the marker ([Lng, Lat])
 img                 | Marker image path or URL
 height              | Height of the marker image
 width               | Width of the marker image
-offsetX             | (optional) X offset of the marker image (default: width/2) 
+offsetX             | (optional) X offset of the marker image (default: width/2)
 offsetY             | (optional) Y offset of the marker image (default: height)
 ##### Usage example
 ```javascript
@@ -85,8 +85,8 @@ simplify            | TODO
 
 #### addPolygon(options)
 Adds a polygon to the map. Polygon is the same as a polyline but first and last coordinate are equal.
-``` 
-map.addPolygon(options); 
+```
+map.addPolygon(options);
 ```
 ##### Polygon options
 Parameter           | Description
@@ -115,8 +115,8 @@ simplify            | TODO
 
 #### render (center, zoom)
 Renders the map.
-``` 
-map.render(); 
+```
+map.render();
 ```
 ##### Render options
 Parameter           | Description
@@ -128,8 +128,8 @@ zoom                | (optional) Set a specific zoom level.
 
 #### image.save (fileName, [callback])
 Saves the image to a file. If callback is undefined it return a Promise.
-``` 
-map.image.save(); 
+```
+map.image.save();
 ```
 ##### Save options
 Parameter           | Description
@@ -141,8 +141,8 @@ callback            | (optional) Callback function. If undefined, Promise will r
 
 #### image.buffer (mime, [callback])
 Saves the image to a file. If callback is undefined it return a Promise.
-``` 
-map.image.buffer(); 
+```
+map.image.buffer();
 ```
 ##### Buffer options
 Parameter           | Description
@@ -252,15 +252,10 @@ var line = {
 
 map.addLine(line);
 map.render()
-  .then(() => map.image.save('test/out/polyline.png')	
+  .then(() => map.image.save('test/out/polyline.png')
   .then(() => console.log('File saved!'))
   .catch(console.log);
 
 ```
 #### Output
-![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true)
-
-
-
-
-
+![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true =800x280)
