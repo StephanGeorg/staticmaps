@@ -53,6 +53,7 @@ export default class Image {
         });
       });
     }
+    return null;
   }
 
   /**
@@ -69,6 +70,7 @@ export default class Image {
         });
       });
     }
+    return null;
   }
 }
 

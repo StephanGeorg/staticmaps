@@ -1,6 +1,8 @@
 import path from 'path';
 
 import StaticMaps from '../src/lib/staticmaps';
+import GeoJSON from './static/geojson';
+import Route from './static/route';
 
 const { expect } = require('chai');
 
@@ -117,30 +119,34 @@ describe('StaticMap', () => {
   describe('Rendering w/ lines ...', () => {
     it('Render StaticMap w/ single polyline', (done) => {
       const options = {
-        width: 600,
-        height: 300,
-        paddingX: 50,
-        paddingY: 50,
+        width: 800,
+        height: 800,
+        paddingX: 0,
+        paddingY: 0,
       };
 
       const map = new StaticMaps(options);
 
+      const coords = Route.routes[0].geometry.coordinates;
       const polyline = {
-        coords: [
-          [13.415336608886719, 52.520764737491305],
-          [13.417696952819824, 52.518571202030884],
-          [13.418126106262207, 52.51734381893015],
-        ],
-        color: '#0000FFBB',
+        coords,
+        color: '#0000FF66',
         width: 3,
       };
 
+      const polyline2 = {
+        coords,
+        color: '#FFFFFF00',
+        width: 6,
+      };
+
+      map.addLine(polyline2);
       map.addLine(polyline);
       map.render()
         .then(() => map.image.save('test/out/06-polyline.png'))
         .then(done)
         .catch(done);
-    }).timeout(5000);
+    }).timeout(10000);
 
     it('Render StaticMap w/ polygon', (done) => {
       const options = {
@@ -153,15 +159,9 @@ describe('StaticMap', () => {
       const map = new StaticMaps(options);
 
       const polygon = {
-        coords: [
-          [10.898437, 46.0732306],
-          [30.234375, 46.0732306],
-          [30.234375, 52.2681573],
-          [10.898437, 52.2681573],
-          [10.898437, 46.0732306],
-        ],
+        coords: GeoJSON.way.geometry.coordinates[0][0],
         color: '#0000FFBB',
-        width: 3,
+        width: 1,
       };
 
       map.addPolygon(polygon);
@@ -169,7 +169,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/07-polygon.png'))
         .then(done)
         .catch(done);
-    }).timeout(5000);
+    }).timeout(10000);
   });
 
   describe('Rendering buffer ...', () => {

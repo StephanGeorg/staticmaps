@@ -6,6 +6,7 @@ export default class Polyline {
     this.options = options;
     this.coords = this.options.coords;
     this.color = this.options.color || '#000000BB';
+    this.fill = this.options.fill || '#000000BB';
     this.width = this.options.width || 3;
     this.simplify = this.options.simplify || false;
     this.type = (_.isEqual(_.first(this.coords), _.last(this.coords))) ?

@@ -278,7 +278,7 @@ class StaticMaps {
             });
         } else if (type === 'polygon') {
           gm(result)
-            .fill(0)
+            .fill(line.fill)
             .stroke(line.color, line.width)
             .drawPolygon(points)
             .toBuffer((errBuf, buffer) => {
