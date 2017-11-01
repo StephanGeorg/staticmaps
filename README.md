@@ -1,4 +1,4 @@
-# Staticmaps [![npm version](https://badge.fury.io/js/staticmaps.svg)](https://badge.fury.io/js/staticmaps)
+# StaticMaps [![npm version](https://badge.fury.io/js/staticmaps.svg)](https://badge.fury.io/js/staticmaps)
 A node.js library for creating map images with polylines and markers. This library is a node.js implementation of [Static Map](https://github.com/komoot/staticmap).
 
 ## Installation
@@ -6,22 +6,22 @@ A node.js library for creating map images with polylines and markers. This libra
 Image manupulation is based on [GraphicsMagick](http://www.graphicsmagick.org/). You **need to [install](http://www.graphicsmagick.org/README.html#documentation) it before** using staticmaps.
 
 ```bash
-> npm i staticmaps
+> npm i staticmaps -S
 ```
 ## Getting Started
 
 ### Initialization ###
 ```javascript
-var StaticMaps = require('staticmaps');
+const StaticMaps = require('staticmaps');
 ```
 ```javascript
-var options = {
+const options = {
   width: 600,
   height: 400
 };
-var map = new StaticMaps(options);
+const map = new StaticMaps(options);
 ```
-#### Options
+#### Map options
 Parameter           | Description
 ------------------- | -------------
 width               | Width of the output image in px
@@ -34,10 +34,59 @@ tileSize            | (optional) tile size in pixel (default: 256)
 tileRequestTimeout  | (optional) timeout for the tiles request
 
 #### Methods
+#### addMarker (options)
+Adds a marker to the map.
+``` 
+map.addMarker(options); 
+```
+##### Marker options
+Parameter           | Description
+------------------- | -------------
+coord               | Coordinates of the marker ([Lng, Lat])
+img                 | Marker image path or URL
+height              | Height of the marker image
+width               | Width of the marker image
+offsetX             | (optional) X offset of the marker image (default: width/2) 
+offsetY             | (optional) Y offset of the marker image (default: height)
 
-+ addMarker (options)
-+ addLine (options)
-+ render (center, zoom)
+#### addLine (options)
+Adds a polyline to the map.
+``` 
+map.addLine(options); 
+```
+##### Polyline options
+Parameter           | Description
+------------------- | -------------
+coord               | Coordinates of the polyline ([[Lng, Lat], ... ,[Lng, Lat]])
+color               | Stroke color of the polyline (Default: '#000000BB')
+width               | Stroke width of the polyline (Default: 3)
+simplify            | TODO
+
+#### addPolygon(options)
+Adds a polygon to the map. Polygon is the same as a polyline but first and last coordinate are equal.
+``` 
+map.addPolygon(options); 
+```
+##### Polygon options
+Parameter           | Description
+------------------- | -------------
+coord               | Coordinates of the polygon ([[Lng, Lat], ... ,[Lng, Lat]])
+color               | Stroke color of the polygon (Default: '#000000BB')        
+width               | Stroke width of the polygon (Default: 3)
+fill                | Fill color of the polygon (Default: '#000000BB')
+simplify            | TODO
+
+
+#### render (center, zoom)
+Renders the map.
+``` 
+map.render(); 
+```
+##### Render options
+Parameter           | Description
+------------------- | -------------
+center              | (optional) Set center of map to a specific coordinate ([Lng, Lat])
+zoom                | (optional) Set a specific zoom level.      
 
 ## Usage
 
