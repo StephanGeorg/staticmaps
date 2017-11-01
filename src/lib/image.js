@@ -54,7 +54,7 @@ export default class Image {
         this.image
           .quality(this.quality)
           .write(fileName, () => {
-            resolve(true);
+            resolve();
           });
       });
     }
