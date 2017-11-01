@@ -158,12 +158,9 @@ const zoom = 13;
 const center = [13.437524,52.4945528];
 
 map.render(center, zoom)
-  .then(function(values) {
-    map.image.save( 'center.png', function (){
-      console.log("Map saved!");  
-    });  
-   })
-   .catch(function(err) { console.log(err); });
+  .then(() => map.image.save('center.png'))  
+  .then(() => console.log('File saved!'))
+	.catch(function(err) { console.log(err); });
 ```
 #### Output
 ![Map with zoom and center](https://stephangeorg.github.io/staticmaps/sample/center.png)
@@ -173,21 +170,20 @@ map.render(center, zoom)
 If specifying a bounding box instead of a center, the optimal zoom will be calculated.
 
 ```javascript
-var bbox = [
+const bbox = [
   11.414795,51.835778,  // lng,lat of first point
   11.645164,51.733833   // lng,lat of second point, ...
 ];
 
 map.render(bbox)
-  .then((values) => {
-    map.image.save( 'bbox.png', () => {
-      console.log("Map saved!");  
-    });  
-   })
-   .catch(console.log);
+  .then(() => map.image.save('bbox.png'))  
+	.then(() => console.log('File saved!'))
+  .catch(console.log);
 ```
 #### Output
 ![Map with bbox](https://stephangeorg.github.io/staticmaps/sample/bbox.png)
+
+***
 
 ### Map with single marker
 
@@ -203,13 +199,15 @@ const marker = {
 map.addMarker(marker);
 map.render()
   .then(() => map.image.save('single-marker.png'))
-  .then((result) => { console.log('File saved!'); })
+  .then(() => { console.log('File saved!'); })
   .catch(console.log);
 ```
 You're free to specify a center as well, otherwise the marker will be centered.
 
 #### Output
 ![Map with marker](https://stephangeorg.github.io/staticmaps/sample/marker.png)
+
+***
 
 ### Map with multiple marker
 ```javascript
@@ -230,12 +228,14 @@ map.addMarker(marker);
 
 map.render()
   .then(() => map.image.save('multiple-marker.png'))
-  .then((result) => { console.log('File saved!'); })
+  .then(() => { console.log('File saved!'); })
   .catch(console.log);
 
 ```
 #### Output
 ![Map with multiple markers](https://stephangeorg.github.io/staticmaps/sample/multiple-marker.png?raw=true)
+
+***
 
 ### Map with polyline
 ```javascript
@@ -252,12 +252,9 @@ var line = {
 
 map.addLine(line);
 map.render()
-  .then(function(values) {
-    map.image.save('test/out/polyline.png', function (){
-      done();
-    });
-  })
-  .catch(function(err) { console.log(err); });
+  .then(() => map.image.save('test/out/polyline.png')
+	.then(() => console.log('File saved!'))
+  .catch(console.log);
 
 ```
 #### Output
