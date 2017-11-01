@@ -1,40 +1,33 @@
-var should = require('should');
-var StaticMaps = require('../lib/staticmaps');
+import path from 'path';
 
-var markerPath = __dirname + '/marker.png';
+import StaticMaps from '../src/lib/staticmaps';
+import GeoJSON from './static/geojson';
+import Route from './static/route';
 
+const { expect } = require('chai');
 
-describe('StaticMap', function(){
-  var geocoder;
+const markerPath = path.join(__dirname, 'marker.png');
 
-  describe('Initializing ...', function() {
-
-    it('without any arguments', function() {
-
-      (function() {
-
-        var options = {
+describe('StaticMap', () => {
+  describe('Initializing ...', () => {
+    it('without any arguments', () => {
+      expect(() => {
+        const options = {
           width: 600,
-          height: 200
+          height: 200,
         };
-        map = new StaticMaps(options);
-
-      }).should.not.throw();
+        const map = new StaticMaps(options);
+      }).to.not.throw();
     });
-
   });
 
-
-  describe('Rendering ...', function() {
-
-    it('render w/ center', function(done) {
-
-      this.timeout(3000);
-
-      var options = {
+  describe('Rendering ...', () => {
+    it('render w/ center', (done) => {
+      const options = {
         width: 600,
-        height: 200
+        height: 200,
       };
+<<<<<<< HEAD
 
       map = new StaticMaps(options);
       map.render([13.437524,52.4945528], 13)
@@ -52,27 +45,29 @@ describe('StaticMap', function(){
       this.timeout(3000);
 
       var options = {
+=======
+      const map = new StaticMaps(options);
+      map.render([13.437524, 52.4945528], 13)
+        .then(() => map.image.save('test/out/01-center.jpg'))
+        .then(done)
+        .catch(done);
+    }).timeout(3000);
+
+    it('render w/ center from custom', (done) => {
+      const options = {
+>>>>>>> master
         width: 600,
         height: 200,
-        url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",
-        tile_size: 512
       };
 
-      map = new StaticMaps(options);
-      map.render([13.437524,52.4945528], 13)
-        .then(function(values) {
-          var save = map.image.save( 'test/out/02-center_osm.png', function (){
-            done();
-          });
-        })
-        .catch(function(err) { console.log(err); });
+      const map = new StaticMaps(options);
+      map.render([13.437524, 52.4945528], 13)
+        .then(() => map.image.save('test/out/02-center_osm.png'))
+        .then(done)
+        .catch(done);
+    }).timeout(3000);
 
-    });
-
-    it('render w/ bbox', function(done) {
-
-      this.timeout(3000);
-
+<<<<<<< HEAD
       var options = {
         width: 600,
         height: 200
@@ -98,21 +93,41 @@ describe('StaticMap', function(){
         height: 200,
         //url_template: "https://osm.luftlinie.org/retina/{z}/{x}/{y}.png",   // this tiles server is not for public use!
         //tile_size: 512
+=======
+    it('render w/ bbox', (done) => {
+      const options = {
+        width: 1200,
+        height: 800,
       };
 
-      map = new StaticMaps(options);
+      const map = new StaticMaps(options);
+      map.render([11.414795, 51.835778, 11.645164, 51.733833])
+        .then(() => map.image.save('test/out/03-bbox.png'))
+        .then(done)
+        .catch(done);
+    }).timeout(3000);
 
-      var marker = {
-        filePath: markerPath,
-        offset_x: 24,
-        offset_y: 48,
+    it('render w/ icon', (done) => {
+      const options = {
+        width: 500,
+        height: 500,
+>>>>>>> master
+      };
+
+      const map = new StaticMaps(options);
+
+      const marker = {
+        img: markerPath,
+        offsetX: 24,
+        offsetY: 48,
         width: 48,
-        height: 48
+        height: 48,
       };
 
-      marker.coord = [13.437524,52.4945528];
+      marker.coord = [13.437524, 52.4945528];
       map.addMarker(marker);
 
+<<<<<<< HEAD
       map.render()
         .then(function(values) {
           var save = map.image.save('sample/marker.png', function (){
@@ -130,70 +145,133 @@ describe('StaticMap', function(){
       var options = {
         width: 600,
         height: 300
-      };
-      map = new StaticMaps(options);
+=======
+      marker.coord = [13.430524, 52.4995528];
+      map.addMarker(marker);
 
-      var marker = {
-        filePath: markerPath,
-        offset_x: 24,
-        offset_y: 48,
+      map.render([13.437524, 52.4945528], 12)
+        .then(() => map.image.save('test/out/04-marker.png'))
+        .then(done)
+        .catch(done);
+    }).timeout(3000);
+
+    it('render w/out center', (done) => {
+      const options = {
+        width: 1200,
+        height: 800,
+>>>>>>> master
+      };
+      const map = new StaticMaps(options);
+      const marker = {
+        img: markerPath,
+        offsetX: 24,
+        offsetY: 48,
         width: 48,
-        height: 48
+        height: 48,
       };
 
-      marker.coord = [13.437524,52.4945528];
+      marker.coord = [13.437524, 52.4945528];
       map.addMarker(marker);
-      marker.coord = [13.430524,52.4995528];
+      marker.coord = [13.430524, 52.4995528];
       map.addMarker(marker);
-      marker.coord = [13.410524,52.5195528];
+      marker.coord = [13.410524, 52.5195528];
       map.addMarker(marker);
 
       map.render()
+<<<<<<< HEAD
         .then(function(values) {
           var save = map.image.save('sample/multiple-marker.png', function (){
             done();
           });
         })
         .catch(function(err) { console.log(err); });
-
-    });
-
+=======
+        .then(() => map.image.save('test/out/05-marker-nocenter.png'))
+        .then(done)
+        .catch(done);
+    }).timeout(3000);
   });
+>>>>>>> master
 
-  describe('Rendering w/ lines ...', function() {
+  describe('Rendering w/ lines ...', () => {
+    it('Render StaticMap w/ single polyline', (done) => {
+      const options = {
+        width: 800,
+        height: 800,
+        paddingX: 0,
+        paddingY: 0,
+        quality: 10,
+      };
 
-    it('render w/ single line', function(done) {
+      const map = new StaticMaps(options);
 
-      this.timeout(5000);
+      const coords = Route.routes[0].geometry.coordinates;
+      const polyline = {
+        coords,
+        color: '#0000FF66',
+        width: 3,
+      };
 
-      var options = {
+      const polyline2 = {
+        coords,
+        color: '#FFFFFF00',
+        width: 6,
+      };
+
+      map.addLine(polyline2);
+      map.addLine(polyline);
+      map.render()
+        .then(() => map.image.save('test/out/06-polyline.jpg'))
+        .then(done)
+        .catch(done);
+    }).timeout(10000);
+
+    it('Render StaticMap w/ polygon', (done) => {
+      const options = {
         width: 600,
         height: 300,
+<<<<<<< HEAD
+=======
+        paddingX: 50,
+        paddingY: 50,
+>>>>>>> master
       };
 
-      map = new StaticMaps(options);
+      const map = new StaticMaps(options);
 
-      var line = {
-        coords: [
-          [13.399259,52.482659],
-          [13.387849,52.477144],
-          [13.40538,52.510632]
-        ],
+      const polygon = {
+        coords: GeoJSON.way.geometry.coordinates[0][0],
         color: '#0000FFBB',
-        width: 3
+        width: 1,
       };
 
-      map.addLine(line);
-
+      map.addPolygon(polygon);
       map.render()
+<<<<<<< HEAD
         .then(function(values) {
           var save = map.image.save('sample/polyline.png', function (){
+=======
+        .then(() => map.image.save('test/out/07-polygon.png'))
+        .then(done)
+        .catch(done);
+    }).timeout(10000);
+  });
+>>>>>>> master
 
-            done();
-          });
+  describe('Rendering buffer ...', () => {
+    it('render w/ center', (done) => {
+      const options = {
+        width: 600,
+        height: 200,
+      };
+
+      const map = new StaticMaps(options);
+      map.render([13.437524, 52.4945528], 13)
+        .then(() => map.image.buffer('image/png'))
+        .then((buffer) => {
+          done();
         })
-        .catch(function(err) { console.log(err); });
-
-    });
+        .catch(done);
+    }).timeout(3000);
   });
 });
