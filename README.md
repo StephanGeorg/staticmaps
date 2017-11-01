@@ -258,7 +258,7 @@ map.render()
 
 ```
 #### Output
-![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true)
+![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true =800x280)
 
 
 
