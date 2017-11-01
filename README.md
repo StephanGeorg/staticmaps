@@ -33,12 +33,9 @@ tileUrl             | (optional) Tile server URL for the map base layer
 tileSize            | (optional) tile size in pixel (default: 256)
 tileRequestTimeout  | (optional) timeout for the tiles request
 
-#### Methods
+### Methods
 #### addMarker (options)
 Adds a marker to the map.
-``` 
-map.addMarker(options); 
-```
 ##### Marker options
 Parameter           | Description
 ------------------- | -------------
@@ -48,12 +45,21 @@ height              | Height of the marker image
 width               | Width of the marker image
 offsetX             | (optional) X offset of the marker image (default: width/2) 
 offsetY             | (optional) Y offset of the marker image (default: height)
-
+##### Usage example
+```javascript
+const marker = {
+  img: `${__dirname}/marker.png`, // can also be a URL
+  offsetX: 24,
+  offsetY: 48,
+  width: 48,
+  height: 48,
+  coord = [13.437524,52.4945528]
+};
+map.addMarker(marker);
+```
+***
 #### addLine (options)
 Adds a polyline to the map.
-``` 
-map.addLine(options); 
-```
 ##### Polyline options
 Parameter           | Description
 ------------------- | -------------
@@ -61,6 +67,21 @@ coord               | Coordinates of the polyline ([[Lng, Lat], ... ,[Lng, Lat]]
 color               | Stroke color of the polyline (Default: '#000000BB')
 width               | Stroke width of the polyline (Default: 3)
 simplify            | TODO
+##### Usage example
+```javascript
+  const polyline = {
+    coords: [
+      [13.399259,52.482659],
+      [13.387849,52.477144],
+      [13.40538,52.510632]
+    ],
+    color: '#0000FFBB',
+    width: 3
+  };
+
+  map.addLine(polyline);
+```
+***
 
 #### addPolygon(options)
 Adds a polygon to the map. Polygon is the same as a polyline but first and last coordinate are equal.
@@ -75,7 +96,22 @@ color               | Stroke color of the polygon (Default: '#000000BB')
 width               | Stroke width of the polygon (Default: 3)
 fill                | Fill color of the polygon (Default: '#000000BB')
 simplify            | TODO
+##### Usage example
+```javascript
+  const polygon = {
+    coords: [
+      [13.399259,52.482659],
+      [13.387849,52.477144],
+      [13.40538,52.510632],
+      [13.399259,52.482659]
+    ],
+    color: '#0000FFBB',
+    width: 3
+  };
 
+  map.addPolygon(polygon);
+```
+***
 
 #### render (center, zoom)
 Renders the map.
@@ -88,12 +124,38 @@ Parameter           | Description
 center              | (optional) Set center of map to a specific coordinate ([Lng, Lat])
 zoom                | (optional) Set a specific zoom level.      
 
-## Usage
+***
+
+#### image.save (fileName, [callback])
+Saves the image to a file. If callback is undefined it return a Promise.
+``` 
+map.image.save(); 
+```
+##### Save options
+Parameter           | Description
+------------------- | -------------
+fileName            | Name of the output file. Specify output format (png, jpg) by adding file extension.
+callback            | (optional) Callback function. If undefined, Promise will returned.    
+
+***
+
+#### image.buffer (mime, [callback])
+Saves the image to a file. If callback is undefined it return a Promise.
+``` 
+map.image.buffer(); 
+```
+##### Buffer options
+Parameter           | Description
+------------------- | -------------
+mime                | Mime type of the output buffer (default: 'image/png')
+callback            | (optional) Callback function. If undefined, Promise will returned.   
+
+## Usage Examples
 
 ### Simple map w/ zoom and center
 ```javascript
-var zoom = 13;
-var center = [13.437524,52.4945528];
+const zoom = 13;
+const center = [13.437524,52.4945528];
 
 map.render(center, zoom)
   .then(function(values) {
@@ -117,12 +179,12 @@ var bbox = [
 ];
 
 map.render(bbox)
-  .then(function(values) {
-    map.image.save( 'bbox.png', function (){
+  .then((values) => {
+    map.image.save( 'bbox.png', () => {
       console.log("Map saved!");  
     });  
    })
-   .catch(function(err) { console.log(err); });
+   .catch(console.log);
 ```
 #### Output
 ![Map with bbox](https://stephangeorg.github.io/staticmaps/sample/bbox.png)
@@ -130,25 +192,19 @@ map.render(bbox)
 ### Map with single marker
 
 ```javascript
-var marker = {
-  img: __dirname + '/marker.png', // can also be a URL
+const marker = {
+  img: `${__dirname}/marker.png`, // can also be a URL,
   offsetX: 24,
   offsetY: 48,
   width: 48,
-  height: 48
-};
-
-marker.coord = [13.437524,52.4945528];
+  height: 48,
+  coord: [13.437524, 52.4945528],
+ };
 map.addMarker(marker);
-
 map.render()
-  .then(function(values) {
-    var save = map.image.save('marker.png', function (){
-      console.log("Done!");
-    });
-  })
-  .catch(function(err) { console.log(err); });
-
+  .then(() => map.image.save('single-marker.png'))
+  .then((result) => { console.log('File saved!'); })
+  .catch(console.log);
 ```
 You're free to specify a center as well, otherwise the marker will be centered.
 
@@ -157,9 +213,8 @@ You're free to specify a center as well, otherwise the marker will be centered.
 
 ### Map with multiple marker
 ```javascript
-
-var marker = {
-  img: __dirname + '/marker.png', // can also be a URL
+const marker = {
+  img: `${__dirname}/marker.png`, // can also be a URL
   offsetX: 24,
   offsetY: 48,
   width: 48,
@@ -174,13 +229,9 @@ marker.coord = [13.410524,52.5195528];
 map.addMarker(marker);
 
 map.render()
-  .then(function(values) {
-    var save = map.image.save('multiple-marker.png', function (){
-      console.log("Done!");
-    });
-  })
-  .catch(function(err) { console.log(err); });
-});
+  .then(() => map.image.save('multiple-marker.png'))
+  .then((result) => { console.log('File saved!'); })
+  .catch(console.log);
 
 ```
 #### Output
@@ -212,49 +263,7 @@ map.render()
 #### Output
 ![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true)
 
-## Marker
-### Usage example
-```javascript
-var marker = {
-  img: __dirname + '/marker.png', // can also be a URL
-  offsetX: 24,
-  offsetY: 48,
-  width: 48,
-  height: 48,
-  coord = [13.437524,52.4945528]
-};
-map.addMarker(marker);
-```
 
-### Options
-Parameter           | Description
-------------------- | -------------
-coord               | Coordinates of the marker [lng,lat]
-img                 | Path or URL of the marker icon image
-width               | Width of the marker icon image
-height              | Height of the marker icon image
-offsetX            | (optional) X offset for image (default: width/2)
-offsetY            | (optional) Y offset for image (default: height)
 
-## Polyline
-### Usage example
-```javascript
-  var line = {
-    coords: [
-      [13.399259,52.482659],
-      [13.387849,52.477144],
-      [13.40538,52.510632]
-    ],
-    color: '#0000FFBB',
-    width: 3
-  };
 
-  map.addLine(line);
-```
 
-### Options
-Parameter           | Description
-------------------- | -------------
-coords              | Coordinates of the polyline [[lng,lat],...,[lat,lng]]
-color               | (optional) Color of the polyline #RRGGBBAA (default: #000000BB)
-width               | (optional) Stroke width (default: 2)
