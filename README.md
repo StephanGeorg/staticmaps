@@ -160,7 +160,7 @@ const center = [13.437524,52.4945528];
 map.render(center, zoom)
   .then(() => map.image.save('center.png'))  
   .then(() => console.log('File saved!'))
-	.catch(function(err) { console.log(err); });
+  .catch(function(err) { console.log(err); });
 ```
 #### Output
 ![Map with zoom and center](https://stephangeorg.github.io/staticmaps/sample/center.png)
@@ -177,7 +177,7 @@ const bbox = [
 
 map.render(bbox)
   .then(() => map.image.save('bbox.png'))  
-	.then(() => console.log('File saved!'))
+  .then(() => console.log('File saved!'))
   .catch(console.log);
 ```
 #### Output
@@ -252,8 +252,8 @@ var line = {
 
 map.addLine(line);
 map.render()
-  .then(() => map.image.save('test/out/polyline.png')
-	.then(() => console.log('File saved!'))
+  .then(() => map.image.save('test/out/polyline.png')	
+  .then(() => console.log('File saved!'))
   .catch(console.log);
 
 ```
