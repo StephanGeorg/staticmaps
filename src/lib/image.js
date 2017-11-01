@@ -54,7 +54,7 @@ export default class Image {
         this.image
           .quality(this.quality)
           .write(fileName, () => {
-            resolve();
+            resolve(true);
           });
       });
     }
@@ -69,7 +69,7 @@ export default class Image {
       this.image.getBuffer(mime, cb);
     } else {
       return new Promise((resolve, reject) => {
-        this.image.getBuffer(mime, (err, result) => {
+        this.image.getBuffer(mime || 'image/png', (err, result) => {
           if (err) reject(err);
           else resolve(result);
         });
