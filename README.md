@@ -34,6 +34,7 @@ paddingY            | (optional) Minimum distance in px between map features and
 tileUrl             | (optional) Tile server URL for the map base layer
 tileSize            | (optional) tile size in pixel (default: 256)
 tileRequestTimeout  | (optional) timeout for the tiles request
+imageMagick         | (optional) Use ImageMagick instead of GraphicsMagick(true/false)
 
 ### Methods
 #### addMarker (options)

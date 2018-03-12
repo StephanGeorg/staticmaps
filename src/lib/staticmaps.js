@@ -20,6 +20,7 @@ const xToLon = (x, zoom) => x / (2 ** zoom) * 360 - 180;
 
 class StaticMaps {
   constructor(options = {}) {
+    this.gm = gm;
     this.options = options;
 
     this.width = this.options.width;
@@ -42,6 +43,9 @@ class StaticMaps {
     this.centerX = 0;
     this.centerY = 0;
     this.zoom = 0;
+    if (this.options.imageMagick && gm.subClass) {
+      this.gm = this.gm.subClass({ imageMagick: true });
+    }
   }
 
   addLine(options) {
@@ -261,7 +265,7 @@ class StaticMaps {
       baseImage.getBuffer(Jimp.AUTO, (err, result) => {
         if (err) reject(err);
         if (type === 'polyline') {
-          gm(result)
+          this.gm(result)
             .fill(0)
             .stroke(line.color, line.width)
             .drawPolyline(points)
@@ -274,7 +278,7 @@ class StaticMaps {
               });
             });
         } else if (type === 'polygon') {
-          gm(result)
+          this.gm(result)
             .fill(line.fill)
             .stroke(line.color, line.width)
             .drawPolygon(points)
