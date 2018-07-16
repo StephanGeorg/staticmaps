@@ -1,5 +1,5 @@
 import Jimp from 'jimp';
-import { _ } from 'lodash';
+import { isFunction } from 'lodash';
 
 export default class Image {
   constructor(options = {}) {
@@ -45,7 +45,7 @@ export default class Image {
    * Save image to file
    */
   save(fileName, cb) {
-    if (_.isFunction(cb)) {
+    if (isFunction(cb)) {
       this.image
         .quality(this.quality)
         .write(fileName, cb);
@@ -65,7 +65,7 @@ export default class Image {
    * Return image as buffer
    */
   buffer(mime, cb) {
-    if (_.isFunction(cb)) {
+    if (isFunction(cb)) {
       this.image.getBuffer(mime, cb);
     } else {
       return new Promise((resolve, reject) => {

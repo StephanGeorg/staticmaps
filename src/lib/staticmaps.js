@@ -1,7 +1,7 @@
 import request from 'request-promise';
 import gm from 'gm';
 import Jimp from 'jimp';
-import { _ } from 'lodash';
+import { uniqBy, chunk, clone, find } from 'lodash';
 
 import Image from './image';
 import IconMarker from './marker';
@@ -234,9 +234,9 @@ class StaticMaps {
       // Due to gm limitations, we need to chunk coordinates
       const chunkedLines = [];
       this.lines.forEach((line) => {
-        const coords = _.chunk(line.coords, 120);
+        const coords = chunk(line.coords, 120);
         coords.forEach((c) => {
-          const chunkedLine = _.clone(line);
+          const chunkedLine = clone(line);
           chunkedLine.coords = c;
           chunkedLines.push(chunkedLine);
         });
@@ -314,7 +314,7 @@ class StaticMaps {
     return new Promise((resolve, reject) => {
       if (!this.markers.length) resolve(true);
 
-      const icons = _.uniqBy(this.markers.map(m => ({ file: m.img })), 'file');
+      const icons = uniqBy(this.markers.map(m => ({ file: m.img })), 'file');
 
       let count = 1;
       icons.forEach((i) => {
@@ -329,7 +329,7 @@ class StaticMaps {
                 this.yToPx(latToY(icon.coord[1], this.zoom)) - icon.offset[1],
               ];
 
-              const imgData = _.find(icons, { file: icon.img });
+              const imgData = find(icons, { file: icon.img });
               icon.set(imgData.data);
             });
 
