@@ -1,4 +1,4 @@
-import { _ } from 'lodash';
+import { isEqual, first, last } from 'lodash';
 
 
 export default class Polyline {
@@ -9,7 +9,7 @@ export default class Polyline {
     this.fill = this.options.fill || '#000000BB';
     this.width = this.options.width || 3;
     this.simplify = this.options.simplify || false;
-    this.type = (_.isEqual(_.first(this.coords), _.last(this.coords))) ?
+    this.type = (isEqual(first(this.coords), last(this.coords))) ?
       'polygon' : 'polyline';
   }
 
