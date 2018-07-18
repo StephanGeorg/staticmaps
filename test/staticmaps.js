@@ -2,7 +2,7 @@ import path from 'path';
 
 import StaticMaps from '../src/lib/staticmaps';
 import GeoJSON from './static/geojson';
-import Route from './static/route';
+import Route from './static/routeLong';
 
 const { expect } = require('chai');
 
@@ -147,7 +147,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/06-polyline.jpg'))
         .then(done)
         .catch(done);
-    }).timeout(10000);
+    }).timeout(0);
 
     it('Render StaticMap w/ polygon', (done) => {
       const options = {
@@ -172,7 +172,7 @@ describe('StaticMap', () => {
         .catch(done);
     }).timeout(10000);
   });
-  
+
 
   describe('Rendering w/ lines by ImageMagick...', () => {
     it('Render StaticMap w/ single polyline', (done) => {

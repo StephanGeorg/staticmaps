@@ -234,10 +234,12 @@ class StaticMaps {
       // Due to gm limitations, we need to chunk coordinates
       const chunkedLines = [];
       this.lines.forEach((line) => {
-        const coords = chunk(line.coords, 120);
-        coords.forEach((c) => {
+        const lineChunks = chunk(line.coords, 119);
+        lineChunks.forEach((lineChunk, i) => {
           const chunkedLine = clone(line);
-          chunkedLine.coords = c;
+          // Fixed #10
+          if (lineChunks[i + 1] && lineChunks[i + 1][0]) lineChunk.push(lineChunks[i + 1][0]);
+          chunkedLine.coords = lineChunk;
           chunkedLines.push(chunkedLine);
         });
       });
