@@ -1,6 +1,6 @@
 import path from 'path';
 
-import StaticMaps from '../src/lib/staticmaps';
+import StaticMaps from '../src/staticmaps';
 import GeoJSON from './static/geojson';
 import Route from './static/routeLong';
 
