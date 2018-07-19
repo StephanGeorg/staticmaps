@@ -16,7 +16,7 @@ the initialization options.
 
 ### Initialization ###
 ```javascript
-const StaticMaps = require('staticmaps');
+import StaticMaps from 'staticmaps';
 ```
 ```javascript
 const options = {
@@ -257,7 +257,7 @@ var line = {
 
 map.addLine(line);
 map.render()
-  .then(() => map.image.save('test/out/polyline.png')
+  .then(() => map.image.save('test/out/polyline.png'))
   .then(() => console.log('File saved!'))
   .catch(console.log);
 
