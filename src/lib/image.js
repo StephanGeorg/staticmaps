@@ -1,5 +1,5 @@
 import Jimp from 'jimp';
-import { isFunction } from 'lodash';
+import isFunction from 'lodash.isfunction';
 
 export default class Image {
   constructor(options = {}) {

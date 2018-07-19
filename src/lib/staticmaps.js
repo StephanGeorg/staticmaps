@@ -1,20 +1,24 @@
 import request from 'request-promise';
 import gm from 'gm';
 import Jimp from 'jimp';
-import { uniqBy, chunk, clone, find } from 'lodash';
+import find from 'lodash.find';
+import uniqBy from 'lodash.uniqby';
+import chunk from 'lodash.chunk';
 
 import Image from './image';
 import IconMarker from './marker';
 import Polyline from './polyline';
 
+require('./helper/helper');
+
 /* transform longitude to tile number */
 const lonToX = (lon, zoom) => ((lon + 180) / 360) * (2 ** zoom);
 /* transform latitude to tile number */
-const latToY = (lat, zoom) => (1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 /
-  Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * (2 ** zoom);
+const latToY = (lat, zoom) => (1 - Math.log(Math.tan(lat * Math.PI / 180) + 1
+  / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * (2 ** zoom);
 
-const yToLat = (y, zoom) => Math.atan(Math.sinh(Math.PI * (1 - 2 * y / (2 ** zoom)))) /
-  Math.PI * 180;
+const yToLat = (y, zoom) => Math.atan(Math.sinh(Math.PI * (1 - 2 * y / (2 ** zoom))))
+  / Math.PI * 180;
 
 const xToLon = (x, zoom) => x / (2 ** zoom) * 360 - 180;
 
@@ -132,7 +136,7 @@ class StaticMaps {
         xToLon(x - parseFloat(ePx[0]) / this.tileSize, zoom),
         yToLat(y + parseFloat(ePx[1]) / this.tileSize, zoom),
         xToLon(x + parseFloat(ePx[2]) / this.tileSize, zoom),
-        yToLat(y - parseFloat(ePx[3]) / this.tileSize, zoom)
+        yToLat(y - parseFloat(ePx[3]) / this.tileSize, zoom),
       ]);
     }
 
@@ -236,7 +240,7 @@ class StaticMaps {
       this.lines.forEach((line) => {
         const lineChunks = chunk(line.coords, 119);
         lineChunks.forEach((lineChunk, i) => {
-          const chunkedLine = clone(line);
+          const chunkedLine = { ...line };
           // Fixed #10
           if (lineChunks[i + 1] && lineChunks[i + 1][0]) lineChunk.push(lineChunks[i + 1][0]);
           chunkedLine.coords = lineChunk;
@@ -319,20 +323,22 @@ class StaticMaps {
       const icons = uniqBy(this.markers.map(m => ({ file: m.img })), 'file');
 
       let count = 1;
-      icons.forEach((i) => {
-        Jimp.read(i.file, (err, tile) => {
+      icons.forEach((ico) => {
+        const icon = ico;
+        Jimp.read(icon.file, (err, tile) => {
           if (err) reject(err);
-          i.data = tile;
+          icon.data = tile;
           if (count++ === icons.length) {
             // Pre loaded all icons
-            this.markers.forEach((icon) => {
-              icon.position = [
-                this.xToPx(lonToX(icon.coord[0], this.zoom)) - icon.offset[0],
-                this.yToPx(latToY(icon.coord[1], this.zoom)) - icon.offset[1],
+            this.markers.forEach((mark) => {
+              const marker = mark;
+              marker.position = [
+                this.xToPx(lonToX(marker.coord[0], this.zoom)) - marker.offset[0],
+                this.yToPx(latToY(marker.coord[1], this.zoom)) - marker.offset[1],
               ];
 
-              const imgData = find(icons, { file: icon.img });
-              icon.set(imgData.data);
+              const imgData = find(icons, { file: marker.img });
+              marker.set(imgData.data);
             });
 
             resolve(true);
@@ -368,13 +374,3 @@ class StaticMaps {
 
 export default StaticMaps;
 module.exports = StaticMaps;
-
-Array.prototype.last = function () {
-  return this[this.length - 1];
-};
-Array.prototype.max = function () {
-  return Math.max.apply(null, this);
-};
-Array.prototype.min = function () {
-  return Math.min.apply(null, this);
-};

@@ -32,7 +32,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/01-center.jpg'))
         .then(done)
         .catch(done);
-    }).timeout(3000);
+    }).timeout(5000);
 
     it('render w/ center from custom', (done) => {
       const options = {
@@ -45,7 +45,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/02-center_osm.png'))
         .then(done)
         .catch(done);
-    }).timeout(3000);
+    }).timeout(5000);
 
     it('render w/ bbox', (done) => {
       const options = {
@@ -86,7 +86,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/04-marker.png'))
         .then(done)
         .catch(done);
-    }).timeout(3000);
+    }).timeout(5000);
 
     it('render w/out center', (done) => {
       const options = {
@@ -113,7 +113,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/05-marker-nocenter.png'))
         .then(done)
         .catch(done);
-    }).timeout(3000);
+    }).timeout(5000);
   });
 
   describe('Rendering w/ lines ...', () => {
@@ -170,67 +170,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/07-polygon.png'))
         .then(done)
         .catch(done);
-    }).timeout(10000);
-  });
-
-
-  describe('Rendering w/ lines by ImageMagick...', () => {
-    it('Render StaticMap w/ single polyline', (done) => {
-      const options = {
-        width: 800,
-        height: 800,
-        paddingX: 0,
-        paddingY: 0,
-        quality: 10,
-        imageMagick: true
-      };
-
-      const map = new StaticMaps(options);
-
-      const coords = Route.routes[0].geometry.coordinates;
-      const polyline = {
-        coords,
-        color: '#0000FF66',
-        width: 3,
-      };
-
-      const polyline2 = {
-        coords,
-        color: '#FFFFFF00',
-        width: 6,
-      };
-
-      map.addLine(polyline2);
-      map.addLine(polyline);
-      map.render()
-        .then(() => map.image.save('test/out/06-polyline.jpg'))
-        .then(done)
-        .catch(done);
-    }).timeout(10000);
-
-    it('Render StaticMap w/ polygon', (done) => {
-      const options = {
-        width: 600,
-        height: 300,
-        paddingX: 50,
-        paddingY: 50,
-        imageMagick: true
-      };
-
-      const map = new StaticMaps(options);
-
-      const polygon = {
-        coords: GeoJSON.way.geometry.coordinates[0][0],
-        color: '#0000FFBB',
-        width: 1,
-      };
-
-      map.addPolygon(polygon);
-      map.render()
-        .then(() => map.image.save('test/out/07-polygon.png'))
-        .then(done)
-        .catch(done);
-    }).timeout(10000);
+    }).timeout(5000);
   });
 
   describe('Rendering buffer ...', () => {
@@ -247,6 +187,6 @@ describe('StaticMap', () => {
           done();
         })
         .catch(done);
-    }).timeout(3000);
+    }).timeout(5000);
   });
 });

@@ -1,4 +1,6 @@
-import { isEqual, first, last } from 'lodash';
+import isEqual from 'lodash.isequal';
+import first from 'lodash.first';
+import last from 'lodash.last';
 
 
 export default class Polyline {
@@ -9,8 +11,8 @@ export default class Polyline {
     this.fill = this.options.fill || '#000000BB';
     this.width = this.options.width || 3;
     this.simplify = this.options.simplify || false;
-    this.type = (isEqual(first(this.coords), last(this.coords))) ?
-      'polygon' : 'polyline';
+    this.type = (isEqual(first(this.coords), last(this.coords)))
+      ? 'polygon' : 'polyline';
   }
 
   /**
@@ -25,12 +27,3 @@ export default class Polyline {
     ];
   }
 }
-
-
-// Helper functions
-Array.prototype.max = function() {
-  return Math.max.apply(null, this);
-};
-Array.prototype.min = function() {
-  return Math.min.apply(null, this);
-};
