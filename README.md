@@ -5,10 +5,12 @@ A node.js library for creating map images with polylines and markers. This libra
 
 ## Installation
 
-Image manupulation is based on [GraphicsMagick](http://www.graphicsmagick.org/). You **need to [install](http://www.graphicsmagick.org/README.html#documentation) it before** using staticmaps.
+Image manupulation is based on [GraphicsMagick](http://www.graphicsmagick.org/). You can also use
+[ImageMagick](https://www.imagemagick.org/script/download.php) by adding ``imageMagick: true`` to
+the initialization options.
 
 ```bash
-> npm i staticmaps -S
+> npm i staticmaps
 ```
 ## Getting Started
 
