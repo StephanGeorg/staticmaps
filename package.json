@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/StephanGeorg/staticmaps#readme",
   "dependencies": {
+    "babel-runtime": "^6.26.0",
     "gm": "^1.23.0",
     "jimp": "^0.2.27",
     "lodash.chunk": "^4.2.0",
