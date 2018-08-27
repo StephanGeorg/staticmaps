@@ -35,6 +35,7 @@ class StaticMaps {
     this.tileUrl = this.options.tileUrl || 'http://tile.openstreetmap.org/{z}/{x}/{y}.png';
     this.tileSize = this.options.tileSize || 256;
     this.tileRequestTimeout = this.options.tileRequestTimeout;
+    this.tileRequestHeader = this.options.tileRequestHeader;
     this.reverseY = this.options.reverseY || false;
 
     // # features
@@ -360,6 +361,8 @@ class StaticMaps {
       };
 
       if (this.tileRequestTimeout) options.timeout = this.tileRequestTimeout;
+
+      if (this.tileRequestHeader) options.headers = this.tileRequestHeader;
 
       request.get(options).then((res) => {
         resolve({
