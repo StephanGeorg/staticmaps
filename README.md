@@ -34,8 +34,9 @@ quality             | (optional) Set quality of output JPEG, 0 - 100 (default: 1
 paddingX            | (optional) Minimum distance in px between map features and map border
 paddingY            | (optional) Minimum distance in px between map features and map border
 tileUrl             | (optional) Tile server URL for the map base layer
-tileSize            | (optional) tile size in pixel (default: 256)
-tileRequestTimeout  | (optional) timeout for the tiles request
+tileSize            | (optional) Tile size in pixel (default: 256)
+tileRequestTimeout  | (optional) Timeout for the tiles request
+tileRequestHeader   | (optional) Additional headers for the tiles request (default: {})
 imageMagick         | (optional) Use ImageMagick instead of GraphicsMagick (default: false)
 
 ### Methods
