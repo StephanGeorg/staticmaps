@@ -46,7 +46,7 @@ Adds a marker to the map.
 ##### Marker options
 Parameter           | Description
 ------------------- | -------------
-coords              | Coordinates of the marker ([Lng, Lat])
+coord               | Coordinates of the marker ([Lng, Lat])
 img                 | Marker image path or URL
 height              | Height of the marker image
 width               | Width of the marker image
