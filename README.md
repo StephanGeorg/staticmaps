@@ -46,7 +46,7 @@ Adds a marker to the map.
 ##### Marker options
 Parameter           | Description
 ------------------- | -------------
-coord               | Coordinates of the marker ([Lng, Lat])
+coords              | Coordinates of the marker ([Lng, Lat])
 img                 | Marker image path or URL
 height              | Height of the marker image
 width               | Width of the marker image
@@ -70,7 +70,7 @@ Adds a polyline to the map.
 ##### Polyline options
 Parameter           | Description
 ------------------- | -------------
-coord               | Coordinates of the polyline ([[Lng, Lat], ... ,[Lng, Lat]])
+coords              | Coordinates of the polyline ([[Lng, Lat], ... ,[Lng, Lat]])
 color               | Stroke color of the polyline (Default: '#000000BB')
 width               | Stroke width of the polyline (Default: 3)
 simplify            | TODO
@@ -98,7 +98,7 @@ map.addPolygon(options);
 ##### Polygon options
 Parameter           | Description
 ------------------- | -------------
-coord               | Coordinates of the polygon ([[Lng, Lat], ... ,[Lng, Lat]])
+coords              | Coordinates of the polygon ([[Lng, Lat], ... ,[Lng, Lat]])
 color               | Stroke color of the polygon (Default: '#000000BB')        
 width               | Stroke width of the polygon (Default: 3)
 fill                | Fill color of the polygon (Default: '#000000BB')
