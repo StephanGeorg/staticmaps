@@ -1,6 +1,7 @@
 import request from 'request-promise';
 import gm from 'gm';
 import Jimp from 'jimp';
+import sharp from 'sharp';
 import find from 'lodash.find';
 import uniqBy from 'lodash.uniqby';
 import chunk from 'lodash.chunk';
@@ -50,6 +51,9 @@ class StaticMaps {
     this.zoom = 0;
     if (this.options.imageMagick && gm.subClass) {
       this.gm = this.gm.subClass({ imageMagick: true });
+    }
+    if (this.options.sharp) {
+      this.sharp = sharp;
     }
   }
 
@@ -271,32 +275,81 @@ class StaticMaps {
 
       baseImage.getBuffer(Jimp.AUTO, (err, result) => {
         if (err) reject(err);
+
         if (type === 'polyline') {
-          this.gm(result)
-            .fill(0)
-            .stroke(line.color, line.width)
-            .drawPolyline(points)
-            .toBuffer((errBuf, buffer) => {
-              if (errBuf) reject(err);
-              Jimp.read(buffer, (errRead, image) => {
-                if (errRead) reject(err);
-                this.image.image = image;
-                resolve(image);
+          if (this.sharp) {
+            // if Sharp used for drawing polygon
+            this.sharp(result)
+              .metadata()
+              .then((imageMetadata) => {
+                const svgPath = `<svg width="${imageMetadata.width}px" height="${imageMetadata.height}" version="1.1" xmlns="http://www.w3.org/2000/svg">`
+                  + `<polyline points="${points.join(' ')}" stroke="${line.color}" fill="none" stroke-width="${line.width}"/>`
+                  + '</svg>';
+                this.sharp(result)
+                  .overlayWith(Buffer.from(svgPath), { top: 0, left: 0 })
+                  .toBuffer()
+                  .then((buffer) => {
+                    Jimp.read(buffer, (errRead, image) => {
+                      if (errRead) reject(errRead);
+                      this.image.image = image;
+                      resolve(image);
+                    });
+                  })
+                  .catch(reject);
+              })
+              .catch(reject);
+          } else {
+            // if GraphicsMagick/ImageMagick used for drawing polygon
+            this.gm(result)
+              .fill(0)
+              .stroke(line.color, line.width)
+              .drawPolyline(points)
+              .toBuffer((errBuf, buffer) => {
+                if (errBuf) reject(errBuf);
+                Jimp.read(buffer, (errRead, image) => {
+                  if (errRead) reject(errRead);
+                  this.image.image = image;
+                  resolve(image);
+                });
               });
-            });
+          }
         } else if (type === 'polygon') {
-          this.gm(result)
-            .fill(line.fill)
-            .stroke(line.color, line.width)
-            .drawPolygon(points)
-            .toBuffer((errBuf, buffer) => {
-              if (errBuf) reject(err);
-              Jimp.read(buffer, (errRead, image) => {
-                if (errRead) reject(err);
-                this.image.image = image;
-                resolve(image);
+          if (this.sharp) {
+            // if Sharp used for drawing polygon
+            this.sharp(result)
+              .metadata()
+              .then((imageMetadata) => {
+                const svgPath = `<svg width="${imageMetadata.width}px" height="${imageMetadata.height}" version="1.1" xmlns="http://www.w3.org/2000/svg">`
+                  + `<polygon style="fill-rule: evenodd;" points="${points.join(' ')}" stroke="${line.color}" fill="${line.fill}" stroke-width="${line.width}"/>`
+                  + '</svg>';
+                this.sharp(result)
+                  .overlayWith(Buffer.from(svgPath), { top: 0, left: 0 })
+                  .toBuffer()
+                  .then((buffer) => {
+                    Jimp.read(buffer, (errRead, image) => {
+                      if (errRead) reject(errRead);
+                      this.image.image = image;
+                      resolve(image);
+                    });
+                  })
+                  .catch(reject);
+              })
+              .catch(reject);
+          } else {
+            // if GraphicsMagick/ImageMagick used for drawing polygon
+            this.gm(result)
+              .fill(line.fill)
+              .stroke(line.color, line.width)
+              .drawPolygon(points)
+              .toBuffer((errBuf, buffer) => {
+                if (errBuf) reject(errBuf);
+                Jimp.read(buffer, (errRead, image) => {
+                  if (errRead) reject(errRead);
+                  this.image.image = image;
+                  resolve(image);
+                });
               });
-            });
+          }
         }
       });
     });
