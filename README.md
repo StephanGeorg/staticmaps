@@ -7,7 +7,7 @@ A node.js library for creating map images with polylines and markers. This libra
 
 Image manupulation is based on [GraphicsMagick](http://www.graphicsmagick.org/). You can also use
 [ImageMagick](https://www.imagemagick.org/script/download.php) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install) by adding ``imageMagick: true`` or ``sharp: true`` to
-the initialization options. **Install [GraphicsMagick](http://www.graphicsmagick.org/README.html#installation), [ImageMagick](hhttps://www.imagemagick.org/script/download.php) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install/) first.**
+the initialization options. **Install [GraphicsMagick](http://www.graphicsmagick.org/README.html#installation), [ImageMagick](https://www.imagemagick.org/script/download.php) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install/) first.**
 
 ```bash
 > npm i staticmaps
