@@ -278,14 +278,15 @@ class StaticMaps {
 
         if (type === 'polyline') {
           if (this.sharp) {
-            // if Sharp used for drawing polygon
-            this.sharp(result)
+            // if Sharp used for drawing polyline
+            const sharpImage = this.sharp(result);
+            sharpImage
               .metadata()
               .then((imageMetadata) => {
                 const svgPath = `<svg width="${imageMetadata.width}px" height="${imageMetadata.height}" version="1.1" xmlns="http://www.w3.org/2000/svg">`
                   + `<polyline points="${points.join(' ')}" stroke="${line.color}" fill="none" stroke-width="${line.width}"/>`
                   + '</svg>';
-                this.sharp(result)
+                sharpImage
                   .overlayWith(Buffer.from(svgPath), { top: 0, left: 0 })
                   .toBuffer()
                   .then((buffer) => {
@@ -299,7 +300,7 @@ class StaticMaps {
               })
               .catch(reject);
           } else {
-            // if GraphicsMagick/ImageMagick used for drawing polygon
+            // if GraphicsMagick/ImageMagick used for drawing polyline
             this.gm(result)
               .fill(0)
               .stroke(line.color, line.width)
@@ -316,13 +317,14 @@ class StaticMaps {
         } else if (type === 'polygon') {
           if (this.sharp) {
             // if Sharp used for drawing polygon
-            this.sharp(result)
+            const sharpImage = this.sharp(result);
+            sharpImage
               .metadata()
               .then((imageMetadata) => {
                 const svgPath = `<svg width="${imageMetadata.width}px" height="${imageMetadata.height}" version="1.1" xmlns="http://www.w3.org/2000/svg">`
                   + `<polygon style="fill-rule: evenodd;" points="${points.join(' ')}" stroke="${line.color}" fill="${line.fill}" stroke-width="${line.width}"/>`
                   + '</svg>';
-                this.sharp(result)
+                sharpImage
                   .overlayWith(Buffer.from(svgPath), { top: 0, left: 0 })
                   .toBuffer()
                   .then((buffer) => {
