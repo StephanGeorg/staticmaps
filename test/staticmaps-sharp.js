@@ -8,8 +8,8 @@ const { expect } = require('chai');
 
 const markerPath = path.join(__dirname, 'marker.png');
 
-describe('StaticMap w/ ImageMagick', () => {
-  describe('Rendering w/ lines by ImageMagick...', () => {
+describe('StaticMap w/ Sharp', () => {
+  describe('Rendering w/ lines by Sharp...', () => {
     it('Render StaticMap w/ single polyline', (done) => {
       const options = {
         width: 800,
@@ -17,7 +17,7 @@ describe('StaticMap w/ ImageMagick', () => {
         paddingX: 0,
         paddingY: 0,
         quality: 10,
-        imageMagick: true
+        sharp: true
       };
 
       const map = new StaticMaps(options);
@@ -38,7 +38,7 @@ describe('StaticMap w/ ImageMagick', () => {
       map.addLine(polyline2);
       map.addLine(polyline);
       map.render()
-        .then(() => map.image.save('test/out/06-polyline-im.jpg'))
+        .then(() => map.image.save('test/out/06-polyline-sharp.jpg'))
         .then(done)
         .catch(done);
     }).timeout(10000);
@@ -49,7 +49,7 @@ describe('StaticMap w/ ImageMagick', () => {
         height: 300,
         paddingX: 50,
         paddingY: 50,
-        imageMagick: true
+        sharp: true
       };
 
       const map = new StaticMaps(options);
@@ -62,7 +62,7 @@ describe('StaticMap w/ ImageMagick', () => {
 
       map.addPolygon(polygon);
       map.render()
-        .then(() => map.image.save('test/out/07-polygon-im.png'))
+        .then(() => map.image.save('test/out/07-polygon-sharp.png'))
         .then(done)
         .catch(done);
     }).timeout(10000);

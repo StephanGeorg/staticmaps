@@ -6,8 +6,8 @@ A node.js library for creating map images with polylines and markers. This libra
 ## Installation
 
 Image manupulation is based on [GraphicsMagick](http://www.graphicsmagick.org/). You can also use
-[ImageMagick](https://www.imagemagick.org/script/download.php) by adding ``imageMagick: true`` to
-the initialization options. **Install [GraphicsMagick](http://www.graphicsmagick.org/README.html#installation) or [ImageMagick](https://www.imagemagick.org/script/download.php) first.**
+[ImageMagick](https://www.imagemagick.org/script/download.php) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install) by adding ``imageMagick: true`` or ``sharp: true`` to
+the initialization options. **Install [GraphicsMagick](http://www.graphicsmagick.org/README.html#installation), [ImageMagick](https://www.imagemagick.org/script/download.php) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install/) first.**
 
 ```bash
 > npm i staticmaps
@@ -38,6 +38,7 @@ tileSize            | (optional) Tile size in pixel (default: 256)
 tileRequestTimeout  | (optional) Timeout for the tiles request
 tileRequestHeader   | (optional) Additional headers for the tiles request (default: {})
 imageMagick         | (optional) Use ImageMagick instead of GraphicsMagick (default: false)
+sharp               | (optional) Use sharp instead of GraphicsMagick (default: false)
 
 ### Methods
 #### addMarker (options)
@@ -69,7 +70,7 @@ Adds a polyline to the map.
 ##### Polyline options
 Parameter           | Description
 ------------------- | -------------
-coord               | Coordinates of the polyline ([[Lng, Lat], ... ,[Lng, Lat]])
+coords              | Coordinates of the polyline ([[Lng, Lat], ... ,[Lng, Lat]])
 color               | Stroke color of the polyline (Default: '#000000BB')
 width               | Stroke width of the polyline (Default: 3)
 simplify            | TODO
@@ -97,7 +98,7 @@ map.addPolygon(options);
 ##### Polygon options
 Parameter           | Description
 ------------------- | -------------
-coord               | Coordinates of the polygon ([[Lng, Lat], ... ,[Lng, Lat]])
+coords              | Coordinates of the polygon ([[Lng, Lat], ... ,[Lng, Lat]])
 color               | Stroke color of the polygon (Default: '#000000BB')        
 width               | Stroke width of the polygon (Default: 3)
 fill                | Fill color of the polygon (Default: '#000000BB')

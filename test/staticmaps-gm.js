@@ -144,7 +144,7 @@ describe('StaticMap', () => {
       map.addLine(polyline2);
       map.addLine(polyline);
       map.render()
-        .then(() => map.image.save('test/out/06-polyline.jpg'))
+        .then(() => map.image.save('test/out/06-polyline-gm.jpg'))
         .then(done)
         .catch(done);
     }).timeout(0);
@@ -167,7 +167,7 @@ describe('StaticMap', () => {
 
       map.addPolygon(polygon);
       map.render()
-        .then(() => map.image.save('test/out/07-polygon.png'))
+        .then(() => map.image.save('test/out/07-polygon-gm.png'))
         .then(done)
         .catch(done);
     }).timeout(5000);
