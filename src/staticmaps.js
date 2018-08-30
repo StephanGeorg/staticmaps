@@ -265,6 +265,10 @@ class StaticMaps {
    */
   async draw(line) {
     const { type } = line;
+
+    console.log({ baseImage });
+
+
     const baseImage = this.image.image;
 
     return new Promise((resolve, reject) => {

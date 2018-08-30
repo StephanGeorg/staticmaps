@@ -40,8 +40,10 @@ describe('StaticMap w/ Sharp', () => {
       map.render()
         .then(() => map.image.save('test/out/06-polyline-sharp.jpg'))
         .then(done)
-        .catch(done);
-    }).timeout(10000);
+        .catch((err) => {
+          console.log(err);
+        });
+    }).timeout(0);
 
     it('Render StaticMap w/ polygon', (done) => {
       const options = {
@@ -65,6 +67,6 @@ describe('StaticMap w/ Sharp', () => {
         .then(() => map.image.save('test/out/07-polygon-sharp.png'))
         .then(done)
         .catch(done);
-    }).timeout(10000);
+    }).timeout(0);
   });
 });
