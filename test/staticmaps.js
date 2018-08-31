@@ -69,7 +69,7 @@ describe('StaticMap', () => {
       const map = new StaticMaps(options);
 
       const marker = {
-        img: 'https://static.nearest.place/static/2ta8HNeTJzyuQz4EW/marker/burger.svg',
+        img: markerPath,
         offsetX: 24,
         offsetY: 48,
         width: 48,
@@ -144,7 +144,7 @@ describe('StaticMap', () => {
       map.addLine(polyline2);
       map.addLine(polyline);
       map.render()
-        .then(() => map.image.save('test/out/06-polyline-gm.jpg'))
+        .then(() => map.image.save('test/out/06-polyline.jpg'))
         .then(done)
         .catch(done);
     }).timeout(0);
@@ -168,7 +168,7 @@ describe('StaticMap', () => {
 
       map.addPolygon(polygon);
       map.render()
-        .then(() => map.image.save('test/out/07-polygon-gm.png'))
+        .then(() => map.image.save('test/out/07-polygon.png'))
         .then(done)
         .catch(done);
     }).timeout(0);

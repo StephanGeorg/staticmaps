@@ -31,8 +31,8 @@ class StaticMaps {
     this.paddingX = this.options.paddingX || 0;
     this.paddingY = this.options.paddingY || 0;
     this.padding = [this.paddingX, this.paddingY];
-    this.tileUrl = this.options.tileUrl || 'https://osm-2.luftlinie.org/retina/{z}/{x}/{y}.png';
-    this.tileSize = this.options.tileSize || 512;
+    this.tileUrl = this.options.tileUrl || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+    this.tileSize = this.options.tileSize || 256;
     this.tileRequestTimeout = this.options.tileRequestTimeout;
     this.tileRequestHeader = this.options.tileRequestHeader;
     this.reverseY = this.options.reverseY || false;
