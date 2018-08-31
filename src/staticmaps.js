@@ -1,14 +1,13 @@
 import request from 'request-promise';
-import gm from 'gm';
-import Jimp from 'jimp';
 import sharp from 'sharp';
 import find from 'lodash.find';
 import uniqBy from 'lodash.uniqby';
-import chunk from 'lodash.chunk';
+import url from 'url';
 
 import Image from './image';
 import IconMarker from './marker';
 import Polyline from './polyline';
+import asyncQueue from './helper/asyncQueue';
 
 require('./helper/helper');
 
@@ -25,7 +24,6 @@ const xToLon = (x, zoom) => x / (2 ** zoom) * 360 - 180;
 
 class StaticMaps {
   constructor(options = {}) {
-    this.gm = gm;
     this.options = options;
 
     this.width = this.options.width;
@@ -33,8 +31,8 @@ class StaticMaps {
     this.paddingX = this.options.paddingX || 0;
     this.paddingY = this.options.paddingY || 0;
     this.padding = [this.paddingX, this.paddingY];
-    this.tileUrl = this.options.tileUrl || 'http://tile.openstreetmap.org/{z}/{x}/{y}.png';
-    this.tileSize = this.options.tileSize || 256;
+    this.tileUrl = this.options.tileUrl || 'https://osm-2.luftlinie.org/retina/{z}/{x}/{y}.png';
+    this.tileSize = this.options.tileSize || 512;
     this.tileRequestTimeout = this.options.tileRequestTimeout;
     this.tileRequestHeader = this.options.tileRequestHeader;
     this.reverseY = this.options.reverseY || false;
@@ -49,12 +47,6 @@ class StaticMaps {
     this.centerX = 0;
     this.centerY = 0;
     this.zoom = 0;
-    if (this.options.imageMagick && gm.subClass) {
-      this.gm = this.gm.subClass({ imageMagick: true });
-    }
-    if (this.options.sharp) {
-      this.sharp = sharp;
-    }
   }
 
   addLine(options) {
@@ -145,9 +137,6 @@ class StaticMaps {
       ]);
     }
 
-    // Add polygons to extent
-    // if (this.polygons.length) extents.push(this.polygons.map(polygon => polygon.extent));
-
     return [
       extents.map(e => e[0]).min(),
       extents.map(e => e[1]).min(),
@@ -218,7 +207,6 @@ class StaticMaps {
     }
 
     const tilePromises = [];
-
     result.forEach((r) => { tilePromises.push(this.getTile(r)); });
 
     return new Promise((resolve, reject) => {
@@ -240,22 +228,13 @@ class StaticMaps {
     return new Promise(async (resolve) => {
       if (!this.lines.length) resolve(true);
 
-      // Due to gm limitations, we need to chunk coordinates
-      const chunkedLines = [];
+      const queue = [];
       this.lines.forEach((line) => {
-        const lineChunks = chunk(line.coords, 119);
-        lineChunks.forEach((lineChunk, i) => {
-          const chunkedLine = { ...line };
-          // Fixed #10
-          if (lineChunks[i + 1] && lineChunks[i + 1][0]) lineChunk.push(lineChunks[i + 1][0]);
-          chunkedLine.coords = lineChunk;
-          chunkedLines.push(chunkedLine);
+        queue.push(async () => {
+          await this.draw(line);
         });
       });
-      // eslint-disable-next-line no-restricted-syntax
-      for (const chunkedLine of chunkedLines) {
-        await this.draw(chunkedLine); // eslint-disable-line no-await-in-loop
-      }
+      await asyncQueue(queue);
       resolve(true);
     });
   }
@@ -266,109 +245,54 @@ class StaticMaps {
   async draw(line) {
     const { type } = line;
 
-    console.log({ baseImage });
-
-
-    const baseImage = this.image.image;
-
+    const baseImage = sharp(this.image.image);
     return new Promise((resolve, reject) => {
       const points = line.coords.map(coord => [
         this.xToPx(lonToX(coord[0], this.zoom)),
         this.yToPx(latToY(coord[1], this.zoom)),
       ]);
 
-      baseImage.getBuffer(Jimp.AUTO, (err, result) => {
-        if (err) reject(err);
+      baseImage
+        .metadata()
+        .then((imageMetadata) => {
+          const svgPath = `
+            <svg
+              width="${imageMetadata.width}px"
+              height="${imageMetadata.height}"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg">
+              <${(type === 'polyline') ? 'polyline' : 'polygon'}
+                style="fill-rule: inherit;"
+                points="${points.join(' ')}"
+                stroke="${line.color}"
+                fill="${line.fill ? line.fill : 'none'}"
+                stroke-width="${line.width}"/>
+            </svg>`;
 
-        if (type === 'polyline') {
-          if (this.sharp) {
-            // if Sharp used for drawing polyline
-            const sharpImage = this.sharp(result);
-            sharpImage
-              .metadata()
-              .then((imageMetadata) => {
-                const svgPath = `<svg width="${imageMetadata.width}px" height="${imageMetadata.height}" version="1.1" xmlns="http://www.w3.org/2000/svg">`
-                  + `<polyline points="${points.join(' ')}" stroke="${line.color}" fill="none" stroke-width="${line.width}"/>`
-                  + '</svg>';
-                sharpImage
-                  .overlayWith(Buffer.from(svgPath), { top: 0, left: 0 })
-                  .toBuffer()
-                  .then((buffer) => {
-                    Jimp.read(buffer, (errRead, image) => {
-                      if (errRead) reject(errRead);
-                      this.image.image = image;
-                      resolve(image);
-                    });
-                  })
-                  .catch(reject);
-              })
-              .catch(reject);
-          } else {
-            // if GraphicsMagick/ImageMagick used for drawing polyline
-            this.gm(result)
-              .fill(0)
-              .stroke(line.color, line.width)
-              .drawPolyline(points)
-              .toBuffer((errBuf, buffer) => {
-                if (errBuf) reject(errBuf);
-                Jimp.read(buffer, (errRead, image) => {
-                  if (errRead) reject(errRead);
-                  this.image.image = image;
-                  resolve(image);
-                });
-              });
-          }
-        } else if (type === 'polygon') {
-          if (this.sharp) {
-            // if Sharp used for drawing polygon
-            const sharpImage = this.sharp(result);
-            sharpImage
-              .metadata()
-              .then((imageMetadata) => {
-                const svgPath = `<svg width="${imageMetadata.width}px" height="${imageMetadata.height}" version="1.1" xmlns="http://www.w3.org/2000/svg">`
-                  + `<polygon style="fill-rule: evenodd;" points="${points.join(' ')}" stroke="${line.color}" fill="${line.fill}" stroke-width="${line.width}"/>`
-                  + '</svg>';
-                sharpImage
-                  .overlayWith(Buffer.from(svgPath), { top: 0, left: 0 })
-                  .toBuffer()
-                  .then((buffer) => {
-                    Jimp.read(buffer, (errRead, image) => {
-                      if (errRead) reject(errRead);
-                      this.image.image = image;
-                      resolve(image);
-                    });
-                  })
-                  .catch(reject);
-              })
-              .catch(reject);
-          } else {
-            // if GraphicsMagick/ImageMagick used for drawing polygon
-            this.gm(result)
-              .fill(line.fill)
-              .stroke(line.color, line.width)
-              .drawPolygon(points)
-              .toBuffer((errBuf, buffer) => {
-                if (errBuf) reject(errBuf);
-                Jimp.read(buffer, (errRead, image) => {
-                  if (errRead) reject(errRead);
-                  this.image.image = image;
-                  resolve(image);
-                });
-              });
-          }
-        }
-      });
+          baseImage
+            .overlayWith(Buffer.from(svgPath), { top: 0, left: 0 })
+            .toBuffer()
+            .then((buffer) => {
+              this.image.image = buffer;
+              resolve(buffer);
+            })
+            .catch(reject);
+        })
+        .catch(reject);
     });
   }
 
   drawMarker() {
-    const baseImage = this.image.image;
-
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
+      const queue = [];
       this.markers.forEach((marker) => {
-        baseImage.composite(marker.imgData, marker.position[0], marker.position[1]);
+        queue.push(async () => {
+          this.image.image = await sharp(this.image.image)
+            .overlayWith(marker.imgData, { top: marker.position[1], left: marker.position[0] })
+            .toBuffer();
+        });
       });
-
+      await asyncQueue(queue);
       resolve(true);
     });
   }
@@ -379,31 +303,43 @@ class StaticMaps {
   loadMarker() {
     return new Promise((resolve, reject) => {
       if (!this.markers.length) resolve(true);
-
       const icons = uniqBy(this.markers.map(m => ({ file: m.img })), 'file');
 
       let count = 1;
-      icons.forEach((ico) => {
+      icons.forEach(async (ico) => {
         const icon = ico;
-        Jimp.read(icon.file, (err, tile) => {
-          if (err) reject(err);
-          icon.data = tile;
-          if (count++ === icons.length) {
-            // Pre loaded all icons
-            this.markers.forEach((mark) => {
-              const marker = mark;
-              marker.position = [
-                this.xToPx(lonToX(marker.coord[0], this.zoom)) - marker.offset[0],
-                this.yToPx(latToY(marker.coord[1], this.zoom)) - marker.offset[1],
-              ];
-
-              const imgData = find(icons, { file: marker.img });
-              marker.set(imgData.data);
+        const isUrl = !!url.parse(icon.file).hostname;
+        try {
+          // Load marker from remote url
+          if (isUrl) {
+            const img = await request.get({
+              rejectUnauthorized: false,
+              url: icon.file,
+              encoding: null,
             });
-
-            resolve(true);
+            icon.data = await sharp(img).toBuffer();
+          } else {
+            // Load marker from local fs
+            icon.data = await sharp(icon.file).toBuffer();
           }
-        });
+        } catch (err) {
+          reject(err);
+        }
+
+        if (count++ === icons.length) {
+          // Pre loaded all icons
+          this.markers.forEach((mark) => {
+            const marker = mark;
+            marker.position = [
+              this.xToPx(lonToX(marker.coord[0], this.zoom)) - marker.offset[0],
+              this.yToPx(latToY(marker.coord[1], this.zoom)) - marker.offset[1],
+            ];
+            const imgData = find(icons, { file: marker.img });
+            marker.set(imgData.data);
+          });
+
+          resolve(true);
+        }
       });
     });
   }
@@ -420,7 +356,6 @@ class StaticMaps {
       };
 
       if (this.tileRequestTimeout) options.timeout = this.tileRequestTimeout;
-
       if (this.tileRequestHeader) options.headers = this.tileRequestHeader;
 
       request.get(options).then((res) => {

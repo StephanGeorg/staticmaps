@@ -32,7 +32,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/01-center.jpg'))
         .then(done)
         .catch(done);
-    }).timeout(5000);
+    }).timeout(0);
 
     it('render w/ center from custom', (done) => {
       const options = {
@@ -45,7 +45,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/02-center_osm.png'))
         .then(done)
         .catch(done);
-    }).timeout(5000);
+    }).timeout(0);
 
     it('render w/ bbox', (done) => {
       const options = {
@@ -58,7 +58,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/03-bbox.png'))
         .then(done)
         .catch(done);
-    }).timeout(3000);
+    }).timeout(0);
 
     it('render w/ icon', (done) => {
       const options = {
@@ -69,7 +69,7 @@ describe('StaticMap', () => {
       const map = new StaticMaps(options);
 
       const marker = {
-        img: markerPath,
+        img: 'https://static.nearest.place/static/2ta8HNeTJzyuQz4EW/marker/burger.svg',
         offsetX: 24,
         offsetY: 48,
         width: 48,
@@ -86,7 +86,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/04-marker.png'))
         .then(done)
         .catch(done);
-    }).timeout(5000);
+    }).timeout(0);
 
     it('render w/out center', (done) => {
       const options = {
@@ -113,7 +113,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/05-marker-nocenter.png'))
         .then(done)
         .catch(done);
-    }).timeout(5000);
+    }).timeout(0);
   });
 
   describe('Rendering w/ lines ...', () => {
@@ -162,6 +162,7 @@ describe('StaticMap', () => {
       const polygon = {
         coords: GeoJSON.way.geometry.coordinates[0][0],
         color: '#0000FFBB',
+        fill: '#000000BB',
         width: 1,
       };
 
@@ -170,7 +171,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/07-polygon-gm.png'))
         .then(done)
         .catch(done);
-    }).timeout(5000);
+    }).timeout(0);
   });
 
   describe('Rendering buffer ...', () => {
@@ -187,6 +188,6 @@ describe('StaticMap', () => {
           done();
         })
         .catch(done);
-    }).timeout(5000);
+    }).timeout(0);
   });
 });
