@@ -5,7 +5,7 @@ A node.js library for creating map images with polylines and markers. This libra
 
 ## Installation
 
-~~Image manupulation is based on [GraphicsMagick](http://www.graphicsmagick.org/) (default), [ImageMagick](https://www.imagemagick.org/script/download.php) (``imageMagick: true``) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install)  ``sharp: true``. **Install [GraphicsMagick](http://www.graphicsmagick.org/README.html#installation), [ImageMagick](https://www.imagemagick.org/script/download.php) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install/) first.**~~
+Image manupulation is based on [GraphicsMagick](http://www.graphicsmagick.org/) (default), [ImageMagick](https://www.imagemagick.org/script/download.php) (``imageMagick: true``) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install)  ``sharp: true``. **Install [GraphicsMagick](http://www.graphicsmagick.org/README.html#installation), [ImageMagick](https://www.imagemagick.org/script/download.php) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install/) first.**
 
 ```bash
 > npm i staticmaps
@@ -28,13 +28,15 @@ Parameter           | Description
 ------------------- | -------------
 width               | Width of the output image in px
 height              | Height of the output image in px
-quality             | **[DEPRECATED]()** (optional) Set quality of output JPEG, 0 - 100 (default: 100). 
+quality             | (optional) Set quality of output JPEG, 0 - 100 (default: 100)
 paddingX            | (optional) Minimum distance in px between map features and map border
 paddingY            | (optional) Minimum distance in px between map features and map border
 tileUrl             | (optional) Tile server URL for the map base layer
 tileSize            | (optional) Tile size in pixel (default: 256)
 tileRequestTimeout  | (optional) Timeout for the tiles request
 tileRequestHeader   | (optional) Additional headers for the tiles request (default: {})
+imageMagick         | (optional) Use ImageMagick instead of GraphicsMagick (default: false)
+sharp               | (optional) Use sharp instead of GraphicsMagick (default: false)
 
 ### Methods
 #### addMarker (options)
@@ -51,7 +53,7 @@ offsetY             | (optional) Y offset of the marker image (default: height)
 ##### Usage example
 ```javascript
 const marker = {
-  img: `${__dirname}/marker.png`, // can also be a URL
+  img: `${__dirname}/marker.png`, // can also be a URL
   offsetX: 24,
   offsetY: 48,
   width: 48,
@@ -129,22 +131,20 @@ zoom                | (optional) Set a specific zoom level.
 
 ***
 
-#### image.save (fileName, [outputOptions])
-Saves the image to a file in `fileName`.
+#### image.save (fileName, [callback])
+Saves the image to a file. If callback is undefined it return a Promise.
 ```
 map.image.save();
 ```
 ##### Save options
 Parameter           | Description
 ------------------- | -------------
-fileName            | Name of the output file. Specify output format (png, jpg, webp) by adding file extension.
-outputOptions       | (optional) Output options set for [sharp](http://sharp.pixelplumbing.com/en/stable/api-output/#png)
-
-The `outputOptions` replaces the deprectated `quality` option. For Backwards compatibility `quality` still works but will be overwritten with `outputOptions.quality`.
+fileName            | Name of the output file. Specify output format (png, jpg) by adding file extension.
+callback            | (optional) Callback function. If undefined, Promise will returned.    
 
 ***
 
-#### image.buffer (mime, [outputOptions])
+#### image.buffer (mime, [callback])
 Saves the image to a file. If callback is undefined it return a Promise.
 ```
 map.image.buffer();
@@ -153,11 +153,7 @@ map.image.buffer();
 Parameter           | Description
 ------------------- | -------------
 mime                | Mime type of the output buffer (default: 'image/png')
-outputOptions       | (optional) Output options set for [sharp](http://sharp.pixelplumbing.com/en/stable/api-output/#png)
-
-Supported mime types are `image/png`, `image/jpg` and `image/webp`.
-
-The `outputOptions` replaces the deprectated `quality` option. For Backwards compatibility `quality` still works but will be overwritten with `outputOptions.quality`.
+callback            | (optional) Callback function. If undefined, Promise will returned.   
 
 ## Usage Examples
 
@@ -198,7 +194,7 @@ map.render(bbox)
 
 ```javascript
 const marker = {
-  img: `${__dirname}/marker.png`, // can also be a URL,
+  img: `${__dirname}/marker.png`, // can also be a URL,
   offsetX: 24,
   offsetY: 48,
   width: 48,
@@ -221,7 +217,7 @@ You're free to specify a center as well, otherwise the marker will be centered.
 ### Map with multiple marker
 ```javascript
 const marker = {
-  img: `${__dirname}/marker.png`, // can also be a URL
+  img: `${__dirname}/marker.png`, // can also be a URL
   offsetX: 24,
   offsetY: 48,
   width: 48,
