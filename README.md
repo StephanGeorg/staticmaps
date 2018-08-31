@@ -152,10 +152,8 @@ map.image.buffer();
 ##### Buffer options
 Parameter           | Description
 ------------------- | -------------
-mime                | Mime type of the output buffer (default: 'image/png')
+mime                | Mime type(`image/png`, `image/jpg` or `image/webp`) of the output buffer (default: 'image/png')
 outputOptions       | (optional) Output options set for [sharp](http://sharp.pixelplumbing.com/en/stable/api-output/#png)
-
-Supported mime types are `image/png`, `image/jpg` and `image/webp`.
 
 The `outputOptions` replaces the deprectated `quality` option. For Backwards compatibility `quality` still works but will be overwritten with `outputOptions.quality`.
 
