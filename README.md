@@ -132,7 +132,7 @@ zoom                | (optional) Set a specific zoom level.
 #### image.save (fileName, [outputOptions])
 Saves the image to a file in `fileName`.
 ```
-map.image.save();
+map.image.save('my-staticmap-image.png', { compressionLevel: 9 });
 ```
 ##### Save options
 Parameter           | Description
@@ -147,7 +147,7 @@ The `outputOptions` replaces the deprectated `quality` option. For Backwards com
 #### image.buffer (mime, [outputOptions])
 Saves the image to a file. If callback is undefined it return a Promise.
 ```
-map.image.buffer();
+map.image.buffer('image/jpog', { quality: 75 });
 ```
 ##### Buffer options
 Parameter           | Description
