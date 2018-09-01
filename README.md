@@ -134,7 +134,7 @@ Saves the image to a file in `fileName`.
 ```
 map.image.save('my-staticmap-image.png', { compressionLevel: 9 });
 ```
-##### Save options
+##### Arguments
 Parameter           | Description
 ------------------- | -------------
 fileName            | Name of the output file. Specify output format (png, jpg, webp) by adding file extension.
@@ -142,20 +142,33 @@ outputOptions       | (optional) Output options set for [sharp](http://sharp.pix
 
 The `outputOptions` replaces the deprectated `quality` option. For Backwards compatibility `quality` still works but will be overwritten with `outputOptions.quality`.
 
+
+##### Returns
+DEPRECATED: ~~If callback is undefined it return a Promise.~~
+```
+<Promise>
+```
+
 ***
 
 #### image.buffer (mime, [outputOptions])
-Saves the image to a file. If callback is undefined it return a Promise.
+Saves the image to a file. 
 ```
 map.image.buffer('image/jpog', { quality: 75 });
 ```
-##### Buffer options
+##### Arguments
 Parameter           | Description
 ------------------- | -------------
 mime                | Mime type(`image/png`, `image/jpg` or `image/webp`) of the output buffer (default: 'image/png')
 outputOptions       | (optional) Output options set for [sharp](http://sharp.pixelplumbing.com/en/stable/api-output/#png)
 
 The `outputOptions` replaces the deprectated `quality` option. For Backwards compatibility `quality` still works but will be overwritten with `outputOptions.quality`.
+
+##### Returns
+DEPRECATED: ~~If callback is undefined it return a Promise.~~
+```
+<Promise>
+```
 
 ## Usage Examples
 
