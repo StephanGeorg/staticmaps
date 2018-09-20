@@ -10,6 +10,10 @@ A node.js library for creating map images with polylines and markers. This libra
 ```bash
 > npm i staticmaps
 ```
+Image manipulation is based on **[Sharp](http://sharp.dimens.io)**. Pre-compiled binaries for sharp are provided for use with Node versions 4, 6, 8 and 10 on 64-bit Windows, OS X and Linux platforms. For other OS or using with **Heroku, Docker, AWS Lambda** please referr to [sharp installtion instructions](http://sharp.dimens.io/en/stable/install/).
+
+
+
 ## Getting Started
 
 ### Initialization ###
@@ -28,7 +32,7 @@ Parameter           | Description
 ------------------- | -------------
 width               | Width of the output image in px
 height              | Height of the output image in px
-quality             | **[DEPRECATED](https://github.com/StephanGeorg/staticmaps/blob/devel/README.md#save-options)** (optional) Set quality of output JPEG, 0 - 100 (default: 100). 
+quality             | **[DEPRECATED](#imagesave-filename-outputoptions)** (optional) Set quality of output JPEG, 0 - 100 (default: 100).
 paddingX            | (optional) Minimum distance in px between map features and map border
 paddingY            | (optional) Minimum distance in px between map features and map border
 tileUrl             | (optional) Tile server URL for the map base layer
@@ -144,15 +148,15 @@ The `outputOptions` replaces the deprectated `quality` option. For Backwards com
 
 
 ##### Returns
-DEPRECATED: ~~If callback is undefined it return a Promise.~~
 ```
 <Promise>
 ```
+~~If callback is undefined it return a Promise.~~ DEPRECATED
 
 ***
 
 #### image.buffer (mime, [outputOptions])
-Saves the image to a file. 
+Saves the image to a file.
 ```
 map.image.buffer('image/jpog', { quality: 75 });
 ```
@@ -165,10 +169,10 @@ outputOptions       | (optional) Output options set for [sharp](http://sharp.pix
 The `outputOptions` replaces the deprectated `quality` option. For Backwards compatibility `quality` still works but will be overwritten with `outputOptions.quality`.
 
 ##### Returns
-DEPRECATED: ~~If callback is undefined it return a Promise.~~
 ```
 <Promise>
 ```
+~~If callback is undefined it return a Promise.~~ DEPRECATED
 
 ## Usage Examples
 
