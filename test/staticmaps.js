@@ -32,7 +32,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/01-center.jpg'))
         .then(done)
         .catch(done);
-    }).timeout(5000);
+    }).timeout(0);
 
     it('render w/ center from custom', (done) => {
       const options = {
@@ -45,7 +45,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/02-center_osm.png'))
         .then(done)
         .catch(done);
-    }).timeout(5000);
+    }).timeout(0);
 
     it('render w/ bbox', (done) => {
       const options = {
@@ -58,7 +58,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/03-bbox.png'))
         .then(done)
         .catch(done);
-    }).timeout(3000);
+    }).timeout(0);
 
     it('render w/ icon', (done) => {
       const options = {
@@ -86,7 +86,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/04-marker.png'))
         .then(done)
         .catch(done);
-    }).timeout(5000);
+    }).timeout(0);
 
     it('render w/out center', (done) => {
       const options = {
@@ -113,7 +113,7 @@ describe('StaticMap', () => {
         .then(() => map.image.save('test/out/05-marker-nocenter.png'))
         .then(done)
         .catch(done);
-    }).timeout(5000);
+    }).timeout(0);
   });
 
   describe('Rendering w/ lines ...', () => {
@@ -144,7 +144,7 @@ describe('StaticMap', () => {
       map.addLine(polyline2);
       map.addLine(polyline);
       map.render()
-        .then(() => map.image.save('test/out/06-polyline-gm.jpg'))
+        .then(() => map.image.save('test/out/06-polyline.jpg'))
         .then(done)
         .catch(done);
     }).timeout(0);
@@ -162,15 +162,16 @@ describe('StaticMap', () => {
       const polygon = {
         coords: GeoJSON.way.geometry.coordinates[0][0],
         color: '#0000FFBB',
+        fill: '#000000BB',
         width: 1,
       };
 
       map.addPolygon(polygon);
       map.render()
-        .then(() => map.image.save('test/out/07-polygon-gm.png'))
+        .then(() => map.image.save('test/out/07-polygon.png'))
         .then(done)
         .catch(done);
-    }).timeout(5000);
+    }).timeout(0);
   });
 
   describe('Rendering buffer ...', () => {
@@ -187,6 +188,6 @@ describe('StaticMap', () => {
           done();
         })
         .catch(done);
-    }).timeout(5000);
+    }).timeout(0);
   });
 });

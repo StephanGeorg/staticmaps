@@ -1,5 +1,3 @@
-import Jimp from 'jimp';
-
 export default class {
   constructor(options = {}) {
     this.options = options;
@@ -13,19 +11,6 @@ export default class {
     this.offset = [this.offsetX, this.offsetY];
     this.height = this.options.height;
     this.width = this.options.width;
-  }
-
-  /**
-   * Load icon image from fs or remote request
-   */
-  load() {
-    return new Promise((resolve, reject) => {
-      Jimp.read(this.img, (err, tile) => {
-        if (err) reject(err);
-        this.imgData = tile;
-        resolve(true);
-      });
-    });
   }
 
   /**

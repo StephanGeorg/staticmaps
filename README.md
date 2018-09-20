@@ -5,7 +5,7 @@ A node.js library for creating map images with polylines and markers. This libra
 
 ## Installation
 
-Image manupulation is based on [GraphicsMagick](http://www.graphicsmagick.org/) (default), [ImageMagick](https://www.imagemagick.org/script/download.php) (``imageMagick: true``) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install)  ``sharp: true``. **Install [GraphicsMagick](http://www.graphicsmagick.org/README.html#installation), [ImageMagick](https://www.imagemagick.org/script/download.php) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install/) first.**
+~~Image manupulation is based on [GraphicsMagick](http://www.graphicsmagick.org/) (default), [ImageMagick](https://www.imagemagick.org/script/download.php) (``imageMagick: true``) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install)  ``sharp: true``. **Install [GraphicsMagick](http://www.graphicsmagick.org/README.html#installation), [ImageMagick](https://www.imagemagick.org/script/download.php) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install/) first.**~~
 
 ```bash
 > npm i staticmaps
@@ -28,15 +28,13 @@ Parameter           | Description
 ------------------- | -------------
 width               | Width of the output image in px
 height              | Height of the output image in px
-quality             | (optional) Set quality of output JPEG, 0 - 100 (default: 100)
+quality             | **[DEPRECATED](https://github.com/StephanGeorg/staticmaps/blob/devel/README.md#save-options)** (optional) Set quality of output JPEG, 0 - 100 (default: 100). 
 paddingX            | (optional) Minimum distance in px between map features and map border
 paddingY            | (optional) Minimum distance in px between map features and map border
 tileUrl             | (optional) Tile server URL for the map base layer
 tileSize            | (optional) Tile size in pixel (default: 256)
 tileRequestTimeout  | (optional) Timeout for the tiles request
 tileRequestHeader   | (optional) Additional headers for the tiles request (default: {})
-imageMagick         | (optional) Use ImageMagick instead of GraphicsMagick (default: false)
-sharp               | (optional) Use sharp instead of GraphicsMagick (default: false)
 
 ### Methods
 #### addMarker (options)
@@ -131,29 +129,46 @@ zoom                | (optional) Set a specific zoom level.
 
 ***
 
-#### image.save (fileName, [callback])
-Saves the image to a file. If callback is undefined it return a Promise.
+#### image.save (fileName, [outputOptions])
+Saves the image to a file in `fileName`.
 ```
-map.image.save();
+map.image.save('my-staticmap-image.png', { compressionLevel: 9 });
 ```
-##### Save options
+##### Arguments
 Parameter           | Description
 ------------------- | -------------
-fileName            | Name of the output file. Specify output format (png, jpg) by adding file extension.
-callback            | (optional) Callback function. If undefined, Promise will returned.    
+fileName            | Name of the output file. Specify output format (png, jpg, webp) by adding file extension.
+outputOptions       | (optional) Output options set for [sharp](http://sharp.pixelplumbing.com/en/stable/api-output/#png)
+
+The `outputOptions` replaces the deprectated `quality` option. For Backwards compatibility `quality` still works but will be overwritten with `outputOptions.quality`.
+
+
+##### Returns
+DEPRECATED: ~~If callback is undefined it return a Promise.~~
+```
+<Promise>
+```
 
 ***
 
-#### image.buffer (mime, [callback])
-Saves the image to a file. If callback is undefined it return a Promise.
+#### image.buffer (mime, [outputOptions])
+Saves the image to a file. 
 ```
-map.image.buffer();
+map.image.buffer('image/jpog', { quality: 75 });
 ```
-##### Buffer options
+##### Arguments
 Parameter           | Description
 ------------------- | -------------
-mime                | Mime type of the output buffer (default: 'image/png')
-callback            | (optional) Callback function. If undefined, Promise will returned.   
+mime                | Mime type(`image/png`, `image/jpg` or `image/webp`) of the output buffer (default: 'image/png')
+outputOptions       | (optional) Output options set for [sharp](http://sharp.pixelplumbing.com/en/stable/api-output/#png)
+
+The `outputOptions` replaces the deprectated `quality` option. For Backwards compatibility `quality` still works but will be overwritten with `outputOptions.quality`.
+
+##### Returns
+DEPRECATED: ~~If callback is undefined it return a Promise.~~
+```
+<Promise>
+```
 
 ## Usage Examples
 

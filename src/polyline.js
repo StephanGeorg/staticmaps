@@ -8,7 +8,7 @@ export default class Polyline {
     this.options = options;
     this.coords = this.options.coords;
     this.color = this.options.color || '#000000BB';
-    this.fill = this.options.fill || '#000000BB';
+    this.fill = this.options.fill;
     this.width = this.options.width || 3;
     this.simplify = this.options.simplify || false;
     this.type = (isEqual(first(this.coords), last(this.coords)))

@@ -1,5 +1,7 @@
-import Jimp from 'jimp';
-import isFunction from 'lodash.isfunction';
+import sharp from 'sharp';
+import last from 'lodash.last';
+
+import asyncQueue from './helper/asyncQueue';
 
 export default class Image {
   constructor(options = {}) {
@@ -9,73 +11,122 @@ export default class Image {
     this.quality = this.options.quality || 100;
   }
 
-  draw(tiles) {
-    return new Promise((resolve, reject) => {
-      let key = 0;
-      const img = new Jimp(this.width, this.height, (err, image) => {
-        if (err) reject(err);
-        this.image = image;
-        tiles.forEach((data) => {
-          Jimp.read(data.body, (errRead, tile) => {
-            if (errRead) reject(errRead);
+  /**
+   * Prepare all tiles to fit the baselayer
+   */
+  prepareTileParts(data) {
+    return new Promise((resolve) => {
+      const tile = sharp(data.body);
+      tile
+        .metadata()
+        .then((metadata) => {
+          const x = data.box[0];
+          const y = data.box[1];
+          const sx = x < 0 ? 0 : x;
+          const sy = y < 0 ? 0 : y;
+          const dx = x < 0 ? -x : 0;
+          const dy = y < 0 ? -y : 0;
+          const extraWidth = x + (metadata.width - this.width);
+          const extraHeight = y + (metadata.width - this.height);
+          const w = metadata.width + (x < 0 ? x : 0) - (extraWidth > 0 ? extraWidth : 0);
+          const h = metadata.height + (y < 0 ? y : 0) - (extraHeight > 0 ? extraHeight : 0);
+          return tile
+            .extract({
+              left: dx,
+              top: dy,
+              width: w,
+              height: h,
+            })
+            .toBuffer()
+            .then((part) => {
+              resolve({
+                position: { top: sy, left: sx },
+                data: part,
+              });
+            });
+        });
+    });
+  }
 
-            const x = data.box[0];
-            const y = data.box[1];
-            const sx = x < 0 ? 0 : x;
-            const sy = y < 0 ? 0 : y;
-            const dx = x < 0 ? -x : 0;
-            const dy = y < 0 ? -y : 0;
-            const extraWidth = x + (tile.bitmap.width - this.width);
-            const extraHeight = y + (tile.bitmap.width - this.height);
-            const w = tile.bitmap.width + (x < 0 ? x : 0) - (extraWidth > 0 ? extraWidth : 0);
-            const h = tile.bitmap.height + (y < 0 ? y : 0) - (extraHeight > 0 ? extraHeight : 0);
+  async draw(tiles) {
+    return new Promise(async (resolve) => {
+      // Generate baseimage
+      const baselayer = sharp({
+        create: {
+          width: this.width,
+          height: this.height,
+          channels: 4,
+          background: {
+            r: 0, g: 0, b: 0, alpha: 0,
+          },
+        },
+      });
+      // Save baseimage as buffer
+      let tempbuffer = await baselayer.png().toBuffer();
 
-            img.blit(tile, sx, sy, dx, dy, w, h);
-            this.image = image;
+      // Prepare tiles for composing baselayer
+      const tileParts = [];
+      tiles.forEach((tile, i) => {
+        tileParts.push(this.prepareTileParts(tile, i));
+      });
+      const preparedTiles = await Promise.all(tileParts);
 
-            if (key === tiles.length - 1) resolve(true);
-            key++;
-          });
+      // Compose all prepared tiles to the baselayer
+      const queue = [];
+      preparedTiles.forEach((preparedTile) => {
+        queue.push(async () => {
+          tempbuffer = await sharp(tempbuffer)
+            .overlayWith(preparedTile.data, preparedTile.position)
+            .toBuffer();
         });
       });
+      await asyncQueue(queue);
+      this.image = tempbuffer;
+
+      resolve(true);
     });
   }
 
   /**
    * Save image to file
    */
-  save(fileName, cb) {
-    if (isFunction(cb)) {
-      this.image
-        .quality(this.quality)
-        .write(fileName, cb);
-    } else {
-      return new Promise((resolve) => {
-        this.image
-          .quality(this.quality)
-          .write(fileName, () => {
-            resolve();
-          });
-      });
-    }
-    return null;
+  save(fileName, outOpts = {}) {
+    const format = last(fileName.split('.'));
+    const outputOptions = outOpts;
+    outputOptions.quality = outputOptions.quality || this.quality;
+    return new Promise(async (resolve, reject) => {
+      try {
+        switch (format.toLowerCase()) {
+          case 'webp': await sharp(this.image).webp(outputOptions).toFile(fileName); break;
+          case 'jpg':
+          case 'jpeg': await sharp(this.image).jpeg(outputOptions).toFile(fileName); break;
+          case 'png':
+          default: await sharp(this.image).png(outputOptions).toFile(fileName); break;
+        }
+        resolve();
+      } catch (err) {
+        reject(err);
+      }
+    });
   }
 
   /**
    * Return image as buffer
    */
-  buffer(mime, cb) {
-    if (isFunction(cb)) {
-      this.image.getBuffer(mime, cb);
-    } else {
-      return new Promise((resolve, reject) => {
-        this.image.getBuffer(mime || 'image/png', (err, result) => {
-          if (err) reject(err);
-          else resolve(result);
-        });
-      });
-    }
-    return null;
+  buffer(mime = 'image/png', outOpts = {}) {
+    const outputOptions = outOpts;
+    outputOptions.quality = outputOptions.quality || this.quality;
+    return new Promise(async (resolve) => {
+      let buffer;
+      switch (mime.toLowerCase()) {
+        case 'image/webp': buffer = await sharp(this.image).webp(outputOptions).toBuffer(); break;
+        case 'image/jpeg':
+        case 'image/jpg': buffer = await sharp(this.image).jpg(outputOptions).toBuffer(); break;
+        case 'image/png':
+        default: buffer = await sharp(this.image).png(outputOptions).toBuffer(); break;
+      }
+      resolve(buffer);
+    });
   }
 }
 
