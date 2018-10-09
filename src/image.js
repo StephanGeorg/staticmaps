@@ -40,7 +40,7 @@ export default class Image {
             .toBuffer()
             .then((part) => {
               resolve({
-                position: { top: sy, left: sx },
+                position: { top: Math.round(sy), left: Math.round(sx) },
                 data: part,
               });
             });
@@ -75,8 +75,11 @@ export default class Image {
       const queue = [];
       preparedTiles.forEach((preparedTile) => {
         queue.push(async () => {
+          const { position } = preparedTile;
+          position.top = Math.round(position.top);
+          position.left = Math.round(position.left);
           tempbuffer = await sharp(tempbuffer)
-            .overlayWith(preparedTile.data, preparedTile.position)
+            .overlayWith(preparedTile.data, position)
             .toBuffer();
         });
       });
