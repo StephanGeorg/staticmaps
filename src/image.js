@@ -75,11 +75,11 @@ export default class Image {
       const queue = [];
       preparedTiles.forEach((preparedTile) => {
         queue.push(async () => {
-          const { position } = preparedTile;
+          const { position, data } = preparedTile;
           position.top = Math.round(position.top);
           position.left = Math.round(position.left);
           tempbuffer = await sharp(tempbuffer)
-            .overlayWith(preparedTile.data, position)
+            .overlayWith(data, position)
             .toBuffer();
         });
       });
