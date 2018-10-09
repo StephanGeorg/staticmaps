@@ -288,7 +288,7 @@ class StaticMaps {
       this.markers.forEach((marker) => {
         queue.push(async () => {
           this.image.image = await sharp(this.image.image)
-            .overlayWith(marker.imgData, { top: marker.position[1], left: marker.position[0] })
+            .overlayWith(marker.imgData, { top: Math.round(marker.position[1]), left: Math.round(marker.position[0]) })
             .toBuffer();
         });
       });
