@@ -93,7 +93,7 @@ export default class Image {
   /**
    * Save image to file
    */
-  save(fileName, outOpts = {}) {
+  save(fileName = 'output.png', outOpts = {}) {
     const format = last(fileName.split('.'));
     const outputOptions = outOpts;
     outputOptions.quality = outputOptions.quality || this.quality;
