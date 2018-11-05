@@ -28,30 +28,30 @@ const options = {
 const map = new StaticMaps(options);
 ```
 #### Map options
-Parameter           | Description
-------------------- | -------------
-width               | Width of the output image in px
-height              | Height of the output image in px
-quality             | **[DEPRECATED](#imagesave-filename-outputoptions)** (optional) Set quality of output JPEG, 0 - 100 (default: 100).
-paddingX            | (optional) Minimum distance in px between map features and map border
-paddingY            | (optional) Minimum distance in px between map features and map border
-tileUrl             | (optional) Tile server URL for the map base layer
-tileSize            | (optional) Tile size in pixel (default: 256)
-tileRequestTimeout  | (optional) Timeout for the tiles request
-tileRequestHeader   | (optional) Additional headers for the tiles request (default: {})
+Parameter           | Default   | Description
+------------------- | --------- | -------------
+width               | Required  | Width of the output image in px
+height              | Required  | Height of the output image in px
+quality             |           | **[DEPRECATED](#imagesave-filename-outputoptions)** (optional) Set quality of output JPEG, 0 - 100 (default: 100).
+paddingX            | 0         | (optional) Minimum distance in px between map features and map border
+paddingY            | 0         | (optional) Minimum distance in px between map features and map border
+tileUrl             |           | (optional) Tile server URL for the map base layer
+tileSize            | 256       | (optional) Tile size in pixel
+tileRequestTimeout  |           | (optional) Timeout for the tiles request
+tileRequestHeader   | {}        | (optional) Additional headers for the tiles request (default: {})
 
 ### Methods
 #### addMarker (options)
 Adds a marker to the map.
 ##### Marker options
-Parameter           | Description
-------------------- | -------------
-coord               | Coordinates of the marker ([Lng, Lat])
-img                 | Marker image path or URL
-height              | Height of the marker image
-width               | Width of the marker image
-offsetX             | (optional) X offset of the marker image (default: width/2)
-offsetY             | (optional) Y offset of the marker image (default: height)
+Parameter           | Default   | Description
+------------------- | --------- | -------------
+coord               | Required  | Coordinates of the marker ([Lng, Lat])
+img                 | Required  | Marker image path or URL
+height              | Required  | Height of the marker image
+width               | Required  | Width of the marker image
+offsetX             | width/2   | (optional) X offset of the marker image
+offsetY             | height    | (optional) Y offset of the marker image
 ##### Usage example
 ```javascript
 const marker = {
@@ -96,12 +96,12 @@ Adds a polygon to the map. Polygon is the same as a polyline but first and last 
 map.addPolygon(options);
 ```
 ##### Polygon options
-Parameter           | Description
-------------------- | -------------
-coords              | Coordinates of the polygon ([[Lng, Lat], ... ,[Lng, Lat]])
-color               | Stroke color of the polygon (Default: '#000000BB')        
-width               | Stroke width of the polygon (Default: 3)
-fill                | Fill color of the polygon (Default: '#000000BB')
+Parameter           | Default   | Description
+------------------- | --------- | -------------
+coords              | Required  | Coordinates of the polygon ([[Lng, Lat], ... ,[Lng, Lat]])
+color               | #000000BB | Stroke color of the polygon  
+width               | 3         | Stroke width of the polygon
+fill                | #000000BB | Fill color of the polygon
 simplify            | TODO
 ##### Usage example
 ```javascript
@@ -126,10 +126,10 @@ Renders the map.
 map.render();
 ```
 ##### Render options
-Parameter           | Description
-------------------- | -------------
-center              | (optional) Set center of map to a specific coordinate ([Lng, Lat])
-zoom                | (optional) Set a specific zoom level.      
+Parameter           | Default   | Description
+------------------- | --------- | -------------
+center              |           | (optional) Set center of map to a specific coordinate ([Lng, Lat])
+zoom                |           | (optional) Set a specific zoom level.      
 
 ***
 
@@ -139,10 +139,10 @@ Saves the image to a file in `fileName`.
 map.image.save('my-staticmap-image.png', { compressionLevel: 9 });
 ```
 ##### Arguments
-Parameter           | Description
-------------------- | -------------
-fileName            | Name of the output file. Specify output format (png, jpg, webp) by adding file extension.
-outputOptions       | (optional) Output options set for [sharp](http://sharp.pixelplumbing.com/en/stable/api-output/#png)
+Parameter           | Default     | Description
+------------------- | ----------- | -------------
+fileName            | output.png  | Name of the output file. Specify output format (png, jpg, webp) by adding file extension.
+outputOptions       |             | (optional) Output options set for [sharp](http://sharp.pixelplumbing.com/en/stable/api-output/#png)
 
 The `outputOptions` replaces the deprectated `quality` option. For Backwards compatibility `quality` still works but will be overwritten with `outputOptions.quality`.
 
@@ -161,10 +161,10 @@ Saves the image to a file.
 map.image.buffer('image/jpog', { quality: 75 });
 ```
 ##### Arguments
-Parameter           | Description
-------------------- | -------------
-mime                | Mime type(`image/png`, `image/jpg` or `image/webp`) of the output buffer (default: 'image/png')
-outputOptions       | (optional) Output options set for [sharp](http://sharp.pixelplumbing.com/en/stable/api-output/#png)
+Parameter           | Default     | Description
+------------------- | ----------- | -------------
+mime                | image/png   | Mime type(`image/png`, `image/jpg` or `image/webp`) of the output buffer
+outputOptions       | {}          | (optional) Output options set for [sharp](http://sharp.pixelplumbing.com/en/stable/api-output/#png)
 
 The `outputOptions` replaces the deprectated `quality` option. For Backwards compatibility `quality` still works but will be overwritten with `outputOptions.quality`.
 
