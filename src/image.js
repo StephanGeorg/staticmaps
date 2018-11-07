@@ -124,7 +124,7 @@ export default class Image {
       switch (mime.toLowerCase()) {
         case 'image/webp': buffer = await sharp(this.image).webp(outputOptions).toBuffer(); break;
         case 'image/jpeg':
-        case 'image/jpg': buffer = await sharp(this.image).jpg(outputOptions).toBuffer(); break;
+        case 'image/jpg': buffer = await sharp(this.image).jpeg(outputOptions).toBuffer(); break;
         case 'image/png':
         default: buffer = await sharp(this.image).png(outputOptions).toBuffer(); break;
       }
