@@ -38,7 +38,7 @@
     "lodash.uniqby": "^4.7.0",
     "request": "^2.79.0",
     "request-promise": "^4.1.1",
-    "sharp": "^0.20.7"
+    "sharp": "^0.21.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
