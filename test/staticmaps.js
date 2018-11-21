@@ -49,12 +49,15 @@ describe('StaticMap', () => {
 
     it('render w/ bbox', (done) => {
       const options = {
-        width: 1200,
-        height: 800,
+        width: 600,
+        height: 300,
+        quality: 80,
+        paddingY: 50,
+        paddingX: 50,
       };
 
       const map = new StaticMaps(options);
-      map.render([11.414795, 51.835778, 11.645164, 51.733833])
+      map.render([-6.1359285, 53.3145145, -6.1058408, 53.3253966])
         .then(() => map.image.save('test/out/03-bbox.png'))
         .then(done)
         .catch(done);

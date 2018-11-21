@@ -30,6 +30,13 @@ export default class Image {
           const extraHeight = y + (metadata.width - this.height);
           const w = metadata.width + (x < 0 ? x : 0) - (extraWidth > 0 ? extraWidth : 0);
           const h = metadata.height + (y < 0 ? y : 0) - (extraHeight > 0 ? extraHeight : 0);
+
+          // Fixed #20 https://github.com/StephanGeorg/staticmaps/issues/20
+          if (!w || !h) {
+            resolve(null);
+            return null;
+          }
+
           return tile
             .extract({
               left: dx,
@@ -75,6 +82,7 @@ export default class Image {
       const queue = [];
       preparedTiles.forEach((preparedTile) => {
         queue.push(async () => {
+          if (!preparedTile) return;
           const { position, data } = preparedTile;
           position.top = Math.round(position.top);
           position.left = Math.round(position.left);
