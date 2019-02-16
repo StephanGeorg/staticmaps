@@ -3,16 +3,15 @@ A node.js library for creating map images with polylines and markers. This libra
 
 ![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true=800x280)
 
-## Installation
+## Prerequisites
 
-~~Image manupulation is based on [GraphicsMagick](http://www.graphicsmagick.org/) (default), [ImageMagick](https://www.imagemagick.org/script/download.php) (``imageMagick: true``) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install)  ``sharp: true``. **Install [GraphicsMagick](http://www.graphicsmagick.org/README.html#installation), [ImageMagick](https://www.imagemagick.org/script/download.php) or [Sharp](http://sharp.pixelplumbing.com/en/stable/install/) first.**~~
+Image manipulation is based on **[Sharp](http://sharp.dimens.io)**. Pre-compiled binaries for sharp are provided for use with Node versions 6, 8, 10 and 11 on 64-bit Windows, OS X and Linux platforms. For other OS or using with **Heroku, Docker, AWS Lambda** please referr to [sharp installtion instructions](http://sharp.dimens.io/en/stable/install/).
+
+## Installation
 
 ```bash
 > npm i staticmaps
 ```
-Image manipulation is based on **[Sharp](http://sharp.dimens.io)**. Pre-compiled binaries for sharp are provided for use with Node versions 4, 6, 8 and 10 on 64-bit Windows, OS X and Linux platforms. For other OS or using with **Heroku, Docker, AWS Lambda** please referr to [sharp installtion instructions](http://sharp.dimens.io/en/stable/install/).
-
-
 
 ## Getting Started
 
