@@ -7,8 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --require babel-core/register",
-    "build": "babel src --presets babel-preset-env --out-dir dist",
+    "test": "mocha --require @babel/register",
+    "build": "babel src --presets @babel/preset-env --plugins @babel/plugin-transform-runtime --out-dir dist",
     "prepublish": "npm run build"
   },
   "repository": {
@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/StephanGeorg/staticmaps#readme",
   "dependencies": {
-    "babel-runtime": "^6.26.0",
+    "@babel/runtime": "^7.3.1",
     "lodash.find": "^4.6.0",
     "lodash.first": "^3.0.0",
     "lodash.isequal": "^4.5.0",
@@ -41,13 +41,13 @@
     "sharp": "^0.21.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.2",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
     "babel-eslint": "^9.0.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-stage-2": "^6.24.1",
-    "babel-register": "^6.26.0",
+    "@babel/plugin-transform-runtime": "^7.2.0",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-stage-2": "^7.0.0",
+    "@babel/register": "^7.0.0",
     "chai": "^4.1.2",
     "eslint": "^5.14.0",
     "eslint-config-airbnb-base": "^13.0.0",
