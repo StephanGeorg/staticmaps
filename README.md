@@ -150,6 +150,8 @@ font              | Arial     | Font-family of the text
   map.addText(text);
 ```
 
+***
+
 #### render (center, zoom)
 Renders the map.
 ```
@@ -313,3 +315,32 @@ map.render()
 ```
 #### Output
 ![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true=800x280)
+
+### Blue Marble by NASA with text
+```javascript
+const options = {
+    width: 1200,
+    height: 800,
+    tileUrl: 'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg',
+    maxZoom: 8 // NASA server does not support level 9 or higher
+  };
+
+  const map = new StaticMaps(options);
+  const text = {
+    coord: [13.437524, 52.4945528],
+    text: "My Text",
+    size: 50,
+    width: "1px",
+    fill: "#000000",
+    color: "#ffffff",
+    font: "Calibri"
+  };
+
+  map.addText(text);
+
+  map.render([13.437524, 52.4945528])
+    .then(() => map.image.save('test/out/bluemarbletext.png'));
+```
+
+#### Output
+![NASA Blue Marble with text](https://i.imgur.com/Jb6hsju.jpg)
