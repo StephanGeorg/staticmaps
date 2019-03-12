@@ -38,6 +38,7 @@ tileUrl             |           | (optional) Tile server URL for the map base la
 tileSize            | 256       | (optional) Tile size in pixel
 tileRequestTimeout  |           | (optional) Timeout for the tiles request
 tileRequestHeader   | {}        | (optional) Additional headers for the tiles request (default: {})
+maxZoom             |           | (optional) If defined, forces zoom to stay at least this far from the surface, useful for tile servers that error on high levels
 
 ### Methods
 #### addMarker (options)
@@ -117,6 +118,38 @@ simplify            | TODO
 
   map.addPolygon(polygon);
 ```
+***
+
+#### addText(options)
+Adds text to the map.
+```
+map.addText(options)
+```
+##### Text options
+Parameter         | Default   | Description
+----------------- | --------- | --------------
+coord             | Required  | Coordinates of the text ([x, y])
+color             | #000000BB | Stroke color of the text
+width             | 1px       | Stroke width of the text
+fill              | #000000   | Fill color of the text
+size              | 12        | Font-size of the text
+font              | Arial     | Font-family of the text
+
+##### Usage example
+```javascript
+  const text = {
+    coord: [13.437524, 52.4945528],
+    text: "My Text",
+    size: 50,
+    width: 1,
+    fill: "#000000",
+    color: "#ffffff",
+    font: "Calibri"
+  };
+
+  map.addText(text);
+```
+
 ***
 
 #### render (center, zoom)
@@ -282,3 +315,32 @@ map.render()
 ```
 #### Output
 ![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true=800x280)
+
+### Blue Marble by NASA with text
+```javascript
+const options = {
+    width: 1200,
+    height: 800,
+    tileUrl: 'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg',
+    maxZoom: 8 // NASA server does not support level 9 or higher
+  };
+
+  const map = new StaticMaps(options);
+  const text = {
+    coord: [13.437524, 52.4945528],
+    text: "My Text",
+    size: 50,
+    width: "1px",
+    fill: "#000000",
+    color: "#ffffff",
+    font: "Calibri"
+  };
+
+  map.addText(text);
+
+  map.render([13.437524, 52.4945528])
+    .then(() => map.image.save('test/out/bluemarbletext.png'));
+```
+
+#### Output
+![NASA Blue Marble with text](https://i.imgur.com/Jb6hsju.jpg)

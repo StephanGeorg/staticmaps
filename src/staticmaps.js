@@ -7,6 +7,7 @@ import url from 'url';
 import Image from './image';
 import IconMarker from './marker';
 import Polyline from './polyline';
+import Text from './text';
 import asyncQueue from './helper/asyncQueue';
 
 require('./helper/helper');
@@ -36,11 +37,13 @@ class StaticMaps {
     this.tileRequestTimeout = this.options.tileRequestTimeout;
     this.tileRequestHeader = this.options.tileRequestHeader;
     this.reverseY = this.options.reverseY || false;
+    this.maxZoom = this.options.maxZoom || undefined;
 
     // # features
     this.markers = [];
     this.lines = [];
     this.polygons = [];
+    this.text = [];
 
     // # fields that get set when map is rendered
     this.center = [];
@@ -61,6 +64,10 @@ class StaticMaps {
     this.lines.push(new Polyline(options));
   }
 
+  addText(options) {
+    this.text.push(new Text(options));
+  }
+
   /**
     * Render static map with all map features that were added to map before
     */
@@ -71,6 +78,10 @@ class StaticMaps {
 
     this.center = center;
     this.zoom = zoom || this.calculateZoom();
+
+    if (this.maxZoom !== undefined && this.zoom > this.maxZoom) {
+      this.zoom = this.maxZoom
+    }
 
     if (center && center.length === 2) {
       this.centerX = lonToX(center[0], this.zoom);
@@ -219,10 +230,67 @@ class StaticMaps {
 
   drawFeatures() {
     return this.drawLines()
+      .then(this.drawText.bind(this))
       .then(this.loadMarker.bind(this))
       .then(this.drawMarker.bind(this));
   }
 
+  drawText() {
+    return new Promise(async (resolve) => {
+      if(!this.text.length) resolve(true);
+
+      const queue = [];
+      this.text.forEach((text) => {
+        queue.push(async () => {
+          await this.renderText(text);
+        });
+      });
+      await asyncQueue(queue);
+      resolve(true);
+    });
+  }
+
+  /**
+   * Render text on a baseimage
+   */
+  async renderText(text) {
+    const baseImage = sharp(this.image.image);
+
+    return new Promise((resolve, reject) => {
+      const mapcoords = [this.xToPx(lonToX(text.coord[0], this.zoom)), this.yToPx(latToY(text.coord[1], this.zoom))];
+
+      baseImage
+        .metadata()
+        .then((imageMetadata) => {
+          const svgPath = `
+            <svg
+              width="${imageMetadata.width}px"
+              height="${imageMetadata.height}px"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg">
+              <text
+                x="${mapcoords[0]}"
+                y="${mapcoords[1]}"
+                style="fill-rule: inherit; font-family: ${text.font};"
+                font-size="${text.size}pt"
+                stroke="${text.color}"
+                fill="${text.fill ? text.fill : 'none'}"
+                stroke-width="${text.width}">
+                  ${text.text}</text>
+            </svg>`;
+
+          baseImage
+            .overlayWith(Buffer.from(svgPath), { top: 0, left: 0 })
+            .toBuffer()
+            .then((buffer) => {
+              this.image.image = buffer;
+              resolve(buffer);
+            })
+            .catch(reject);
+        })
+        .catch(reject);
+    });
+  }
 
   drawLines() {
     return new Promise(async (resolve) => {
