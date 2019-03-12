@@ -177,7 +177,7 @@ describe('StaticMap', () => {
     }).timeout(0);
   });
 
-  describe('Rendering text ...', ()=> {
+  describe('Rendering text ...', () => {
     it('Render StaticMap with text', (done) => {
       const options = {
         width: 1200,
@@ -187,12 +187,12 @@ describe('StaticMap', () => {
       const map = new StaticMaps(options);
       const text = {
         coord: [13.437524, 52.4945528],
-        text: "TEXT",
+        text: 'TEXT',
         size: 50,
-        width: "1px",
-        fill: "#000000",
-        color: "#ffffff",
-        font: "Impact"
+        width: '1px',
+        fill: '#000000',
+        color: '#ffffff',
+        font: 'Impact',
       };
 
       map.addText(text);
@@ -208,18 +208,18 @@ describe('StaticMap', () => {
         width: 1200,
         height: 800,
         tileUrl: 'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg',
-        maxZoom: 8
+        maxZoom: 8,
       };
 
       const map = new StaticMaps(options);
       const text = {
         coord: [13.437524, 52.4945528],
-        text: "My Text",
+        text: 'My Text',
         size: 50,
-        width: "1px",
-        fill: "#000000",
-        color: "#ffffff",
-        font: "Calibri"
+        width: '1px',
+        fill: '#000000',
+        color: '#ffffff',
+        font: 'Calibri',
       };
 
       map.addText(text);
@@ -247,6 +247,4 @@ describe('StaticMap', () => {
         .catch(done);
     }).timeout(0);
   });
-
-  
 });

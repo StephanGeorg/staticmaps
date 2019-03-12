@@ -37,7 +37,7 @@ class StaticMaps {
     this.tileRequestTimeout = this.options.tileRequestTimeout;
     this.tileRequestHeader = this.options.tileRequestHeader;
     this.reverseY = this.options.reverseY || false;
-    this.maxZoom = this.options.maxZoom || undefined;
+    this.maxZoom = this.options.maxZoom;
 
     // # features
     this.markers = [];
@@ -79,8 +79,8 @@ class StaticMaps {
     this.center = center;
     this.zoom = zoom || this.calculateZoom();
 
-    if (this.maxZoom !== undefined && this.zoom > this.maxZoom) {
-      this.zoom = this.maxZoom
+    if (this.maxZoom && this.zoom > this.maxZoom) {
+      this.zoom = this.maxZoom;
     }
 
     if (center && center.length === 2) {
@@ -230,14 +230,14 @@ class StaticMaps {
 
   drawFeatures() {
     return this.drawLines()
-      .then(this.drawText.bind(this))
       .then(this.loadMarker.bind(this))
-      .then(this.drawMarker.bind(this));
+      .then(this.drawMarker.bind(this))
+      .then(this.drawText.bind(this));
   }
 
   drawText() {
     return new Promise(async (resolve) => {
-      if(!this.text.length) resolve(true);
+      if (!this.text.length) resolve(true);
 
       const queue = [];
       this.text.forEach((text) => {
@@ -257,7 +257,10 @@ class StaticMaps {
     const baseImage = sharp(this.image.image);
 
     return new Promise((resolve, reject) => {
-      const mapcoords = [this.xToPx(lonToX(text.coord[0], this.zoom)), this.yToPx(latToY(text.coord[1], this.zoom))];
+      const mapcoords = [
+        this.xToPx(lonToX(text.coord[0], this.zoom)),
+        this.yToPx(latToY(text.coord[1], this.zoom)),
+      ];
 
       baseImage
         .metadata()
