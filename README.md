@@ -328,12 +328,12 @@ const options = {
   const map = new StaticMaps(options);
   const text = {
     coord: [13.437524, 52.4945528],
-    text: "My Text",
+    text: 'My Text',
     size: 50,
-    width: "1px",
-    fill: "#000000",
-    color: "#ffffff",
-    font: "Calibri"
+    width: '1px',
+    fill: '#000000',
+    color: '#ffffff',
+    font: 'Calibri'
   };
 
   map.addText(text);
