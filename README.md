@@ -1,5 +1,5 @@
 # StaticMaps [![npm version](https://badge.fury.io/js/staticmaps.svg)](https://badge.fury.io/js/staticmaps)
-A node.js library for creating map images with polylines and markers. This library is a node.js implementation of [Static Map](https://github.com/komoot/staticmap).
+A node.js library for creating map images with polylines, markers and text. This library is a node.js implementation of [Static Map](https://github.com/komoot/staticmap).
 
 ![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true=800x280)
 
@@ -31,7 +31,6 @@ Parameter           | Default   | Description
 ------------------- | --------- | -------------
 width               | Required  | Width of the output image in px
 height              | Required  | Height of the output image in px
-quality             |           | **[DEPRECATED](#imagesave-filename-outputoptions)** (optional) Set quality of output JPEG, 0 - 100 (default: 100).
 paddingX            | 0         | (optional) Minimum distance in px between map features and map border
 paddingY            | 0         | (optional) Minimum distance in px between map features and map border
 tileUrl             |           | (optional) Tile server URL for the map base layer
@@ -73,7 +72,6 @@ Parameter           | Description
 coords              | Coordinates of the polyline ([[Lng, Lat], ... ,[Lng, Lat]])
 color               | Stroke color of the polyline (Default: '#000000BB')
 width               | Stroke width of the polyline (Default: 3)
-simplify            | TODO
 ##### Usage example
 ```javascript
   const polyline = {
@@ -102,7 +100,6 @@ coords              | Required  | Coordinates of the polygon ([[Lng, Lat], ... ,
 color               | #000000BB | Stroke color of the polygon  
 width               | 3         | Stroke width of the polygon
 fill                | #000000BB | Fill color of the polygon
-simplify            | TODO
 ##### Usage example
 ```javascript
   const polygon = {
