@@ -5,7 +5,7 @@ A node.js library for creating map images with polylines and markers. This libra
 
 ## Prerequisites
 
-Image manipulation is based on **[Sharp](http://sharp.dimens.io)**. Pre-compiled binaries for sharp are provided for use with Node versions 6, 8, 10 and 11 on 64-bit Windows, OS X and Linux platforms. For other OS or using with **Heroku, Docker, AWS Lambda** please refer to [sharp installation instructions](http://sharp.dimens.io/en/stable/install/).
+Image manipulation is based on **[Sharp](http://sharp.dimens.io)**. Pre-compiled binaries for sharp are provided for use with Node versions 6, 8, 10, 11 and 12 on 64-bit Windows, OS X and Linux platforms. For other OS or using with **Heroku, Docker, AWS Lambda** please refer to [sharp installation instructions](http://sharp.dimens.io/en/stable/install/).
 
 ## Installation
 
@@ -59,7 +59,7 @@ const marker = {
   offsetY: 48,
   width: 48,
   height: 48,
-  coord = [13.437524,52.4945528]
+  coord : [13.437524,52.4945528]
 };
 map.addMarker(marker);
 ```
