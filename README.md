@@ -187,7 +187,7 @@ The `outputOptions` replaces the deprectated `quality` option. For Backwards com
 #### image.buffer (mime, [outputOptions])
 Saves the image to a file.
 ```
-map.image.buffer('image/jpog', { quality: 75 });
+map.image.buffer('image/jpeg', { quality: 75 });
 ```
 ##### Arguments
 Parameter           | Default     | Description
@@ -344,6 +344,7 @@ const options = {
 
 # Contributers
 
++ [Wesley Flynn](https://github.com/wesflynn)
 + [Thomas Konings](https://github.com/tkon99)
 + [Gihan S](https://github.com/gihanshp)
 + [Sergey Averyanov](https://github.com/saveryanov)
