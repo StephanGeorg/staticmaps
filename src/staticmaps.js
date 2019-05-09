@@ -283,7 +283,7 @@ class StaticMaps {
             </svg>`;
 
           baseImage
-            .overlayWith(Buffer.from(svgPath), { top: 0, left: 0 })
+            .composite([{ input: Buffer.from(svgPath), top: 0, left: 0 }])
             .toBuffer()
             .then((buffer) => {
               this.image.image = buffer;
@@ -341,7 +341,7 @@ class StaticMaps {
             </svg>`;
 
           baseImage
-            .overlayWith(Buffer.from(svgPath), { top: 0, left: 0 })
+            .composite([{ input: Buffer.from(svgPath), top: 0, left: 0 }])
             .toBuffer()
             .then((buffer) => {
               this.image.image = buffer;
@@ -359,10 +359,11 @@ class StaticMaps {
       this.markers.forEach((marker) => {
         queue.push(async () => {
           this.image.image = await sharp(this.image.image)
-            .overlayWith(marker.imgData, {
+            .composite([{
+              input: marker.imgData,
               top: Math.round(marker.position[1]),
               left: Math.round(marker.position[0]),
-            })
+            }])
             .toBuffer();
         });
       });

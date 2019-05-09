@@ -87,7 +87,7 @@ export default class Image {
           position.top = Math.round(position.top);
           position.left = Math.round(position.left);
           tempbuffer = await sharp(tempbuffer)
-            .overlayWith(data, position)
+            .composite([{ input: data, ...position }])
             .toBuffer();
         });
       });
