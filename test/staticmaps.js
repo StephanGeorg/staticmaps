@@ -177,6 +177,60 @@ describe('StaticMap', () => {
     }).timeout(0);
   });
 
+  describe('Rendering text ...', () => {
+    it('Render StaticMap with text', (done) => {
+      const options = {
+        width: 1200,
+        height: 800,
+      };
+
+      const map = new StaticMaps(options);
+      const text = {
+        coord: [13.437524, 52.4945528],
+        text: 'TEXT',
+        size: 50,
+        width: '1px',
+        fill: '#000000',
+        color: '#ffffff',
+        font: 'Impact',
+      };
+
+      map.addText(text);
+
+      map.render([13.437524, 52.4945528])
+        .then(() => map.image.save('test/out/08-text-center.png'))
+        .then(done)
+        .catch(done);
+    }).timeout(0);
+
+    it('Render text on NASA Blue Marble', (done) => {
+      const options = {
+        width: 1200,
+        height: 800,
+        tileUrl: 'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg',
+        maxZoom: 8,
+      };
+
+      const map = new StaticMaps(options);
+      const text = {
+        coord: [13.437524, 52.4945528],
+        text: 'My Text',
+        size: 50,
+        width: '1px',
+        fill: '#000000',
+        color: '#ffffff',
+        font: 'Calibri',
+      };
+
+      map.addText(text);
+
+      map.render([13.437524, 52.4945528])
+        .then(() => map.image.save('test/out/09-text-nasabm.png'))
+        .then(done)
+        .catch(done);
+    }).timeout(0);
+  });
+
   describe('Rendering buffer ...', () => {
     it('render w/ center', (done) => {
       const options = {
