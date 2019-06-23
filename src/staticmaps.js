@@ -3,12 +3,14 @@ import sharp from 'sharp';
 import find from 'lodash.find';
 import uniqBy from 'lodash.uniqby';
 import url from 'url';
+import process from 'process';
 
 import Image from './image';
 import IconMarker from './marker';
 import Polyline from './polyline';
 import Text from './text';
 import asyncQueue from './helper/asyncQueue';
+import pjson from '../package.json';
 
 require('./helper/helper');
 
@@ -428,10 +430,12 @@ class StaticMaps {
         url: data.url,
         encoding: null,
         resolveWithFullResponse: true,
+        headers: this.tileRequestHeader || {},
+        timeout: this.tileRequestTimeout,
       };
 
-      if (this.tileRequestTimeout) options.timeout = this.tileRequestTimeout;
-      if (this.tileRequestHeader) options.headers = this.tileRequestHeader;
+      const defaultAgent = `staticmaps@${pjson.version} (Node.js ${process.version})`;
+      options.headers['User-Agent'] = options.headers['User-Agent'] || defaultAgent;
 
       request.get(options).then((res) => {
         resolve({
