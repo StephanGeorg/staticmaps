@@ -48,10 +48,10 @@
     "@babel/preset-stage-2": "^7.0.0",
     "@babel/register": "^7.0.0",
     "babel-eslint": "^9.0.0",
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.13.0",
-    "mocha": "^4.0.1"
+    "mocha": "^6.1.4"
   }
 }
