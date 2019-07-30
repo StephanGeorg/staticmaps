@@ -40,7 +40,7 @@ class StaticMaps {
     this.tileRequestHeader = this.options.tileRequestHeader;
     this.reverseY = this.options.reverseY || false;
     this.maxZoom = this.options.maxZoom;
-    this.zoomRange = this.options.zoomRange || { min: 1, max: 23 };
+    this.zoomRange = this.options.zoomRange || { min: 1, max: 17 };
 
     // # features
     this.markers = [];

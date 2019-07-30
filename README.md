@@ -27,18 +27,18 @@ const options = {
 const map = new StaticMaps(options);
 ```
 #### Map options
-Parameter           | Default   | Description
-------------------- | --------- | -------------
-width               | Required  | Width of the output image in px
-height              | Required  | Height of the output image in px
-paddingX            | 0         | (optional) Minimum distance in px between map features and map border
-paddingY            | 0         | (optional) Minimum distance in px between map features and map border
-tileUrl             |           | (optional) Tile server URL for the map base layer
-tileSize            | 256       | (optional) Tile size in pixel
-tileRequestTimeout  |           | (optional) Timeout for the tiles request
-tileRequestHeader   | {}        | (optional) Additional headers for the tiles request (default: {})
-maxZoom             |           | (optional) If defined, forces zoom to stay at least this far from the surface, useful for tile servers that error on high levels
-zoomRange           | { min: 1, max: 23} | (optional) If defined, defines the range of zoom levels to try
+Parameter           | Default            | Description
+------------------- | ------------------ | -------------
+width               | Required           | Width of the output image in px
+height              | Required           | Height of the output image in px
+paddingX            | 0                  | (optional) Minimum distance in px between map features and map border
+paddingY            | 0                  | (optional) Minimum distance in px between map features and map border
+tileUrl             |                    | (optional) Tile server URL for the map base layer
+tileSize            | 256                | (optional) Tile size in pixel
+tileRequestTimeout  |                    | (optional) Timeout for the tiles request
+tileRequestHeader   | {}                 | (optional) Additional headers for the tiles request (default: {})
+maxZoom             |                    | (optional) If defined, forces zoom to stay at least this far from the surface, useful for tile servers that error on high levels
+zoomRange           | { min: 1, max: 17} | (optional) If defined, defines the range of zoom levels to try
 
 ### Methods
 #### addMarker (options)
