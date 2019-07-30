@@ -38,6 +38,7 @@ tileSize            | 256       | (optional) Tile size in pixel
 tileRequestTimeout  |           | (optional) Timeout for the tiles request
 tileRequestHeader   | {}        | (optional) Additional headers for the tiles request (default: {})
 maxZoom             |           | (optional) If defined, forces zoom to stay at least this far from the surface, useful for tile servers that error on high levels
+zoomRange           | { min: 1, max: 23} | (optional) If defined, defines the range of zoom levels to try
 
 ### Methods
 #### addMarker (options)

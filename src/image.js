@@ -33,7 +33,7 @@ export default class Image {
 
           // Fixed #20 https://github.com/StephanGeorg/staticmaps/issues/20
           if (!w || !h) {
-            resolve(null);
+            resolve({ success: false });
             return null;
           }
 
@@ -47,11 +47,14 @@ export default class Image {
             .toBuffer()
             .then((part) => {
               resolve({
+                success: true,
                 position: { top: Math.round(sy), left: Math.round(sx) },
                 data: part,
               });
-            });
-        });
+            })
+            .catch(() => resolve({ success: false }));
+        })
+        .catch(() => resolve({ success: false }));
     });
   }
 
@@ -76,7 +79,7 @@ export default class Image {
       tiles.forEach((tile, i) => {
         tileParts.push(this.prepareTileParts(tile, i));
       });
-      const preparedTiles = await Promise.all(tileParts);
+      const preparedTiles = (await Promise.all(tileParts)).filter(v => v.success);
 
       // Compose all prepared tiles to the baselayer
       const queue = [];
