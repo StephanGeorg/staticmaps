@@ -193,6 +193,7 @@ describe('StaticMap', () => {
         fill: '#000000',
         color: '#ffffff',
         font: 'Impact',
+        anchor: 'middle',
       };
 
       map.addText(text);

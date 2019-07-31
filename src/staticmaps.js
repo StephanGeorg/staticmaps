@@ -280,7 +280,8 @@ class StaticMaps {
                 font-size="${text.size}pt"
                 stroke="${text.color}"
                 fill="${text.fill ? text.fill : 'none'}"
-                stroke-width="${text.width}">
+                stroke-width="${text.width}"
+                text-anchor="${text.anchor}">
                   ${text.text}</text>
             </svg>`;
 
