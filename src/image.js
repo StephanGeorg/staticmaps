@@ -84,8 +84,8 @@ export default class Image {
         queue.push(async () => {
           if (!preparedTile) return;
           const { position, data } = preparedTile;
-          position.top = Math.round(position.top);
-          position.left = Math.round(position.left);
+          position.top = Math.round(position.top) > 0 ? Math.round(position.top) : 0;
+          position.left = Math.round(position.left) > 0 ? Math.round(position.left) : 0;
           tempbuffer = await sharp(tempbuffer)
             .composite([{ input: data, ...position }])
             .toBuffer();

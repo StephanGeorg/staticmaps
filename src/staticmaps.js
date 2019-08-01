@@ -363,8 +363,8 @@ class StaticMaps {
           this.image.image = await sharp(this.image.image)
             .composite([{
               input: marker.imgData,
-              top: Math.round(marker.position[1]),
-              left: Math.round(marker.position[0]),
+              top: Math.round(marker.position[1]) > 0 ? Math.round(marker.position[1]) : 0,
+              left: Math.round(marker.position[0]) > 0 ? Math.round(marker.position[0]) : 0,
             }])
             .toBuffer();
         });
