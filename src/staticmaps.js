@@ -12,8 +12,6 @@ import Text from './text';
 import asyncQueue from './helper/asyncQueue';
 import pjson from '../package.json';
 
-require('./helper/helper');
-
 /* transform longitude to tile number */
 const lonToX = (lon, zoom) => ((lon + 180) / 360) * (2 ** zoom);
 /* transform latitude to tile number */
@@ -151,10 +149,10 @@ class StaticMaps {
     }
 
     return [
-      extents.map(e => e[0]).min(),
-      extents.map(e => e[1]).min(),
-      extents.map(e => e[2]).max(),
-      extents.map(e => e[3]).max(),
+      Math.min(...extents.map(e => e[0])),
+      Math.min(...extents.map(e => e[1])),
+      Math.max(...extents.map(e => e[2])),
+      Math.max(...extents.map(e => e[3])),
     ];
   }
 
