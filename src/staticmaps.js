@@ -222,12 +222,9 @@ class StaticMaps {
 
     const tilePromises = [];
     result.forEach((r) => { tilePromises.push(this.getTile(r)); });
-    const toResultObject = promise => promise
-      .then(tile => ({ success: true, tile }))
-      .catch(error => ({ success: false, error }));
 
     return new Promise((resolve, reject) => {
-      Promise.all(tilePromises.map(toResultObject))
+      Promise.all(tilePromises)
         .then(values => this.image.draw(values.filter(v => v.success).map(v => v.tile)))
         .then(resolve)
         .catch(reject);
@@ -429,7 +426,7 @@ class StaticMaps {
    *  Fetching tiles from endpoint
    */
   getTile(data) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const options = {
         url: data.url,
         encoding: null,
@@ -443,11 +440,17 @@ class StaticMaps {
 
       request.get(options).then((res) => {
         resolve({
-          url: data.url,
-          box: data.box,
-          body: res.body,
+          success: true,
+          tile: {
+            url: data.url,
+            box: data.box,
+            body: res.body,
+          },
         });
-      }).catch(reject);
+      }).catch(error => resolve({
+        success: false,
+        error,
+      }));
     });
   }
 }
