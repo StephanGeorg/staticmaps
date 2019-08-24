@@ -126,11 +126,13 @@ map.addText(options)
 Parameter         | Default   | Description
 ----------------- | --------- | --------------
 coord             | Required  | Coordinates of the text ([x, y])
+text              | Required  | The text to render
 color             | #000000BB | Stroke color of the text
 width             | 1px       | Stroke width of the text
 fill              | #000000   | Fill color of the text
 size              | 12        | Font-size of the text
 font              | Arial     | Font-family of the text
+anchor            | start     | Anchor of the text (`start`, `middle` or `end`)
 
 ##### Usage example
 ```javascript
@@ -141,7 +143,8 @@ font              | Arial     | Font-family of the text
     width: 1,
     fill: "#000000",
     color: "#ffffff",
-    font: "Calibri"
+    font: "Calibri",
+    anchor: "middle"
   };
 
   map.addText(text);

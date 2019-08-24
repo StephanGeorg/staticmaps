@@ -8,5 +8,6 @@ export default class Text {
     this.fill = this.options.fill || '#000000';
     this.size = this.options.size || 12;
     this.font = this.options.font || 'Arial';
+    this.anchor = this.options.anchor || 'start';
   }
 }
