@@ -40,6 +40,7 @@ class StaticMaps {
     this.tileRequestHeader = this.options.tileRequestHeader;
     this.reverseY = this.options.reverseY || false;
     this.maxZoom = this.options.maxZoom;
+    this.zoomRange = this.options.zoomRange || { min: 1, max: 17 };
 
     // # features
     this.markers = [];
@@ -162,7 +163,7 @@ class StaticMaps {
     * calculate the best zoom level for given extent
     */
   calculateZoom() {
-    for (let z = 17; z > 0; z--) {
+    for (let z = this.zoomRange.max; z >= this.zoomRange.min; z--) {
       const extent = this.determineExtent(z);
       const width = (lonToX(extent[2], z) - lonToX(extent[0], z)) * this.tileSize;
       if (width > (this.width - (this.padding[0] * 2))) continue;
@@ -172,7 +173,7 @@ class StaticMaps {
 
       return z;
     }
-    return null;
+    return this.zoomRange.min;
   }
 
   /**
@@ -224,7 +225,7 @@ class StaticMaps {
 
     return new Promise((resolve, reject) => {
       Promise.all(tilePromises)
-        .then(tiles => this.image.draw(tiles))
+        .then(values => this.image.draw(values.filter(v => v.success).map(v => v.tile)))
         .then(resolve)
         .catch(reject);
     });
@@ -427,7 +428,7 @@ class StaticMaps {
    *  Fetching tiles from endpoint
    */
   getTile(data) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const options = {
         url: data.url,
         encoding: null,
@@ -441,11 +442,17 @@ class StaticMaps {
 
       request.get(options).then((res) => {
         resolve({
-          url: data.url,
-          box: data.box,
-          body: res.body,
+          success: true,
+          tile: {
+            url: data.url,
+            box: data.box,
+            body: res.body,
+          },
         });
-      }).catch(reject);
+      }).catch(error => resolve({
+        success: false,
+        error,
+      }));
     });
   }
 }
