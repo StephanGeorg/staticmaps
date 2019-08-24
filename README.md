@@ -70,11 +70,11 @@ map.addMarker(marker);
 #### addLine (options)
 Adds a polyline to the map.
 ##### Polyline options
-Parameter           | Description
-------------------- | -------------
-coords              | Coordinates of the polyline ([[Lng, Lat], ... ,[Lng, Lat]])
-color               | Stroke color of the polyline (Default: '#000000BB')
-width               | Stroke width of the polyline (Default: 3)
+Parameter           | Default   | Description
+------------------- | --------- |-------------
+coords              | Required  |Coordinates of the polyline ([[Lng, Lat], ... ,[Lng, Lat]])
+color               | #000000BB |Stroke color of the polyline
+width               | 3         |Stroke width of the polyline 
 ##### Usage example
 ```javascript
   const polyline = {
