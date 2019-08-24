@@ -27,6 +27,7 @@ const options = {
 const map = new StaticMaps(options);
 ```
 #### Map options
+
 Parameter           | Default            | Description
 ------------------- | ------------------ | -------------
 width               | Required           | Width of the output image in px
@@ -39,6 +40,7 @@ tileRequestTimeout  |                    | (optional) Timeout for the tiles requ
 tileRequestHeader   | {}                 | (optional) Additional headers for the tiles request (default: {})
 maxZoom             |                    | (optional) If defined, forces zoom to stay at least this far from the surface, useful for tile servers that error on high levels
 zoomRange           | { min: 1, max: 17} | (optional) If defined, defines the range of zoom levels to try
+reverseY            | false              | (optional) If true, reverse the y index of the tiles to match the TMS naming format
 
 ### Methods
 #### addMarker (options)
@@ -127,11 +129,13 @@ map.addText(options)
 Parameter         | Default   | Description
 ----------------- | --------- | --------------
 coord             | Required  | Coordinates of the text ([x, y])
+text              | Required  | The text to render
 color             | #000000BB | Stroke color of the text
 width             | 1px       | Stroke width of the text
 fill              | #000000   | Fill color of the text
 size              | 12        | Font-size of the text
 font              | Arial     | Font-family of the text
+anchor            | start     | Anchor of the text (`start`, `middle` or `end`)
 
 ##### Usage example
 ```javascript
@@ -142,7 +146,8 @@ font              | Arial     | Font-family of the text
     width: 1,
     fill: "#000000",
     color: "#ffffff",
-    font: "Calibri"
+    font: "Calibri",
+    anchor: "middle"
   };
 
   map.addText(text);
