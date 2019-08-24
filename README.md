@@ -350,6 +350,7 @@ const options = {
 
 # Contributers
 
++ [Olivier Kamers](https://github.com/OlivierKamers)
 + [Wesley Flynn](https://github.com/wesflynn)
 + [Thomas Konings](https://github.com/tkon99)
 + [Gihan S](https://github.com/gihanshp)
