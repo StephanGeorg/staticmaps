@@ -38,6 +38,7 @@ tileSize            | 256       | (optional) Tile size in pixel
 tileRequestTimeout  |           | (optional) Timeout for the tiles request
 tileRequestHeader   | {}        | (optional) Additional headers for the tiles request (default: {})
 maxZoom             |           | (optional) If defined, forces zoom to stay at least this far from the surface, useful for tile servers that error on high levels
+reverseY            | false     | (optional) If true, reverse the y index of the tiles to match the TMS naming format
 
 ### Methods
 #### addMarker (options)
