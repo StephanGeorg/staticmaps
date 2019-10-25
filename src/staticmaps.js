@@ -4,6 +4,7 @@ import find from 'lodash.find';
 import uniqBy from 'lodash.uniqby';
 import url from 'url';
 import process from 'process';
+import chunk from 'lodash.chunk';
 
 import Image from './image';
 import IconMarker from './marker';
@@ -22,6 +23,8 @@ const yToLat = (y, zoom) => Math.atan(Math.sinh(Math.PI * (1 - 2 * y / (2 ** zoo
   / Math.PI * 180;
 
 const xToLon = (x, zoom) => x / (2 ** zoom) * 360 - 180;
+
+const LINE_RENDER_CHUNK_SIZE = 1000;
 
 class StaticMaps {
   constructor(options = {}) {
@@ -150,10 +153,10 @@ class StaticMaps {
     }
 
     return [
-      Math.min(...extents.map(e => e[0])),
-      Math.min(...extents.map(e => e[1])),
-      Math.max(...extents.map(e => e[2])),
-      Math.max(...extents.map(e => e[3])),
+      Math.min(...extents.map((e) => e[0])),
+      Math.min(...extents.map((e) => e[1])),
+      Math.max(...extents.map((e) => e[2])),
+      Math.max(...extents.map((e) => e[3])),
     ];
   }
 
@@ -223,7 +226,7 @@ class StaticMaps {
 
     return new Promise((resolve, reject) => {
       Promise.all(tilePromises)
-        .then(values => this.image.draw(values.filter(v => v.success).map(v => v.tile)))
+        .then((values) => this.image.draw(values.filter((v) => v.success).map((v) => v.tile)))
         .then(resolve)
         .catch(reject);
     });
@@ -298,62 +301,43 @@ class StaticMaps {
     });
   }
 
-  drawLines() {
-    return new Promise(async (resolve) => {
-      if (!this.lines.length) resolve(true);
+  async drawLines() {
+    if (!this.lines.length) return true;
+    const chunks = chunk(this.lines, LINE_RENDER_CHUNK_SIZE);
+    const baseImage = sharp(this.image.image);
+    const imageMetadata = await baseImage.metadata();
+    const processedChunks = chunks.map((c) => this.processChunk(c, imageMetadata));
 
-      const queue = [];
-      this.lines.forEach((line) => {
-        queue.push(async () => {
-          await this.draw(line);
-        });
-      });
-      await asyncQueue(queue);
-      resolve(true);
-    });
+    this.image.image = await baseImage
+      .composite(processedChunks)
+      .toBuffer();
+
+    return true;
   }
 
-  /**
-   * Draw a polyline/polygon on a baseimage
-   */
-  async draw(line) {
-    const { type } = line;
+  lineToSvg(line) {
+    const points = line.coords.map((coord) => [
+      this.xToPx(lonToX(coord[0], this.zoom)),
+      this.yToPx(latToY(coord[1], this.zoom)),
+    ]);
+    return `<${(line.type === 'polyline') ? 'polyline' : 'polygon'}
+                style="fill-rule: inherit;"
+                points="${points.join(' ')}"
+                stroke="${line.color}"
+                fill="${line.fill ? line.fill : 'none'}"
+                stroke-width="${line.width}"/>`;
+  }
 
-    const baseImage = sharp(this.image.image);
-    return new Promise((resolve, reject) => {
-      const points = line.coords.map(coord => [
-        this.xToPx(lonToX(coord[0], this.zoom)),
-        this.yToPx(latToY(coord[1], this.zoom)),
-      ]);
-
-      baseImage
-        .metadata()
-        .then((imageMetadata) => {
-          const svgPath = `
+  processChunk(lines, imageMetadata) {
+    const svgPath = `
             <svg
               width="${imageMetadata.width}px"
               height="${imageMetadata.height}"
               version="1.1"
               xmlns="http://www.w3.org/2000/svg">
-              <${(type === 'polyline') ? 'polyline' : 'polygon'}
-                style="fill-rule: inherit;"
-                points="${points.join(' ')}"
-                stroke="${line.color}"
-                fill="${line.fill ? line.fill : 'none'}"
-                stroke-width="${line.width}"/>
+              ${lines.map((line) => this.lineToSvg(line))}              
             </svg>`;
-
-          baseImage
-            .composite([{ input: Buffer.from(svgPath), top: 0, left: 0 }])
-            .toBuffer()
-            .then((buffer) => {
-              this.image.image = buffer;
-              resolve(buffer);
-            })
-            .catch(reject);
-        })
-        .catch(reject);
-    });
+    return { input: Buffer.from(svgPath), top: 0, left: 0 };
   }
 
   drawMarker() {
@@ -381,7 +365,7 @@ class StaticMaps {
   loadMarker() {
     return new Promise((resolve, reject) => {
       if (!this.markers.length) resolve(true);
-      const icons = uniqBy(this.markers.map(m => ({ file: m.img })), 'file');
+      const icons = uniqBy(this.markers.map((m) => ({ file: m.img })), 'file');
 
       let count = 1;
       icons.forEach(async (ico) => {
@@ -447,7 +431,7 @@ class StaticMaps {
             body: res.body,
           },
         });
-      }).catch(error => resolve({
+      }).catch((error) => resolve({
         success: false,
         error,
       }));
