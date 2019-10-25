@@ -175,6 +175,30 @@ describe('StaticMap', () => {
         .then(done)
         .catch(done);
     }).timeout(0);
+
+    it('Render StaticMap w/ thousands of polygons', (done) => {
+      const options = {
+        width: 600,
+        height: 300,
+        paddingX: 50,
+        paddingY: 50,
+      };
+
+      const map = new StaticMaps(options);
+
+      const polygon = {
+        coords: GeoJSON.way.geometry.coordinates[0][0],
+        color: '#0000FFBB',
+        fill: '#000000BB',
+        width: 1,
+      };
+
+      for (let i = 0; i < 10000; i++) map.addPolygon({ ...polygon });
+      map.render([13.437524, 52.4945528], 13)
+        .then(() => map.image.save('test/out/07-multiple-polygons.png'))
+        .then(done)
+        .catch(done);
+    }).timeout(0);
   });
 
   describe('Rendering text ...', () => {
