@@ -335,28 +335,35 @@ class StaticMaps {
               height="${imageMetadata.height}"
               version="1.1"
               xmlns="http://www.w3.org/2000/svg">
-              ${lines.map((line) => this.lineToSvg(line))}              
+              ${lines.map((line) => this.lineToSvg(line))}
             </svg>`;
     return { input: Buffer.from(svgPath), top: 0, left: 0 };
   }
 
   drawMarker() {
-    return new Promise(async (resolve) => {
-      const queue = [];
-      this.markers.forEach((marker) => {
-        queue.push(async () => {
-          this.image.image = await sharp(this.image.image)
-            .composite([{
-              input: marker.imgData,
-              top: Math.round(marker.position[1]),
-              left: Math.round(marker.position[0]),
-            }])
-            .toBuffer();
-        });
+    const queue = [];
+    this.markers.forEach((marker) => {
+      queue.push(async () => {
+        const top = Math.round(marker.position[1]);
+        const left = Math.round(marker.position[0]);
+
+        if (
+          top < 0
+          || left < 0
+          || top > this.height
+          || left > this.width
+        ) return;
+
+        this.image.image = await sharp(this.image.image)
+          .composite([{
+            input: marker.imgData,
+            top,
+            left,
+          }])
+          .toBuffer();
       });
-      await asyncQueue(queue);
-      resolve(true);
     });
+    return asyncQueue(queue);
   }
 
   /**
