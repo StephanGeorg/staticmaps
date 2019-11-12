@@ -5,7 +5,7 @@ A node.js library for creating map images with polylines, markers and text. This
 
 ## Prerequisites
 
-Image manipulation is based on **[Sharp](http://sharp.dimens.io)**. Pre-compiled binaries for sharp are provided for use with Node versions 6, 8, 10, 11 and 12 on 64-bit Windows, OS X and Linux platforms. For other OS or using with **Heroku, Docker, AWS Lambda** please refer to [sharp installation instructions](http://sharp.dimens.io/en/stable/install/).
+Image manipulation is based on **[Sharp](https://sharp.pixelplumbing.com/)**. Pre-compiled binaries for sharp are provided for use with Node versions 8, 10, 12 and 13 on 64-bit Windows, OS X and Linux platforms. For other OS or using with **Heroku, Docker, AWS Lambda** please refer to [sharp installation instructions](https://sharp.pixelplumbing.com/en/stable/install/).
 
 ## Installation
 
@@ -74,7 +74,7 @@ Parameter           | Default   | Description
 ------------------- | --------- |-------------
 coords              | Required  |Coordinates of the polyline ([[Lng, Lat], ... ,[Lng, Lat]])
 color               | #000000BB |Stroke color of the polyline
-width               | 3         |Stroke width of the polyline 
+width               | 3         |Stroke width of the polyline
 ##### Usage example
 ```javascript
   const polyline = {
