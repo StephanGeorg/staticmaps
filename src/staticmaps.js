@@ -3,7 +3,7 @@ import sharp from 'sharp';
 import find from 'lodash.find';
 import uniqBy from 'lodash.uniqby';
 import url from 'url';
-import process from 'process';
+// import process from 'process';
 import chunk from 'lodash.chunk';
 
 import Image from './image';
@@ -11,7 +11,7 @@ import IconMarker from './marker';
 import Polyline from './polyline';
 import Text from './text';
 import asyncQueue from './helper/asyncQueue';
-import pjson from '../package.json';
+// import pjson from '../package.json';
 
 /* transform longitude to tile number */
 const lonToX = (lon, zoom) => ((lon + 180) / 360) * (2 ** zoom);
@@ -39,6 +39,7 @@ class StaticMaps {
     this.tileSize = this.options.tileSize || 256;
     this.tileRequestTimeout = this.options.tileRequestTimeout;
     this.tileRequestHeader = this.options.tileRequestHeader;
+    this.tileRequestLimit = this.options.tileRequestLimit || 2;
     this.reverseY = this.options.reverseY || false;
     this.maxZoom = this.options.maxZoom;
     this.zoomRange = this.options.zoomRange || { min: 1, max: 17 };
@@ -75,7 +76,7 @@ class StaticMaps {
   /**
     * Render static map with all map features that were added to map before
     */
-  render(center, zoom) {
+  async render(center, zoom) {
     if (!this.lines && !this.markers && !this.polygons && !(center && zoom)) {
       throw new Error('Cannot render empty map: Add  center || lines || markers || polygons.');
     }
@@ -104,8 +105,11 @@ class StaticMaps {
 
     this.image = new Image(this.options);
 
-    return this.drawBaselayer()
-      .then(this.drawFeatures.bind(this));
+    await Promise.all([
+      this.drawBaselayer(),
+      this.loadMarker(),
+    ]);
+    return this.drawFeatures();
   }
 
   /**
@@ -193,7 +197,7 @@ class StaticMaps {
     return Number(Math.round(px));
   }
 
-  drawBaselayer() {
+  async drawBaselayer() {
     const xMin = Math.floor(this.centerX - (0.5 * this.width / this.tileSize));
     const yMin = Math.floor(this.centerY - (0.5 * this.height / this.tileSize));
     const xMax = Math.ceil(this.centerX + (0.5 * this.width / this.tileSize));
@@ -221,37 +225,26 @@ class StaticMaps {
       }
     }
 
-    const tilePromises = [];
-    result.forEach((r) => { tilePromises.push(this.getTile(r)); });
-
-    return new Promise((resolve, reject) => {
-      Promise.all(tilePromises)
-        .then((values) => this.image.draw(values.filter((v) => v.success).map((v) => v.tile)))
-        .then(resolve)
-        .catch(reject);
-    });
+    const tiles = await this.getTiles(result);
+    return this.image.draw(tiles.filter((v) => v.success).map((v) => v.tile));
   }
 
-  drawFeatures() {
-    return this.drawLines()
-      .then(this.loadMarker.bind(this))
-      .then(this.drawMarker.bind(this))
-      .then(this.drawText.bind(this));
-  }
+  async drawText() {
+    if (!this.text.length) return null;
 
-  drawText() {
-    return new Promise(async (resolve) => {
-      if (!this.text.length) resolve(true);
-
-      const queue = [];
-      this.text.forEach((text) => {
-        queue.push(async () => {
-          await this.renderText(text);
-        });
+    const queue = [];
+    this.text.forEach((text) => {
+      queue.push(async () => {
+        await this.renderText(text);
       });
-      await asyncQueue(queue);
-      resolve(true);
     });
+    return asyncQueue(queue);
+  }
+
+  async drawFeatures() {
+    await this.drawLines();
+    await this.drawMarker();
+    await this.drawText();
   }
 
   /**
@@ -414,7 +407,7 @@ class StaticMaps {
   }
 
   /**
-   *  Fetching tiles from endpoint
+   *  Fetching tile from endpoint
    */
   getTile(data) {
     return new Promise((resolve) => {
@@ -426,8 +419,8 @@ class StaticMaps {
         timeout: this.tileRequestTimeout,
       };
 
-      const defaultAgent = `staticmaps@${pjson.version} (Node.js ${process.version})`;
-      options.headers['User-Agent'] = options.headers['User-Agent'] || defaultAgent;
+      // const defaultAgent = `staticmaps@${pjson.version}`;
+      // options.headers['User-Agent'] = options.headers['User-Agent'] || defaultAgent;
 
       got.get(options).then((res) => {
         resolve({
@@ -443,6 +436,40 @@ class StaticMaps {
         error,
       }));
     });
+  }
+
+  /**
+   *  Fetching tiles and limit concurrent connections
+   */
+  async getTiles(baseLayers) {
+    const limit = this.tileRequestLimit;
+
+    // Limit concurrent connections to tiles server
+    // https://operations.osmfoundation.org/policies/tiles/#technical-usage-requirements
+    if (Number(limit)) {
+      const aQueue = [];
+      const tiles = [];
+      for (let i = 0, j = baseLayers.length; i < j; i += limit) {
+        const chunks = baseLayers.slice(i, i + limit);
+        const sQueue = [];
+        aQueue.push(async () => {
+          chunks.forEach((r) => {
+            sQueue.push((async () => {
+              const tile = await this.getTile(r);
+              tiles.push(tile);
+            })());
+          });
+          await Promise.all(sQueue);
+        });
+      }
+      await asyncQueue(aQueue);
+      return tiles;
+    }
+
+    // Do not limit concurrent connections at all
+    const tilePromises = [];
+    baseLayers.forEach((r) => { tilePromises.push(this.getTile(r)); });
+    return Promise.all(tilePromises);
   }
 }
 

@@ -38,6 +38,7 @@ tileUrl             |                    | (optional) Tile server URL for the ma
 tileSize            | 256                | (optional) Tile size in pixel
 tileRequestTimeout  |                    | (optional) Timeout for the tiles request
 tileRequestHeader   | {}                 | (optional) Additional headers for the tiles request (default: {})
+tileRequestLimit    | 2                  | (optional) Limit concurrent connections to the tiles server
 maxZoom             |                    | (optional) If defined, forces zoom to stay at least this far from the surface, useful for tile servers that error on high levels
 zoomRange           | { min: 1, max: 17} | (optional) If defined, defines the range of zoom levels to try
 reverseY            | false              | (optional) If true, reverse the y index of the tiles to match the TMS naming format

@@ -20,10 +20,10 @@ export default class Polyline {
    */
   extent() {
     return [
-      Math.min(...this.coords.map(c => c[0])),
-      Math.min(...this.coords.map(c => c[1])),
-      Math.max(...this.coords.map(c => c[0])),
-      Math.max(...this.coords.map(c => c[1])),
+      Math.min(...this.coords.map((c) => c[0])),
+      Math.min(...this.coords.map((c) => c[1])),
+      Math.max(...this.coords.map((c) => c[0])),
+      Math.max(...this.coords.map((c) => c[1])),
     ];
   }
 }

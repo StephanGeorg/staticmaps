@@ -3,8 +3,24 @@
     "plugins": [
         "import"
     ],
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "ecmaFeatures": {
+        "experimentalObjectRestSpread": true
+      }
+    },
+    "globals": {
+      "document": true,
+      "window": true,
+      "location": true
+    },
     "rules": {
-      "no-mixed-operators": 0,
-      "no-plusplus": 0
+      "no-underscore-dangle": 0,
+      "no-plusplus": 0,
+      "no-console": 0
+    },
+    "env": {
+      "node": true,
+      "mocha": true
     }
 }
