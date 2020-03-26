@@ -30,29 +30,29 @@
   },
   "homepage": "https://github.com/StephanGeorg/staticmaps#readme",
   "dependencies": {
-    "@babel/runtime": "^7.5.5",
+    "@babel/runtime": "^7.9.2",
     "lodash.chunk": "^4.2.0",
     "lodash.find": "^4.6.0",
     "lodash.first": "^3.0.0",
     "lodash.isequal": "^4.5.0",
     "lodash.last": "^3.0.0",
     "lodash.uniqby": "^4.7.0",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4",
-    "sharp": "^0.23.2"
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
+    "sharp": "0.23.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.5",
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-transform-runtime": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "@babel/preset-stage-2": "^7.0.0",
-    "@babel/register": "^7.5.5",
-    "babel-eslint": "^10.0.2",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-transform-runtime": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-stage-2": "^7.8.3",
+    "@babel/register": "^7.9.0",
+    "babel-eslint": "^10.1.0",
     "chai": "^4.2.0",
-    "eslint": "^6.2.2",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2",
-    "mocha": "^6.2.0"
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "mocha": "^7.1.1"
   }
 }
