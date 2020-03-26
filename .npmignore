@@ -2,3 +2,4 @@ src
 test
 README.md
 .eslintrc
+.babelrc
