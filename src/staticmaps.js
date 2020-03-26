@@ -1,4 +1,4 @@
-import request from 'request-promise';
+import got from 'got';
 import sharp from 'sharp';
 import find from 'lodash.find';
 import uniqBy from 'lodash.uniqby';
@@ -381,10 +381,10 @@ class StaticMaps {
         try {
           // Load marker from remote url
           if (isUrl) {
-            const img = await request.get({
+            const img = await got.get({
               rejectUnauthorized: false,
               url: icon.file,
-              encoding: null,
+              responseType: 'buffer',
             });
             icon.data = await sharp(img).toBuffer();
           } else {
@@ -420,7 +420,7 @@ class StaticMaps {
     return new Promise((resolve) => {
       const options = {
         url: data.url,
-        encoding: null,
+        responseType: 'buffer',
         resolveWithFullResponse: true,
         headers: this.tileRequestHeader || {},
         timeout: this.tileRequestTimeout,
@@ -429,7 +429,7 @@ class StaticMaps {
       const defaultAgent = `staticmaps@${pjson.version} (Node.js ${process.version})`;
       options.headers['User-Agent'] = options.headers['User-Agent'] || defaultAgent;
 
-      request.get(options).then((res) => {
+      got.get(options).then((res) => {
         resolve({
           success: true,
           tile: {
