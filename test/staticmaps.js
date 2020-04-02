@@ -267,6 +267,7 @@ describe('StaticMap', () => {
       map.render([13.437524, 52.4945528], 13)
         .then(() => map.image.buffer('image/png'))
         .then((buffer) => {
+          expect(buffer).to.be.an.instanceof(Buffer);
           done();
         })
         .catch(done);
