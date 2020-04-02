@@ -121,11 +121,11 @@ export default class Image {
     const outputOptions = outOpts;
     outputOptions.quality = outputOptions.quality || this.quality;
     switch (mime.toLowerCase()) {
-      case 'image/webp': return await sharp(this.image).webp(outputOptions).toBuffer();
+      case 'image/webp': return sharp(this.image).webp(outputOptions).toBuffer();
       case 'image/jpeg':
-      case 'image/jpg': return await sharp(this.image).jpeg(outputOptions).toBuffer();
+      case 'image/jpg': return sharp(this.image).jpeg(outputOptions).toBuffer();
       case 'image/png':
-      default: return await sharp(this.image).png(outputOptions).toBuffer();
+      default: return sharp(this.image).png(outputOptions).toBuffer();
     }
   }
 }
