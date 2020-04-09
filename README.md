@@ -38,20 +38,20 @@ const map = new StaticMaps(options);
 ```
 #### Map options
 
-Parameter           | Default            | Description
-------------------- | ------------------ | -------------
-width               | Required           | Width of the output image in px
-height              | Required           | Height of the output image in px
-paddingX            | 0                  | (optional) Minimum distance in px between map features and map border
-paddingY            | 0                  | (optional) Minimum distance in px between map features and map border
-tileUrl             |                    | (optional) Tile server URL for the map base layer
-tileSize            | 256                | (optional) Tile size in pixel
-tileRequestTimeout  |                    | (optional) Timeout for the tiles request
-tileRequestHeader   | {}                 | (optional) Additional headers for the tiles request (default: {})
-tileRequestLimit    | 2                  | (optional) Limit concurrent connections to the tiles server
-maxZoom             |                    | (optional) If defined, forces zoom to stay at least this far from the surface, useful for tile servers that error on high levels
-zoomRange           | { min: 1, max: 17} | (optional) If defined, defines the range of zoom levels to try
-reverseY            | false              | (optional) If true, reverse the y index of the tiles to match the TMS naming format
+Parameter           | Default             | Description
+------------------- | ------------------- | -------------
+width               | Required            | Width of the output image in px
+height              | Required            | Height of the output image in px
+paddingX            | 0                   | (optional) Minimum distance in px between map features and map border
+paddingY            | 0                   | (optional) Minimum distance in px between map features and map border
+tileUrl             |                     | (optional) Tile server URL for the map base layer
+tileSize            | 256                 | (optional) Tile size in pixel
+tileRequestTimeout  |                     | (optional) Timeout for the tiles request
+tileRequestHeader   | {}                  | (optional) Additional headers for the tiles request (default: {})
+tileRequestLimit    | 2                   | (optional) Limit concurrent connections to the tiles server
+zoomRange           | { min: 1, max: 17 } | (optional) Defines the range of zoom levels to try
+maxZoom             |                     | (optional) DEPRECATED: Use zoomRange.max instead: forces zoom to stay at least this far from the surface, useful for tile servers that error on high levels
+reverseY            | false               | (optional) If true, reverse the y index of the tiles to match the TMS naming format
 
 ### Methods
 #### addMarker (options)
@@ -336,7 +336,9 @@ const options = {
     width: 1200,
     height: 800,
     tileUrl: 'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg',
-    maxZoom: 8 // NASA server does not support level 9 or higher
+    zoomRange {
+      max: 8, // NASA server does not support level 9 or higher
+    }
   };
 
   const map = new StaticMaps(options);

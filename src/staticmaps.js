@@ -41,8 +41,12 @@ class StaticMaps {
     this.tileRequestHeader = this.options.tileRequestHeader;
     this.tileRequestLimit = this.options.tileRequestLimit || 2;
     this.reverseY = this.options.reverseY || false;
-    this.maxZoom = this.options.maxZoom;
-    this.zoomRange = this.options.zoomRange || { min: 1, max: 17 };
+    // this.maxZoom = this.options.maxZoom; DEPRECATED: use zoomRange.max instead
+    const zoomRange = this.options.zoomRange || {};
+    this.zoomRange = {
+      min: zoomRange.min || 1,
+      max: this.options.maxZoom || zoomRange.max || 17, // maxZoom
+    };
 
     // # features
     this.markers = [];
@@ -84,9 +88,8 @@ class StaticMaps {
     this.center = center;
     this.zoom = zoom || this.calculateZoom();
 
-    if (this.maxZoom && this.zoom > this.maxZoom) {
-      this.zoom = this.maxZoom;
-    }
+    const maxZoom = this.zoomRange.max;
+    if (maxZoom && this.zoom > maxZoom) this.zoom = maxZoom;
 
     if (center && center.length === 2) {
       this.centerX = lonToX(center[0], this.zoom);

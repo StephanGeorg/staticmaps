@@ -233,7 +233,9 @@ describe('StaticMap', () => {
         width: 1200,
         height: 800,
         tileUrl: 'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg',
-        maxZoom: 8,
+        zoomRange: {
+          max: 8,
+        },
       };
 
       const map = new StaticMaps(options);
