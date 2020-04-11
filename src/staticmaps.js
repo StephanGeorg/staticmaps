@@ -37,6 +37,7 @@ class StaticMaps {
     this.padding = [this.paddingX, this.paddingY];
     this.tileUrl = this.options.tileUrl || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
     this.tileSize = this.options.tileSize || 256;
+    this.subdomains = this.options.subdomains || [];
     this.tileRequestTimeout = this.options.tileRequestTimeout;
     this.tileRequestHeader = this.options.tileRequestHeader;
     this.tileRequestLimit = this.options.tileRequestLimit || 2;
@@ -216,8 +217,15 @@ class StaticMaps {
         let tileY = (y + maxTile) % maxTile;
         if (this.reverseY) tileY = ((1 << this.zoom) - tileY) - 1;
 
+        let tileUrl = this.tileUrl.replace('{z}', this.zoom).replace('{x}', tileX).replace('{y}', tileY);
+
+        if (this.subdomains.length > 0) {
+          // replace subdomain with random domain from subdomains array
+          tileUrl = tileUrl.replace('{s}', this.subdomains[Math.floor(Math.random() * this.subdomains.length)]);
+        }
+
         result.push({
-          url: this.tileUrl.replace('{z}', this.zoom).replace('{x}', tileX).replace('{y}', tileY),
+          url: tileUrl,
           box: [
             this.xToPx(x),
             this.yToPx(y),

@@ -46,6 +46,7 @@ paddingX            | 0                   | (optional) Minimum distance in px be
 paddingY            | 0                   | (optional) Minimum distance in px between map features and map border
 tileUrl             |                     | (optional) Tile server URL for the map base layer
 tileSize            | 256                 | (optional) Tile size in pixel
+subdomains          | []                  | (optional) Subdomains of tile server, usage ['a', 'b', 'c']
 tileRequestTimeout  |                     | (optional) Timeout for the tiles request
 tileRequestHeader   | {}                  | (optional) Additional headers for the tiles request (default: {})
 tileRequestLimit    | 2                   | (optional) Limit concurrent connections to the tiles server
@@ -336,7 +337,7 @@ const options = {
     width: 1200,
     height: 800,
     tileUrl: 'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg',
-    zoomRange {
+    zoomRange: {
       max: 8, // NASA server does not support level 9 or higher
     }
   };
@@ -360,6 +361,22 @@ const options = {
 
 #### Output
 ![NASA Blue Marble with text](https://i.imgur.com/Jb6hsju.jpg)
+
+### Tile server with subdomains
+{s} - subdomain (subdomain), is necessary in order not to fall into the limit for requests to the same domain. Some servers can block your IP if you get tiles from one of subdomains of tile server.
+```javascript
+const options = {
+    width: 1024,
+    height: 1024,
+    subdomains: ['a', 'b', 'c'],
+    tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+};
+
+const map = new StaticMaps(options);
+
+map.render([13.437524, 52.4945528], 13)
+.then(() => map.image.save('test/out/subdomains.png'));
+```
 
 # Contributers
 
