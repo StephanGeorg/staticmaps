@@ -380,6 +380,7 @@ map.render([13.437524, 52.4945528], 13)
 
 # Contributers
 
++ [Ergashev Adizbek](https://github.com/Adizbek)
 + [Olivier Kamers](https://github.com/OlivierKamers)
 + [Wesley Flynn](https://github.com/wesflynn)
 + [Thomas Konings](https://github.com/tkon99)
