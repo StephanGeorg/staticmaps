@@ -217,17 +217,15 @@ class StaticMaps {
         let tileY = (y + maxTile) % maxTile;
         if (this.reverseY) tileY = ((1 << this.zoom) - tileY) - 1;
 
-        let url = this.tileUrl.replace('{z}', this.zoom).replace('{x}', tileX).replace('{y}', tileY)
+        let tileUrl = this.tileUrl.replace('{z}', this.zoom).replace('{x}', tileX).replace('{y}', tileY);
 
-        if(this.subdomains.length > 0) {
+        if (this.subdomains.length > 0) {
           // replace subdomain with random domain from subdomains array
-          url = url.replace('{s}', this.subdomains[Math.floor(Math.random() * this.subdomains.length)])
+          tileUrl = tileUrl.replace('{s}', this.subdomains[Math.floor(Math.random() * this.subdomains.length)]);
         }
 
-        console.log(url)
-
         result.push({
-          url,
+          url: tileUrl,
           box: [
             this.xToPx(x),
             this.yToPx(y),

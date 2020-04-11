@@ -275,4 +275,22 @@ describe('StaticMap', () => {
         .catch(done);
     }).timeout(0);
   });
+
+  describe('Fetch tiles from subdomains', () => {
+    it('should fetch from subdomains', (done) => {
+      const options = {
+        width: 1024,
+        height: 1024,
+        subdomains: ['a', 'b', 'c'],
+        tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      };
+
+      const map = new StaticMaps(options);
+
+      map.render([13.437524, 52.4945528], 13)
+        .then(() => map.image.save('test/out/10-subdomains.png'))
+        .then(done)
+        .catch(done);
+    }).timeout(0);
+  });
 });
