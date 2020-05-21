@@ -390,7 +390,7 @@ class StaticMaps {
               url: icon.file,
               responseType: 'buffer',
             });
-            icon.data = await sharp(img).toBuffer();
+            icon.data = await sharp(img.body).toBuffer();
           } else {
             // Load marker from local fs
             icon.data = await sharp(icon.file).toBuffer();
