@@ -91,6 +91,34 @@ describe('StaticMap', () => {
         .catch(done);
     }).timeout(0);
 
+    it('render w/ remote url icon', (done) => {
+      const options = {
+        width: 500,
+        height: 500,
+      };
+
+      const map = new StaticMaps(options);
+
+      const marker = {
+        img: "https://img.icons8.com/color/48/000000/marker.png",
+        offsetX: 24,
+        offsetY: 48,
+        width: 48,
+        height: 48,
+      };
+
+      marker.coord = [13.437524, 52.4945528];
+      map.addMarker(marker);
+
+      marker.coord = [13.430524, 52.4995528];
+      map.addMarker(marker);
+
+      map.render([13.437524, 52.4945528], 12)
+        .then(() => map.image.save('test/out/04-marker.png'))
+        .then(done)
+        .catch((err) => { console.log(err)});
+    }).timeout(0);
+
     it('render w/out center', (done) => {
       const options = {
         width: 1200,
