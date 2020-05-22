@@ -100,7 +100,7 @@ describe('StaticMap', () => {
       const map = new StaticMaps(options);
 
       const marker = {
-        img: "https://img.icons8.com/color/48/000000/marker.png",
+        img: 'https://img.icons8.com/color/48/000000/marker.png',
         offsetX: 24,
         offsetY: 48,
         width: 48,
@@ -114,9 +114,9 @@ describe('StaticMap', () => {
       map.addMarker(marker);
 
       map.render([13.437524, 52.4945528], 12)
-        .then(() => map.image.save('test/out/04-marker.png'))
+        .then(() => map.image.save('test/out/04-marker-remote.png'))
         .then(done)
-        .catch((err) => { console.log(err)});
+        .catch(console.log);
     }).timeout(0);
 
     it('render w/out center', (done) => {
