@@ -2,6 +2,7 @@ import path from 'path';
 
 import StaticMaps from '../src/staticmaps';
 import GeoJSON from './static/geojson';
+import MultiPolygonGeometry from './static/multipolygonGeometry'
 import Route from './static/routeLong';
 
 const { expect } = require('chai');
@@ -200,6 +201,30 @@ describe('StaticMap', () => {
       map.addPolygon(polygon);
       map.render()
         .then(() => map.image.save('test/out/07-polygon.png'))
+        .then(done)
+        .catch(done);
+    }).timeout(0);
+
+    it('Render StaticMap w/ multipolygon', (done) => {
+      const options = {
+        width: 600,
+        height: 300,
+        paddingX: 50,
+        paddingY: 50,
+      };
+
+      const map = new StaticMaps(options);
+
+      const multipolygon = {
+        coords: MultiPolygonGeometry.geometry.coordinates,
+        color: '#0000FFBB',
+        fill: '#000000BB',
+        width: 1,
+      };
+
+      map.addMultiPolygon(multipolygon);
+      map.render()
+        .then(() => map.image.save('test/out/07-multipolygon.png'))
         .then(done)
         .catch(done);
     }).timeout(0);
