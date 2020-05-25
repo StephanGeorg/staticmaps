@@ -9,6 +9,7 @@ import chunk from 'lodash.chunk';
 import Image from './image';
 import IconMarker from './marker';
 import Polyline from './polyline';
+import MultiPolygon from './multipolygon';
 import Text from './text';
 import asyncQueue from './helper/asyncQueue';
 // import pjson from '../package.json';
@@ -52,7 +53,7 @@ class StaticMaps {
     // # features
     this.markers = [];
     this.lines = [];
-    this.polygons = [];
+    this.multipolygons = [];
     this.text = [];
 
     // # fields that get set when map is rendered
@@ -74,6 +75,10 @@ class StaticMaps {
     this.lines.push(new Polyline(options));
   }
 
+  addMultiPolygon(options) {
+    this.multipolygons.push(new MultiPolygon(options));
+  }
+
   addText(options) {
     this.text.push(new Text(options));
   }
@@ -82,7 +87,7 @@ class StaticMaps {
     * Render static map with all map features that were added to map before
     */
   async render(center, zoom) {
-    if (!this.lines && !this.markers && !this.polygons && !(center && zoom)) {
+    if (!this.lines && !this.markers && !this.multipolygons && !(center && zoom)) {
       throw new Error('Cannot render empty map: Add  center || lines || markers || polygons.');
     }
 
@@ -131,6 +136,11 @@ class StaticMaps {
         extents.push(line.extent());
       });
     } // extents.push(this.lines.map(function(line){ return line.extent(); }));
+    if (this.multipolygons.length) {
+      this.multipolygons.forEach((multipolygon) => {
+        extents.push(multipolygon.extent());
+      });
+    }
 
     // Add marker to extent
     for (let i = 0; i < this.markers.length; i++) {
@@ -254,6 +264,7 @@ class StaticMaps {
 
   async drawFeatures() {
     await this.drawLines();
+    await this.drawMultiPolygons();
     await this.drawMarker();
     await this.drawText();
   }
@@ -303,6 +314,56 @@ class StaticMaps {
         })
         .catch(reject);
     });
+  }
+
+  async drawMultiPolygons() {
+    if (!this.multipolygons.length) return true;
+    const baseImage = sharp(this.image.image);
+    const imageMetadata = await baseImage.metadata();
+
+    const mpSvgs = this.multipolygons.map((multipolygon) => this.processMultiPolygon(multipolygon, imageMetadata));
+
+    this.image.image = await baseImage.composite(mpSvgs).toBuffer();
+
+    return true;
+  }
+
+  processMultiPolygon(multipolygon, imageMetadata) {
+    const svgPath = `
+            <svg
+              width="${imageMetadata.width}px"
+              height="${imageMetadata.height}"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg">
+              ${this.multipolygonToPath(multipolygon)}
+            </svg>`;
+    return { input: Buffer.from(svgPath), top: 0, left: 0 };
+  }
+
+  multipolygonToPath(multipolygon) {
+    const shapeArrays = multipolygon.coords.map((shape) => shape.map((coord) => [
+      this.xToPx(lonToX(coord[0], this.zoom)),
+      this.yToPx(latToY(coord[1], this.zoom)),
+    ]));
+
+    const pathArrays = shapeArrays.map((points) => {
+      const startPoint = points.shift();
+
+      const pathParts = [
+        `M ${startPoint[0]} ${startPoint[1]}`,
+        ...points.map((p) => `L ${p[0]} ${p[1]}`),
+        'Z',
+      ];
+
+      return pathParts.join(' ');
+    });
+
+    return `<path
+              d="${pathArrays.join(' ')}"
+              style="fill-rule: inherit;"
+              stroke="${multipolygon.color}"
+              fill="${multipolygon.fill ? multipolygon.fill : 'none'}"
+              stroke-width="${multipolygon.width}"/>`;
   }
 
   async drawLines() {
