@@ -132,6 +132,52 @@ fill                | #000000BB | Fill color of the polygon
 ```
 ***
 
+#### addMultiPolygon(options)
+Adds a polygon to the map. Polygon is the same as a polyline but first and last coordinate are equal.
+```
+map.addPolygon(options);
+```
+##### Multipolygon options
+Parameter           | Default   | Description
+------------------- | --------- | -------------
+coords              | Required  | Coordinates of the multipolygon ([[Lng, Lat], ... ,[Lng, Lat]])
+color               | #000000BB | Stroke color of the multipolygon  
+width               | 3         | Stroke width of the multipolygon
+fill                | #000000BB | Fill color of the multipolygon
+##### Usage example
+```javascript
+  const multipolygon = {
+    coords: [
+      [
+        [-89.9619685, 41.7792032],
+        [-89.959505, 41.7792084],
+        [-89.9594928, 41.7827904],
+        [-89.9631906, 41.7827815],
+        [-89.9632678, 41.7821559],
+        [-89.9634801, 41.7805341],
+        [-89.9635341, 41.780109],
+        [-89.9635792, 41.7796834],
+        [-89.9636183, 41.7792165],
+        [-89.9619685, 41.7792032],
+      ],
+      [
+        [-89.9631647, 41.7809413],
+        [-89.9632927, 41.7809487],
+        [-89.9631565, 41.781985],
+        [-89.9622404, 41.7819137],
+        [-89.9623616, 41.780997],
+        [-89.963029, 41.7810114],
+        [-89.9631647, 41.7809413],
+      ],
+    ],
+    color: '#0000FFBB',
+    width: 3
+  };
+
+  map.addMultiPolygon(multipolygon);
+```
+***
+
 #### addText(options)
 Adds text to the map.
 ```

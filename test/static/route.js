@@ -1,1 +1,51 @@
-export default { "code":"Ok","routes":[{"geometry":{"coordinates":[[13.438854,52.494917],[13.426408,52.499321],[13.411286,52.503481],[13.411046,52.504033],[13.410159,52.504214],[13.410085,52.504713],[13.405126,52.508227],[13.405304,52.508327],[13.401721,52.511327],[13.401397,52.511232],[13.401094,52.511636],[13.397173,52.513344],[13.395061,52.513335],[13.394641,52.514157],[13.393179,52.514105],[13.393033,52.514997],[13.389354,52.514774],[13.389037,52.515649],[13.386058,52.515451],[13.385894,52.516325],[13.38652,52.51636]],"type":"LineString"},"legs":[{"summary":"","weight":3490.8,"duration":3490.8,"steps":[],"distance":4827.1}],"weight_name":"duration","weight":3490.8,"duration":3490.8,"distance":4827.1}],"waypoints":[{"hint":"0qodgOKDNILw0AIASgUAAAAAAAAAAAAAUgAAAEoFAAAAAAAAAAAAAFIAAAACphYABwAAAIYPzQBFAiEDhg_NAEUCIQMAAAMDPkaMgQ==","name":"Glogauer Straße","location":[13.438854,52.494917]},{"hint":"gNt0jZVKepEAAAAAMgEAAAAAAAAAAAAAAAAAADIBAAAAAAAAAAAAAAAAAAC7m5EHBwAAABhDzAAIViEDJEbMAARVIQMAAAMDPkaMgQ==","name":"","location":[13.38652,52.51636]}]}
+export default {
+  code: 'Ok',
+  routes: [{
+    geometry: {
+      coordinates: [
+        [13.438854, 52.494917],
+        [13.426408, 52.499321],
+        [13.411286, 52.503481],
+        [13.411046, 52.504033],
+        [13.410159, 52.504214],
+        [13.410085, 52.504713],
+        [13.405126, 52.508227],
+        [13.405304, 52.508327],
+        [13.401721, 52.511327],
+        [13.401397, 52.511232],
+        [13.401094, 52.511636],
+        [13.397173, 52.513344],
+        [13.395061, 52.513335],
+        [13.394641, 52.514157],
+        [13.393179, 52.514105],
+        [13.393033, 52.514997],
+        [13.389354, 52.514774],
+        [13.389037, 52.515649],
+        [13.386058, 52.515451],
+        [13.385894, 52.516325],
+        [13.38652, 52.51636],
+      ],
+      type: 'LineString',
+    },
+    legs: [{
+      summary: '',
+      weight: 3490.8,
+      duration: 3490.8,
+      steps: [],
+      distance: 4827.1,
+    }],
+    weight_name: 'duration',
+    weight: 3490.8,
+    duration: 3490.8,
+    distance: 4827.1,
+  }],
+  waypoints: [{
+    hint: '0qodgOKDNILw0AIASgUAAAAAAAAAAAAAUgAAAEoFAAAAAAAAAAAAAFIAAAACphYABwAAAIYPzQBFAiEDhg_NAEUCIQMAAAMDPkaMgQ==',
+    name: 'Glogauer Straße',
+    location: [13.438854, 52.494917],
+  }, {
+    hint: 'gNt0jZVKepEAAAAAMgEAAAAAAAAAAAAAAAAAADIBAAAAAAAAAAAAAAAAAAC7m5EHBwAAABhDzAAIViEDJEbMAARVIQMAAAMDPkaMgQ==',
+    name: '',
+    location: [13.38652, 52.51636],
+  }],
+};

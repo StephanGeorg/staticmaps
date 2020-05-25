@@ -2,7 +2,7 @@ import path from 'path';
 
 import StaticMaps from '../src/staticmaps';
 import GeoJSON from './static/geojson';
-import MultiPolygonGeometry from './static/multipolygonGeometry'
+import MultiPolygonGeometry from './static/multipolygonGeometry';
 import Route from './static/routeLong';
 
 const { expect } = require('chai');
@@ -18,6 +18,7 @@ describe('StaticMap', () => {
           height: 200,
         };
         const map = new StaticMaps(options);
+        expect(map.constructor.name).to.be.equal('StaticMaps');
       }).to.not.throw();
     });
   });
