@@ -1,6 +1,3 @@
-import isEqual from 'lodash.isequal';
-import first from 'lodash.first';
-import last from 'lodash.last';
 import flatten from 'lodash.flatten';
 
 export default class MultiPolygon {

@@ -135,7 +135,7 @@ fill                | #000000BB | Fill color of the polygon
 #### addMultiPolygon(options)
 Adds a polygon to the map. Polygon is the same as a polyline but first and last coordinate are equal.
 ```
-map.addPolygon(options);
+map.addMultiPolygon(options);
 ```
 ##### Multipolygon options
 Parameter           | Default   | Description

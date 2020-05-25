@@ -321,7 +321,8 @@ class StaticMaps {
     const baseImage = sharp(this.image.image);
     const imageMetadata = await baseImage.metadata();
 
-    const mpSvgs = this.multipolygons.map((multipolygon) => this.processMultiPolygon(multipolygon, imageMetadata));
+    const mpSvgs = this.multipolygons
+      .map((multipolygon) => this.processMultiPolygon(multipolygon, imageMetadata));
 
     this.image.image = await baseImage.composite(mpSvgs).toBuffer();
 
