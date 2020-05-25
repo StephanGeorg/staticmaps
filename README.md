@@ -133,7 +133,7 @@ fill                | #000000BB | Fill color of the polygon
 ***
 
 #### addMultiPolygon(options)
-Adds a polygon to the map. Polygon is the same as a polyline but first and last coordinate are equal.
+Adds a multipolygon to the map.
 ```
 map.addMultiPolygon(options);
 ```
@@ -199,13 +199,13 @@ anchor            | start     | Anchor of the text (`start`, `middle` or `end`)
 ```javascript
   const text = {
     coord: [13.437524, 52.4945528],
-    text: "My Text",
+    text: 'My Text',
     size: 50,
     width: 1,
-    fill: "#000000",
-    color: "#ffffff",
-    font: "Calibri",
-    anchor: "middle"
+    fill: '#000000',
+    color: '#ffffff',
+    font: 'Calibri',
+    anchor: 'middle'
   };
 
   map.addText(text);
