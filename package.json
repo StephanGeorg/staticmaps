@@ -31,6 +31,8 @@
   "homepage": "https://github.com/StephanGeorg/staticmaps#readme",
   "dependencies": {
     "@babel/runtime": "^7.9.2",
+    "@turf/bbox": "^6.0.1",
+    "@turf/circle": "^6.0.1",
     "got": "^10.7.0",
     "lodash.chunk": "^4.2.0",
     "lodash.find": "^4.6.0",

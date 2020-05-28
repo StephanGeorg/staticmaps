@@ -10,7 +10,9 @@ import Image from './image';
 import IconMarker from './marker';
 import Polyline from './polyline';
 import MultiPolygon from './multipolygon';
+import Circle from './circle';
 import Text from './text';
+import Bound from './bound';
 import asyncQueue from './helper/asyncQueue';
 // import pjson from '../package.json';
 
@@ -24,6 +26,12 @@ const yToLat = (y, zoom) => Math.atan(Math.sinh(Math.PI * (1 - 2 * y / (2 ** zoo
   / Math.PI * 180;
 
 const xToLon = (x, zoom) => x / (2 ** zoom) * 360 - 180;
+
+const meterToPixel = (meter, zoom, lat) => {
+  const latitudeRadians = lat * (Math.PI / 180);
+  const meterProPixel = (156543.03392 * Math.cos(latitudeRadians)) / 2 ** zoom;
+  return meter / meterProPixel;
+};
 
 const LINE_RENDER_CHUNK_SIZE = 1000;
 
@@ -41,20 +49,23 @@ class StaticMaps {
     this.subdomains = this.options.subdomains || [];
     this.tileRequestTimeout = this.options.tileRequestTimeout;
     this.tileRequestHeader = this.options.tileRequestHeader;
-    this.tileRequestLimit = this.options.tileRequestLimit || 2;
+    this.tileRequestLimit = Number.isFinite(this.options.tileRequestLimit)
+      ? Number(this.options.tileRequestLimit) : 2;
     this.reverseY = this.options.reverseY || false;
-    // this.maxZoom = this.options.maxZoom; DEPRECATED: use zoomRange.max instead
     const zoomRange = this.options.zoomRange || {};
     this.zoomRange = {
       min: zoomRange.min || 1,
       max: this.options.maxZoom || zoomRange.max || 17, // maxZoom
     };
+    // this.maxZoom = this.options.maxZoom; DEPRECATED: use zoomRange.max instead
 
     // # features
     this.markers = [];
     this.lines = [];
     this.multipolygons = [];
+    this.circles = [];
     this.text = [];
+    this.bounds = [];
 
     // # fields that get set when map is rendered
     this.center = [];
@@ -77,6 +88,14 @@ class StaticMaps {
 
   addMultiPolygon(options) {
     this.multipolygons.push(new MultiPolygon(options));
+  }
+
+  addCircle(options) {
+    this.circles.push(new Circle(options));
+  }
+
+  addBound(options) {
+    this.bounds.push(new Bound(options));
   }
 
   addText(options) {
@@ -130,15 +149,27 @@ class StaticMaps {
     // Add bbox to extent
     if (this.center && this.center.length >= 4) extents.push(this.center);
 
+    // add bounds to extent
+    if (this.bounds.length) {
+      this.bounds.forEach((bound) => extents.push(bound.extent()));
+    }
+
     // Add polylines and polygons to extent
     if (this.lines.length) {
       this.lines.forEach((line) => {
         extents.push(line.extent());
       });
-    } // extents.push(this.lines.map(function(line){ return line.extent(); }));
+    }
     if (this.multipolygons.length) {
       this.multipolygons.forEach((multipolygon) => {
         extents.push(multipolygon.extent());
+      });
+    }
+
+    // Add circles to extent
+    if (this.circles.length) {
+      this.circles.forEach((circle) => {
+        extents.push(circle.extent());
       });
     }
 
@@ -267,6 +298,7 @@ class StaticMaps {
     await this.drawMultiPolygons();
     await this.drawMarker();
     await this.drawText();
+    await this.drawCircles();
   }
 
   /**
@@ -314,6 +346,43 @@ class StaticMaps {
         })
         .catch(reject);
     });
+  }
+
+  async drawCircles() {
+    if (!this.circles.length) return true;
+    const baseImage = sharp(this.image.image);
+    const imageMetadata = await baseImage.metadata();
+
+    const mpSvgs = this.circles
+      .map((circle) => this.processCircle(circle, imageMetadata));
+
+    this.image.image = await baseImage.composite(mpSvgs).toBuffer();
+
+    return true;
+  }
+
+  processCircle(circle, imageMetadata) {
+    const latCenter = circle.coord[1];
+    const radiusInPixel = meterToPixel(circle.radius, this.zoom, latCenter);
+    const x = this.xToPx(lonToX(circle.coord[0], this.zoom));
+    const y = this.yToPx(latToY(circle.coord[1], this.zoom));
+    const svgPath = `
+            <svg
+              width="${imageMetadata.width}px"
+              height="${imageMetadata.height}"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg">
+              <circle
+                cx="${x}"
+                cy="${y}"
+                r="${radiusInPixel}"
+                style="fill-rule: inherit;"
+                stroke="${circle.color}"
+                fill="${circle.fill}"
+                stroke-width="${circle.width}"
+                />
+            </svg>`;
+    return { input: Buffer.from(svgPath), top: 0, left: 0 };
   }
 
   async drawMultiPolygons() {

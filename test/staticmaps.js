@@ -149,7 +149,7 @@ describe('StaticMap', () => {
     }).timeout(0);
   });
 
-  describe('Rendering w/ lines ...', () => {
+  describe('Rendering w/ polylines ...', () => {
     it('Render StaticMap w/ single polyline', (done) => {
       const options = {
         width: 800,
@@ -181,7 +181,9 @@ describe('StaticMap', () => {
         .then(done)
         .catch(done);
     }).timeout(0);
+  });
 
+  describe('Rendering w/ polygons ...', () => {
     it('Render StaticMap w/ polygon', (done) => {
       const options = {
         width: 600,
@@ -210,8 +212,8 @@ describe('StaticMap', () => {
       const options = {
         width: 600,
         height: 300,
-        paddingX: 50,
-        paddingY: 50,
+        paddingX: 80,
+        paddingY: 80,
       };
 
       const map = new StaticMaps(options);
@@ -250,6 +252,41 @@ describe('StaticMap', () => {
       for (let i = 0; i < 10000; i++) map.addPolygon({ ...polygon });
       map.render([13.437524, 52.4945528], 13)
         .then(() => map.image.save('test/out/07-multiple-polygons.png'))
+        .then(done)
+        .catch(done);
+    }).timeout(0);
+  });
+
+  describe('Rendering circles ...', () => {
+    it('Render StaticMap w/ circle', (done) => {
+      const options = {
+        width: 600,
+        height: 300,
+        paddingX: 20,
+        paddingY: 20,
+      };
+
+      const map = new StaticMaps(options);
+
+      const circle = {
+        coord: [13.01, 51.98],
+        radius: 500,
+        fill: '#000000',
+        width: 0,
+      };
+
+      const circle2 = {
+        coord: [13.01, 51.98],
+        radius: 800,
+        fill: '#fab700CC',
+        color: '#FFFFFF',
+        width: 2,
+      };
+
+      map.addCircle(circle2);
+      map.addCircle(circle);
+      map.render()
+        .then(() => map.image.save('test/out/099-circle.png'))
         .then(done)
         .catch(done);
     }).timeout(0);

@@ -6,7 +6,7 @@ export default class MultiPolygon {
     this.coords = this.options.coords;
     this.color = this.options.color || '#000000BB';
     this.fill = this.options.fill;
-    this.width = this.options.width || 3;
+    this.width = Number.isFinite(this.options.width) ? Number(this.options.width) : 3;
     this.simplify = this.options.simplify || false;
   }
 

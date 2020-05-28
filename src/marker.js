@@ -6,11 +6,13 @@ export default class {
 
     this.coord = this.options.coord;
     this.img = this.options.img;
-    this.offsetX = this.options.offsetX || options.width / 2;
-    this.offsetY = this.options.offsetY || options.height;
+    this.height = Number(this.options.height);
+    this.width = Number(this.options.width);
+    this.offsetX = Number.isFinite(this.options.offsetX)
+      ? Number(this.options.offsetX) : this.width / 2;
+    this.offsetY = Number.isFinite(this.options.offsetY)
+      ? Number(this.options.offsetY) : this.height;
     this.offset = [this.offsetX, this.offsetY];
-    this.height = this.options.height;
-    this.width = this.options.width;
   }
 
   /**
