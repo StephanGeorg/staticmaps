@@ -281,87 +281,10 @@ class StaticMaps {
     return this.image.draw(tiles.filter((v) => v.success).map((v) => v.tile));
   }
 
-  async drawText() {
-    if (!this.text.length) return null;
-
-    const queue = [];
-    this.text.forEach((text) => {
-      queue.push(async () => {
-        await this.renderText(text);
-      });
-    });
-    return asyncQueue(queue);
-  }
-
-  async drawFeatures() {
-    await this.drawLines();
-    await this.drawMultiPolygons();
-    await this.drawMarker();
-    await this.drawText();
-    await this.drawCircles();
-  }
-
   /**
-   * Render text on a baseimage
+   *  Render a circle to SVG
    */
-  async renderText(text) {
-    const baseImage = sharp(this.image.image);
-
-    return new Promise((resolve, reject) => {
-      const mapcoords = [
-        this.xToPx(lonToX(text.coord[0], this.zoom)),
-        this.yToPx(latToY(text.coord[1], this.zoom)),
-      ];
-
-      baseImage
-        .metadata()
-        .then((imageMetadata) => {
-          const svgPath = `
-            <svg
-              width="${imageMetadata.width}px"
-              height="${imageMetadata.height}px"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg">
-              <text
-                x="${mapcoords[0]}"
-                y="${mapcoords[1]}"
-                style="fill-rule: inherit; font-family: ${text.font};"
-                font-size="${text.size}pt"
-                stroke="${text.color}"
-                fill="${text.fill ? text.fill : 'none'}"
-                stroke-width="${text.width}"
-                text-anchor="${text.anchor}"
-              >
-                  ${text.text}</text>
-            </svg>`;
-
-          baseImage
-            .composite([{ input: Buffer.from(svgPath), top: 0, left: 0 }])
-            .toBuffer()
-            .then((buffer) => {
-              this.image.image = buffer;
-              resolve(buffer);
-            })
-            .catch(reject);
-        })
-        .catch(reject);
-    });
-  }
-
-  async drawCircles() {
-    if (!this.circles.length) return true;
-    const baseImage = sharp(this.image.image);
-    const imageMetadata = await baseImage.metadata();
-
-    const mpSvgs = this.circles
-      .map((circle) => this.processCircle(circle, imageMetadata));
-
-    this.image.image = await baseImage.composite(mpSvgs).toBuffer();
-
-    return true;
-  }
-
-  processCircle(circle, imageMetadata) {
+  renderCircle(circle, imageMetadata) {
     const latCenter = circle.coord[1];
     const radiusInPixel = meterToPixel(circle.radius, this.zoom, latCenter);
     const x = this.xToPx(lonToX(circle.coord[0], this.zoom));
@@ -385,31 +308,73 @@ class StaticMaps {
     return { input: Buffer.from(svgPath), top: 0, left: 0 };
   }
 
-  async drawMultiPolygons() {
-    if (!this.multipolygons.length) return true;
+  /**
+   *  Draw circles to the basemap
+   */
+  async drawCircles() {
+    if (!this.circles.length) return true;
     const baseImage = sharp(this.image.image);
     const imageMetadata = await baseImage.metadata();
 
-    const mpSvgs = this.multipolygons
-      .map((multipolygon) => this.processMultiPolygon(multipolygon, imageMetadata));
+    const mpSvgs = this.circles
+      .map((circle) => this.renderCircle(circle, imageMetadata));
 
     this.image.image = await baseImage.composite(mpSvgs).toBuffer();
 
     return true;
   }
 
-  processMultiPolygon(multipolygon, imageMetadata) {
+  /**
+   * Render text to SVG
+   */
+  renderText(text, imageMetadata) {
+    const mapcoords = [
+      this.xToPx(lonToX(text.coord[0], this.zoom)),
+      this.yToPx(latToY(text.coord[1], this.zoom)),
+    ];
+
     const svgPath = `
-            <svg
-              width="${imageMetadata.width}px"
-              height="${imageMetadata.height}"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg">
-              ${this.multipolygonToPath(multipolygon)}
-            </svg>`;
+      <svg
+        width="${imageMetadata.width}px"
+        height="${imageMetadata.height}px"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg">
+        <text
+          x="${mapcoords[0]}"
+          y="${mapcoords[1]}"
+          style="fill-rule: inherit; font-family: ${text.font};"
+          font-size="${text.size}pt"
+          stroke="${text.color}"
+          fill="${text.fill ? text.fill : 'none'}"
+          stroke-width="${text.width}"
+          text-anchor="${text.anchor}"
+        >
+            ${text.text}</text>
+      </svg>`;
+
     return { input: Buffer.from(svgPath), top: 0, left: 0 };
   }
 
+  /**
+   *  Draw texts to the baemap
+   */
+  async drawText() {
+    if (!this.text.length) return null;
+
+    const baseImage = sharp(this.image.image);
+    const imageMetadata = await baseImage.metadata();
+
+    const txtSvgs = this.text
+      .map((text) => this.renderText(text, imageMetadata));
+
+    this.image.image = await baseImage.composite(txtSvgs).toBuffer();
+
+    return true;
+  }
+
+  /**
+   *  Render MultiPolygon to SVG
+   */
   multipolygonToPath(multipolygon) {
     const shapeArrays = multipolygon.coords.map((shape) => shape.map((coord) => [
       this.xToPx(lonToX(coord[0], this.zoom)),
@@ -429,27 +394,48 @@ class StaticMaps {
     });
 
     return `<path
-              d="${pathArrays.join(' ')}"
-              style="fill-rule: inherit;"
-              stroke="${multipolygon.color}"
-              fill="${multipolygon.fill ? multipolygon.fill : 'none'}"
-              stroke-width="${multipolygon.width}"/>`;
+             d="${pathArrays.join(' ')}"
+             style="fill-rule: inherit;"
+             stroke="${multipolygon.color}"
+             fill="${multipolygon.fill ? multipolygon.fill : 'none'}"
+             stroke-width="${multipolygon.width}"/>`;
   }
 
-  async drawLines() {
-    if (!this.lines.length) return true;
-    const chunks = chunk(this.lines, LINE_RENDER_CHUNK_SIZE);
+  /**
+   *  Render MultiPolygon to SVG
+   */
+  renderMultiPolygon(multipolygon, imageMetadata) {
+    const svgPath = `
+            <svg
+              width="${imageMetadata.width}px"
+              height="${imageMetadata.height}"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg">
+              ${this.multipolygonToPath(multipolygon)}
+            </svg>`;
+    return { input: Buffer.from(svgPath), top: 0, left: 0 };
+  }
+
+  /**
+   *  Draw Multipolygon to the basemap
+   */
+  async drawMultiPolygons() {
+    if (!this.multipolygons.length) return true;
+
     const baseImage = sharp(this.image.image);
     const imageMetadata = await baseImage.metadata();
-    const processedChunks = chunks.map((c) => this.processChunk(c, imageMetadata));
 
-    this.image.image = await baseImage
-      .composite(processedChunks)
-      .toBuffer();
+    const mpSvgs = this.multipolygons
+      .map((multipolygon) => this.renderMultiPolygon(multipolygon, imageMetadata));
+
+    this.image.image = await baseImage.composite(mpSvgs).toBuffer();
 
     return true;
   }
 
+  /**
+   *  Render Polyline to SVG
+   */
   lineToSvg(line) {
     const points = line.coords.map((coord) => [
       this.xToPx(lonToX(coord[0], this.zoom)),
@@ -463,7 +449,10 @@ class StaticMaps {
                 stroke-width="${line.width}"/>`;
   }
 
-  processChunk(lines, imageMetadata) {
+  /**
+   *  Render Polyline / Polygon to SVG
+   */
+  renderLine(lines, imageMetadata) {
     const svgPath = `
             <svg
               width="${imageMetadata.width}px"
@@ -475,6 +464,26 @@ class StaticMaps {
     return { input: Buffer.from(svgPath), top: 0, left: 0 };
   }
 
+  /**
+   *  Draw polylines / polygons to the basemap
+   */
+  async drawLines() {
+    if (!this.lines.length) return true;
+    const chunks = chunk(this.lines, LINE_RENDER_CHUNK_SIZE);
+    const baseImage = sharp(this.image.image);
+    const imageMetadata = await baseImage.metadata();
+    const processedChunks = chunks.map((c) => this.renderLine(c, imageMetadata));
+
+    this.image.image = await baseImage
+      .composite(processedChunks)
+      .toBuffer();
+
+    return true;
+  }
+
+  /**
+   *  Draw markers to the basemap
+   */
   drawMarker() {
     const queue = [];
     this.markers.forEach((marker) => {
@@ -499,6 +508,17 @@ class StaticMaps {
       });
     });
     return asyncQueue(queue);
+  }
+
+  /**
+   *  Draw all features to the basemap
+   */
+  async drawFeatures() {
+    await this.drawLines();
+    await this.drawMultiPolygons();
+    await this.drawMarker();
+    await this.drawText();
+    await this.drawCircles();
   }
 
   /**
