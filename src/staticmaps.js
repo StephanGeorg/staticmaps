@@ -3,7 +3,6 @@ import sharp from 'sharp';
 import find from 'lodash.find';
 import uniqBy from 'lodash.uniqby';
 import url from 'url';
-// import process from 'process';
 import chunk from 'lodash.chunk';
 
 import Image from './image';
@@ -13,25 +12,9 @@ import MultiPolygon from './multipolygon';
 import Circle from './circle';
 import Text from './text';
 import Bound from './bound';
+
 import asyncQueue from './helper/asyncQueue';
-// import pjson from '../package.json';
-
-/* transform longitude to tile number */
-const lonToX = (lon, zoom) => ((lon + 180) / 360) * (2 ** zoom);
-/* transform latitude to tile number */
-const latToY = (lat, zoom) => (1 - Math.log(Math.tan(lat * Math.PI / 180) + 1
-  / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * (2 ** zoom);
-
-const yToLat = (y, zoom) => Math.atan(Math.sinh(Math.PI * (1 - 2 * y / (2 ** zoom))))
-  / Math.PI * 180;
-
-const xToLon = (x, zoom) => x / (2 ** zoom) * 360 - 180;
-
-const meterToPixel = (meter, zoom, lat) => {
-  const latitudeRadians = lat * (Math.PI / 180);
-  const meterProPixel = (156543.03392 * Math.cos(latitudeRadians)) / 2 ** zoom;
-  return meter / meterProPixel;
-};
+import geoutils from './helper/geo';
 
 const LINE_RENDER_CHUNK_SIZE = 1000;
 
@@ -117,8 +100,8 @@ class StaticMaps {
     if (maxZoom && this.zoom > maxZoom) this.zoom = maxZoom;
 
     if (center && center.length === 2) {
-      this.centerX = lonToX(center[0], this.zoom);
-      this.centerY = latToY(center[1], this.zoom);
+      this.centerX = geoutils.lonToX(center[0], this.zoom);
+      this.centerY = geoutils.latToY(center[1], this.zoom);
     } else {
       // # get extent of all lines
       const extent = this.determineExtent(this.zoom);
@@ -127,8 +110,8 @@ class StaticMaps {
       const centerLon = (extent[0] + extent[2]) / 2;
       const centerLat = (extent[1] + extent[3]) / 2;
 
-      this.centerX = lonToX(centerLon, this.zoom);
-      this.centerY = latToY(centerLat, this.zoom);
+      this.centerX = geoutils.lonToX(centerLon, this.zoom);
+      this.centerY = geoutils.latToY(centerLat, this.zoom);
     }
 
     this.image = new Image(this.options);
@@ -190,14 +173,14 @@ class StaticMaps {
 
       // # consider dimension of marker
       const ePx = marker.extentPx();
-      const x = lonToX(e[0], zoom);
-      const y = latToY(e[1], zoom);
+      const x = geoutils.lonToX(e[0], zoom);
+      const y = geoutils.latToY(e[1], zoom);
 
       extents.push([
-        xToLon(x - parseFloat(ePx[0]) / this.tileSize, zoom),
-        yToLat(y + parseFloat(ePx[1]) / this.tileSize, zoom),
-        xToLon(x + parseFloat(ePx[2]) / this.tileSize, zoom),
-        yToLat(y - parseFloat(ePx[3]) / this.tileSize, zoom),
+        geoutils.xToLon(x - parseFloat(ePx[0]) / this.tileSize, zoom),
+        geoutils.yToLat(y + parseFloat(ePx[1]) / this.tileSize, zoom),
+        geoutils.xToLon(x + parseFloat(ePx[2]) / this.tileSize, zoom),
+        geoutils.yToLat(y - parseFloat(ePx[3]) / this.tileSize, zoom),
       ]);
     }
 
@@ -215,10 +198,12 @@ class StaticMaps {
   calculateZoom() {
     for (let z = this.zoomRange.max; z >= this.zoomRange.min; z--) {
       const extent = this.determineExtent(z);
-      const width = (lonToX(extent[2], z) - lonToX(extent[0], z)) * this.tileSize;
+      const width = (geoutils.lonToX(extent[2], z)
+        - geoutils.lonToX(extent[0], z)) * this.tileSize;
       if (width > (this.width - (this.padding[0] * 2))) continue;
 
-      const height = (latToY(extent[1], z) - latToY(extent[3], z)) * this.tileSize;
+      const height = (geoutils.latToY(extent[1], z)
+        - geoutils.latToY(extent[3], z)) * this.tileSize;
       if (height > (this.height - (this.padding[1] * 2))) continue;
 
       return z;
@@ -286,9 +271,9 @@ class StaticMaps {
    */
   renderCircle(circle, imageMetadata) {
     const latCenter = circle.coord[1];
-    const radiusInPixel = meterToPixel(circle.radius, this.zoom, latCenter);
-    const x = this.xToPx(lonToX(circle.coord[0], this.zoom));
-    const y = this.yToPx(latToY(circle.coord[1], this.zoom));
+    const radiusInPixel = geoutils.meterToPixel(circle.radius, this.zoom, latCenter);
+    const x = this.xToPx(geoutils.lonToX(circle.coord[0], this.zoom));
+    const y = this.yToPx(geoutils.latToY(circle.coord[1], this.zoom));
     const svgPath = `
             <svg
               width="${imageMetadata.width}px"
@@ -329,8 +314,8 @@ class StaticMaps {
    */
   renderText(text, imageMetadata) {
     const mapcoords = [
-      this.xToPx(lonToX(text.coord[0], this.zoom)),
-      this.yToPx(latToY(text.coord[1], this.zoom)),
+      this.xToPx(geoutils.lonToX(text.coord[0], this.zoom)),
+      this.yToPx(geoutils.latToY(text.coord[1], this.zoom)),
     ];
 
     const svgPath = `
@@ -377,8 +362,8 @@ class StaticMaps {
    */
   multipolygonToPath(multipolygon) {
     const shapeArrays = multipolygon.coords.map((shape) => shape.map((coord) => [
-      this.xToPx(lonToX(coord[0], this.zoom)),
-      this.yToPx(latToY(coord[1], this.zoom)),
+      this.xToPx(geoutils.lonToX(coord[0], this.zoom)),
+      this.yToPx(geoutils.latToY(coord[1], this.zoom)),
     ]));
 
     const pathArrays = shapeArrays.map((points) => {
@@ -438,8 +423,8 @@ class StaticMaps {
    */
   lineToSvg(line) {
     const points = line.coords.map((coord) => [
-      this.xToPx(lonToX(coord[0], this.zoom)),
-      this.yToPx(latToY(coord[1], this.zoom)),
+      this.xToPx(geoutils.lonToX(coord[0], this.zoom)),
+      this.yToPx(geoutils.latToY(coord[1], this.zoom)),
     ]);
     return `<${(line.type === 'polyline') ? 'polyline' : 'polygon'}
                 style="fill-rule: inherit;"
@@ -555,8 +540,8 @@ class StaticMaps {
           this.markers.forEach((mark) => {
             const marker = mark;
             marker.position = [
-              this.xToPx(lonToX(marker.coord[0], this.zoom)) - marker.offset[0],
-              this.yToPx(latToY(marker.coord[1], this.zoom)) - marker.offset[1],
+              this.xToPx(geoutils.lonToX(marker.coord[0], this.zoom)) - marker.offset[0],
+              this.yToPx(geoutils.latToY(marker.coord[1], this.zoom)) - marker.offset[1],
             ];
             const imgData = find(icons, { file: marker.img });
             marker.set(imgData.data);
