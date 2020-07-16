@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/StephanGeorg/staticmaps#readme",
   "dependencies": {
-    "@babel/runtime": "^7.9.2",
+    "@babel/runtime": "^7.10.5",
     "@turf/bbox": "^6.0.1",
     "@turf/circle": "^6.0.1",
     "got": "^10.7.0",
@@ -44,12 +44,12 @@
     "sharp": "0.25.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-transform-runtime": "^7.9.0",
-    "@babel/preset-env": "^7.9.0",
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.10.5",
+    "@babel/plugin-transform-runtime": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
     "@babel/preset-stage-2": "^7.8.3",
-    "@babel/register": "^7.9.0",
+    "@babel/register": "^7.10.5",
     "babel-eslint": "^10.1.0",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
