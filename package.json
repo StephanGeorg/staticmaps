@@ -1,6 +1,6 @@
 {
   "name": "staticmaps",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "A node.js library for creating map images with markers, polylines, polygons and text.",
   "main": "./dist/staticmaps.js",
   "directories": {
@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/StephanGeorg/staticmaps#readme",
   "dependencies": {
-    "@babel/runtime": "^7.10.5",
+    "@babel/runtime": "^7.11.2",
     "@turf/bbox": "^6.0.1",
     "@turf/circle": "^6.0.1",
     "got": "^10.7.0",
@@ -41,15 +41,15 @@
     "lodash.isequal": "^4.5.0",
     "lodash.last": "^3.0.0",
     "lodash.uniqby": "^4.7.0",
-    "sharp": "0.25.2"
+    "sharp": "0.26.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.10.5",
-    "@babel/plugin-transform-runtime": "^7.10.5",
-    "@babel/preset-env": "^7.10.4",
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-transform-runtime": "^7.11.5",
+    "@babel/preset-env": "^7.11.5",
     "@babel/preset-stage-2": "^7.8.3",
-    "@babel/register": "^7.10.5",
+    "@babel/register": "^7.11.5",
     "babel-eslint": "^10.1.0",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
