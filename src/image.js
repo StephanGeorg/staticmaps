@@ -78,22 +78,25 @@ export default class Image {
     tiles.forEach((tile, i) => {
       tileParts.push(this.prepareTileParts(tile, i));
     });
+
     const preparedTiles = (await Promise.all(tileParts)).filter((v) => v.success);
 
     // Compose all prepared tiles to the baselayer
     const queue = [];
-    preparedTiles.forEach((preparedTile) => {
-      queue.push(async () => {
-        if (!preparedTile) return;
-        const { position, data } = preparedTile;
-        position.top = Math.round(position.top);
-        position.left = Math.round(position.left);
-        tempbuffer = await sharp(tempbuffer)
-          .composite([{ input: data, ...position }])
-          .toBuffer();
-      });
-    });
-    await asyncQueue(queue);
+
+    var preparedTilesForSharp = preparedTiles
+        .filter((preparedTile) => !!preparedTile) //remove non-existing tiles
+        .map((preparedTile) => {
+            const { position, data } = preparedTile;
+            position.top = Math.round(position.top);
+            position.left = Math.round(position.left);
+            return {input: data, ...position};
+        })
+
+    tempbuffer = await sharp(tempbuffer)
+      .composite(preparedTilesForSharp)
+      .toBuffer();
+
     this.image = tempbuffer;
     return true;
   }
