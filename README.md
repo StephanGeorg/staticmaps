@@ -11,7 +11,7 @@ Image manipulation is based on **[Sharp](https://sharp.pixelplumbing.com/)**. Pr
 
 Version           | sharp            | node.js (pre-compiled)
 ----------------- | ---------------- | -------------
-1.4.3+            | 0.26.0           | 10.16.0+
+1.4.4+            | 0.27.1           | 10.16.0+
 1.3.4             | 0.25.2           | 10+
 1.2.6             | 0.23.2           | 8, 10, 12, 13
 1.2.3             | 0.22.1           | 6, 8, 10, 11, 12
