@@ -522,7 +522,9 @@ class StaticMaps {
           // Load marker from remote url
           if (isUrl) {
             const img = await got.get({
-              rejectUnauthorized: false,
+              https: {
+                rejectUnauthorized: false,
+              },
               url: icon.file,
               responseType: 'buffer',
             });

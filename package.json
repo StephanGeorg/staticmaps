@@ -1,6 +1,6 @@
 {
   "name": "staticmaps",
-  "version": "1.4.4",
+  "version": "1.5.0",
   "description": "A node.js library for creating map images with markers, polylines, polygons and text.",
   "main": "./dist/staticmaps.js",
   "directories": {
@@ -30,10 +30,10 @@
   },
   "homepage": "https://github.com/StephanGeorg/staticmaps#readme",
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
-    "@turf/bbox": "^6.0.1",
-    "@turf/circle": "^6.0.1",
-    "got": "^10.7.0",
+    "@babel/runtime": "^7.14.0",
+    "@turf/bbox": "^6.3.0",
+    "@turf/circle": "^6.3.0",
+    "got": "^11.8.2",
     "lodash.chunk": "^4.2.0",
     "lodash.find": "^4.6.0",
     "lodash.first": "^3.0.0",
@@ -41,20 +41,20 @@
     "lodash.isequal": "^4.5.0",
     "lodash.last": "^3.0.0",
     "lodash.uniqby": "^4.7.0",
-    "sharp": "0.27.1"
+    "sharp": "0.28.3"
   },
   "devDependencies": {
-    "@babel/cli": "^7.11.6",
-    "@babel/core": "^7.11.6",
-    "@babel/plugin-transform-runtime": "^7.11.5",
-    "@babel/preset-env": "^7.11.5",
+    "@babel/cli": "^7.14.3",
+    "@babel/core": "^7.14.3",
+    "@babel/eslint-parser": "^7.14.3",
+    "@babel/plugin-transform-runtime": "^7.14.3",
+    "@babel/preset-env": "^7.14.2",
     "@babel/preset-stage-2": "^7.8.3",
-    "@babel/register": "^7.11.5",
-    "babel-eslint": "^10.1.0",
-    "chai": "^4.2.0",
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.1",
-    "mocha": "^7.1.1"
+    "@babel/register": "^7.13.16",
+    "chai": "^4.3.4",
+    "eslint": "^7.27.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.23.3",
+    "mocha": "^8.4.0"
   }
 }

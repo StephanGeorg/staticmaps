@@ -3,6 +3,7 @@
     "plugins": [
         "import"
     ],
+    "parser": "@babel/eslint-parser",
     "parserOptions": {
       "ecmaVersion": 2018,
       "ecmaFeatures": {
