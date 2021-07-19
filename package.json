@@ -1,7 +1,10 @@
 {
   "name": "staticmaps",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "A node.js library for creating map images with markers, polylines, polygons and text.",
+  "author": "Stephan Georg <s.georg@hey.com>",
+  "license": "MIT",
+  "repository": "github:StephanGeorg/staticmaps",
   "main": "./dist/staticmaps.js",
   "directories": {
     "test": "test"
@@ -11,10 +14,6 @@
     "build": "babel src --presets @babel/preset-env --plugins @babel/plugin-transform-runtime --out-dir dist",
     "prepublish": "npm run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/StephanGeorg/staticmaps.git"
-  },
   "keywords": [
     "openstreetmap",
     "osm",
@@ -23,8 +22,6 @@
     "map",
     "maps"
   ],
-  "author": "Stephan Georg <s.georg@nearest.place>",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/StephanGeorg/staticmaps/issues"
   },
