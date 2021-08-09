@@ -46,6 +46,10 @@ width               | Required            | Width of the output image in px
 height              | Required            | Height of the output image in px
 paddingX            | 0                   | (optional) Minimum distance in px between map features and map border
 paddingY            | 0                   | (optional) Minimum distance in px between map features and map border
+paddingXright       | 0                   | (optional) Minimum distance in px between map features and map border. Override paddingX parameter
+paddingXleft        | 0                   | (optional) Minimum distance in px between map features and map border. Override paddingX parameter
+paddingYinf         | 0                   | (optional) Minimum distance in px between map features and map border. Override paddingY parameter
+paddingYsup         | 0                   | (optional) Minimum distance in px between map features and map border. Override paddingY parameter
 tileUrl             |                     | (optional) Tile server URL for the map base layer
 tileSize            | 256                 | (optional) Tile size in pixel
 subdomains          | []                  | (optional) Subdomains of tile server, usage ['a', 'b', 'c']

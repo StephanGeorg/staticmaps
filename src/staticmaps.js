@@ -26,7 +26,16 @@ class StaticMaps {
     this.height = this.options.height;
     this.paddingX = this.options.paddingX || 0;
     this.paddingY = this.options.paddingY || 0;
-    this.padding = [this.paddingX, this.paddingY];
+    this.paddingXright = this.options.paddingXright || 0;
+    this.paddingXleft = this.options.paddingXleft || 0;
+    this.paddingYinf = this.options.paddingYinf || 0;
+    this.paddingYsup = this.options.paddingYsup || 0;
+    this.padding = [
+      this.paddingXright || this.paddingX,
+      this.paddingXleft || this.paddingX,
+      this.paddingYinf || this.paddingY,
+      this.paddingYsup || this.paddingY
+      ];
     this.tileUrl = this.options.tileUrl || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
     this.tileSize = this.options.tileSize || 256;
     this.subdomains = this.options.subdomains || [];
@@ -200,11 +209,11 @@ class StaticMaps {
       const extent = this.determineExtent(z);
       const width = (geoutils.lonToX(extent[2], z)
         - geoutils.lonToX(extent[0], z)) * this.tileSize;
-      if (width > (this.width - (this.padding[0] * 2))) continue;
+      if (width > (this.width - (this.padding[0] + this.padding[1]))) continue;
 
       const height = (geoutils.latToY(extent[1], z)
         - geoutils.latToY(extent[3], z)) * this.tileSize;
-      if (height > (this.height - (this.padding[1] * 2))) continue;
+      if (height > (this.height - (this.padding[2] + this.padding[3]))) continue;
 
       return z;
     }
