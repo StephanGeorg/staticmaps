@@ -399,6 +399,8 @@ await map.image.save('test/out/polyline.png');
 #### Output
 ![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true=800x280)
 
+***
+
 ### Map with circle
 ```javascript
 
@@ -415,7 +417,9 @@ await map.image.save('test/out/099-circle.png');
 
 ```
 #### Output
-![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true=800x280)
+![Map with circle](https://user-images.githubusercontent.com/7861660/129888175-c2209cca-6ede-43d7-bb8d-181fdd4cfa17.png)
+
+***
 
 ### Blue Marble by NASA with text
 ```javascript
@@ -447,6 +451,8 @@ const options = {
 
 #### Output
 ![NASA Blue Marble with text](https://i.imgur.com/Jb6hsju.jpg)
+
+***
 
 ### Tile server with subdomains
 {s} - subdomain (subdomain), is necessary in order not to fall into the limit for requests to the same domain. Some servers can block your IP if you get tiles from one of subdomains of tile server.
