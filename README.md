@@ -1,5 +1,5 @@
 # StaticMaps [![npm version](https://badge.fury.io/js/staticmaps.svg)](https://badge.fury.io/js/staticmaps)
-A node.js library for creating map images with markers, polylines, polygons and text. This library is a node.js implementation of [Static Map](https://github.com/komoot/staticmap).
+A Node.js library for creating map images with markers, polylines, polygons and text. This library is a JavaScript implementation of [Static Map](https://github.com/komoot/staticmap).
 
 ![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true=800x280)
 
