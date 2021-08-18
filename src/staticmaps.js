@@ -379,11 +379,11 @@ class StaticMaps {
     });
 
     return `<path
-             d="${pathArrays.join(' ')}"
-             style="fill-rule: inherit;"
-             stroke="${multipolygon.color}"
-             fill="${multipolygon.fill ? multipolygon.fill : 'none'}"
-             stroke-width="${multipolygon.width}"/>`;
+      d="${pathArrays.join(' ')}"
+      style="fill-rule: inherit;"
+      stroke="${multipolygon.color}"
+      fill="${multipolygon.fill ? multipolygon.fill : 'none'}"
+      stroke-width="${multipolygon.width}"/>`;
   }
 
   /**

@@ -41,7 +41,7 @@ describe('StaticMap', () => {
       };
 
       const map = new StaticMaps(options);
-      await map.render([13.437524, 52.4945528], 13)
+      await map.render([13.437524, 52.4945528], 13);
       await map.image.save('test/out/02-center_osm.png');
     }).timeout(0);
 
@@ -132,7 +132,7 @@ describe('StaticMap', () => {
       marker.coord = [13.410524, 52.5195528];
       map.addMarker(marker);
 
-      await map.render()
+      await map.render();
       await map.image.save('test/out/05-marker-nocenter.png');
     }).timeout(0);
   });
@@ -164,7 +164,7 @@ describe('StaticMap', () => {
 
       map.addLine(polyline2);
       map.addLine(polyline);
-      await map.render()
+      await map.render();
       await map.image.save('test/out/06-polyline.jpg');
     }).timeout(0);
   });
@@ -188,7 +188,7 @@ describe('StaticMap', () => {
       };
 
       map.addPolygon(polygon);
-      await map.render()
+      await map.render();
       await map.image.save('test/out/07-polygon.png');
     }).timeout(0);
 
