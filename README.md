@@ -58,6 +58,19 @@ maxZoom             |                     | (optional) DEPRECATED: Use zoomRange
 reverseY            | false               | (optional) If true, reverse the y index of the tiles to match the TMS naming format
 
 ### Methods
+
+Method              |  Description
+------------------- | -------------
+[addMarker](#addmarker-options)           | Adds a marker to the map
+[addLine](#addline-options)             | Adds a polyline to the map
+[addPolygon](#addpolygon-options)          | Adds a polygon to the map
+[addMultiPolygon](#addmultipolygon-options)     | Adds a multipolygon to the map
+[addCircle](#addcircle-options)           | Adds a circle to the map
+[addText](#addtext-options)             | Adds text to the map
+[render](#render-center-zoom)              | Renders the map and added features
+[image.save](#imagesave-filename-outputoptions)          | Saves the map image to a file 
+[image.buffer](#imagebuffer-mime-outputoptions)        | Saves the map image to a buffer
+
 #### addMarker (options)
 Adds a marker to the map.
 ##### Marker options
@@ -106,7 +119,7 @@ width               | 3         |Stroke width of the polyline
 ```
 ***
 
-#### addPolygon(options)
+#### addPolygon (options)
 Adds a polygon to the map. Polygon is the same as a polyline but first and last coordinate are equal.
 ```
 map.addPolygon(options);
@@ -135,7 +148,7 @@ fill                | #000000BB | Fill color of the polygon
 ```
 ***
 
-#### addMultiPolygon(options)
+#### addMultiPolygon (options)
 Adds a multipolygon to the map.
 ```
 map.addMultiPolygon(options);
@@ -181,7 +194,7 @@ fill                | #000000BB | Fill color of the multipolygon
 ```
 ***
 
-#### addCircle(options)
+#### addCircle (options)
 Adds a circle to the map.
 ```
 map.addPolygon(options);
@@ -207,7 +220,7 @@ fill                | #AA0000BB | Fill color of the circle
 ```
 ***
 
-#### addText(options)
+#### addText (options)
 Adds text to the map.
 ```
 map.addText(options)
@@ -278,7 +291,7 @@ The `outputOptions` replaces the deprectated `quality` option. For Backwards com
 ***
 
 #### image.buffer (mime, [outputOptions])
-Saves the image to a file.
+Saves the image to a buffer.
 ```
 map.image.buffer('image/jpeg', { quality: 75 });
 ```
