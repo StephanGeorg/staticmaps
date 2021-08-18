@@ -11,7 +11,8 @@ Image manipulation is based on **[Sharp](https://sharp.pixelplumbing.com/)**. Pr
 
 Version           | sharp            | node.js (pre-compiled)
 ----------------- | ---------------- | -------------
-1.5.0+            | 0.28.3           | 10.16.0+
+1.6.0+            | 0.29.0           | 12.13.0+
+1.5.2             | 0.28.3           | 10.16.0+
 1.4.4             | 0.27.1           | 10.16.0+
 1.3.4             | 0.25.2           | 10+
 1.2.6             | 0.23.2           | 8, 10, 12, 13
@@ -180,6 +181,32 @@ fill                | #000000BB | Fill color of the multipolygon
 ```
 ***
 
+#### addCircle(options)
+Adds a circle to the map.
+```
+map.addPolygon(options);
+```
+##### Polygon options
+Parameter           | Default   | Description
+------------------- | --------- | -------------
+coord               | Required  | Coordinate of center of circle
+radius              | Required  | Circle radius in meter
+color               | #000000BB | Stroke color of the circle  
+width               | 3         | Stroke width of the circle
+fill                | #AA0000BB | Fill color of the circle
+##### Usage example
+```javascript
+  const circle = {
+    coord: [13.01, 51.98],
+    radius: 500,
+    fill: '#000000',
+    width: 0,
+  };
+
+  map.addCircle(circle);
+```
+***
+
 #### addText(options)
 Adds text to the map.
 ```
@@ -276,10 +303,9 @@ The `outputOptions` replaces the deprectated `quality` option. For Backwards com
 const zoom = 13;
 const center = [13.437524,52.4945528];
 
-map.render(center, zoom)
-  .then(() => map.image.save('center.png'))  
-  .then(() => console.log('File saved!'))
-  .catch(function(err) { console.log(err); });
+await map.render(center, zoom);
+await map.image.save('center.png');
+
 ```
 #### Output
 ![Map with zoom and center](https://stephangeorg.github.io/staticmaps/sample/center.png)
@@ -294,10 +320,9 @@ const bbox = [
   11.645164,51.733833   // lng,lat of second point, ...
 ];
 
-map.render(bbox)
-  .then(() => map.image.save('bbox.png'))  
-  .then(() => console.log('File saved!'))
-  .catch(console.log);
+await map.render(bbox);
+await map.image.save('bbox.png');
+
 ```
 #### Output
 ![Map with bbox](https://stephangeorg.github.io/staticmaps/sample/bbox.png)
@@ -316,10 +341,9 @@ const marker = {
   coord: [13.437524, 52.4945528],
  };
 map.addMarker(marker);
-map.render()
-  .then(() => map.image.save('single-marker.png'))
-  .then(() => { console.log('File saved!'); })
-  .catch(console.log);
+await map.render();
+await map.image.save('single-marker.png');
+
 ```
 You're free to specify a center as well, otherwise the marker will be centered.
 
@@ -345,10 +369,8 @@ map.addMarker(marker);
 marker.coord = [13.410524,52.5195528];
 map.addMarker(marker);
 
-map.render()
-  .then(() => map.image.save('multiple-marker.png'))
-  .then(() => { console.log('File saved!'); })
-  .catch(console.log);
+await map.render();
+await map.image.save('multiple-marker.png');
 
 ```
 #### Output
@@ -370,10 +392,26 @@ var line = {
 };
 
 map.addLine(line);
-map.render()
-  .then(() => map.image.save('test/out/polyline.png'))
-  .then(() => console.log('File saved!'))
-  .catch(console.log);
+await map.render();
+await map.image.save('test/out/polyline.png');
+
+```
+#### Output
+![Map with polyline](https://stephangeorg.github.io/staticmaps/sample/polyline.png?raw=true=800x280)
+
+### Map with circle
+```javascript
+
+ const circle = {
+  coord: [13.01, 51.98],
+  radius: 500,
+  fill: '#000000',
+  width: 0,
+};
+
+map.addCircle(circle);
+await map.render();
+await map.image.save('test/out/099-circle.png');
 
 ```
 #### Output
@@ -403,8 +441,8 @@ const options = {
 
   map.addText(text);
 
-  map.render([13.437524, 52.4945528])
-    .then(() => map.image.save('test/out/bluemarbletext.png'));
+  await map.render([13.437524, 52.4945528]);
+  await map.image.save('test/out/bluemarbletext.png');
 ```
 
 #### Output
@@ -422,8 +460,8 @@ const options = {
 
 const map = new StaticMaps(options);
 
-map.render([13.437524, 52.4945528], 13)
-.then(() => map.image.save('test/out/subdomains.png'));
+await map.render([13.437524, 52.4945528], 13);
+await map.image.save('test/out/subdomains.png');
 ```
 
 # Contributers

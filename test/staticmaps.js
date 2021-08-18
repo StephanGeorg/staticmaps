@@ -24,32 +24,28 @@ describe('StaticMap', () => {
   });
 
   describe('Rendering ...', () => {
-    it('render w/ center', (done) => {
+    it('render w/ center', async () => {
       const options = {
         width: 600,
         height: 200,
       };
       const map = new StaticMaps(options);
-      map.render([13.437524, 52.4945528], 13)
-        .then(() => map.image.save('test/out/01-center.jpg'))
-        .then(done)
-        .catch(done);
+      await map.render([13.437524, 52.4945528], 13);
+      await map.image.save('test/out/01-center.jpg');
     }).timeout(0);
 
-    it('render w/ center from custom', (done) => {
+    it('render w/ center from custom', async () => {
       const options = {
         width: 600,
         height: 200,
       };
 
       const map = new StaticMaps(options);
-      map.render([13.437524, 52.4945528], 13)
-        .then(() => map.image.save('test/out/02-center_osm.png'))
-        .then(done)
-        .catch(done);
+      await map.render([13.437524, 52.4945528], 13)
+      await map.image.save('test/out/02-center_osm.png');
     }).timeout(0);
 
-    it('render w/ bbox', (done) => {
+    it('render w/ bbox', async () => {
       const options = {
         width: 600,
         height: 300,
@@ -59,13 +55,11 @@ describe('StaticMap', () => {
       };
 
       const map = new StaticMaps(options);
-      map.render([-6.1359285, 53.3145145, -6.1058408, 53.3253966])
-        .then(() => map.image.save('test/out/03-bbox.png'))
-        .then(done)
-        .catch(done);
+      await map.render([-6.1359285, 53.3145145, -6.1058408, 53.3253966]);
+      await map.image.save('test/out/03-bbox.png');
     }).timeout(0);
 
-    it('render w/ icon', (done) => {
+    it('render w/ icon', async () => {
       const options = {
         width: 500,
         height: 500,
@@ -87,13 +81,11 @@ describe('StaticMap', () => {
       marker.coord = [13.430524, 52.4995528];
       map.addMarker(marker);
 
-      map.render([13.437524, 52.4945528], 12)
-        .then(() => map.image.save('test/out/04-marker.png'))
-        .then(done)
-        .catch(done);
+      await map.render([13.437524, 52.4945528], 12);
+      await map.image.save('test/out/04-marker.png');
     }).timeout(0);
 
-    it('render w/ remote url icon', (done) => {
+    it('render w/ remote url icon', async () => {
       const options = {
         width: 500,
         height: 500,
@@ -115,13 +107,11 @@ describe('StaticMap', () => {
       marker.coord = [13.430524, 52.4995528];
       map.addMarker(marker);
 
-      map.render([13.437524, 52.4945528], 12)
-        .then(() => map.image.save('test/out/04-marker-remote.png'))
-        .then(done)
-        .catch(console.log);
+      await map.render([13.437524, 52.4945528], 12);
+      await map.image.save('test/out/04-marker-remote.png');
     }).timeout(0);
 
-    it('render w/out center', (done) => {
+    it('render w/out center', async () => {
       const options = {
         width: 1200,
         height: 800,
@@ -142,15 +132,13 @@ describe('StaticMap', () => {
       marker.coord = [13.410524, 52.5195528];
       map.addMarker(marker);
 
-      map.render()
-        .then(() => map.image.save('test/out/05-marker-nocenter.png'))
-        .then(done)
-        .catch(done);
+      await map.render()
+      await map.image.save('test/out/05-marker-nocenter.png');
     }).timeout(0);
   });
 
   describe('Rendering w/ polylines ...', () => {
-    it('Render StaticMap w/ single polyline', (done) => {
+    it('Render StaticMap w/ single polyline', async () => {
       const options = {
         width: 800,
         height: 800,
@@ -176,15 +164,13 @@ describe('StaticMap', () => {
 
       map.addLine(polyline2);
       map.addLine(polyline);
-      map.render()
-        .then(() => map.image.save('test/out/06-polyline.jpg'))
-        .then(done)
-        .catch(done);
+      await map.render()
+      await map.image.save('test/out/06-polyline.jpg');
     }).timeout(0);
   });
 
   describe('Rendering w/ polygons ...', () => {
-    it('Render StaticMap w/ polygon', (done) => {
+    it('Render StaticMap w/ polygon', async () => {
       const options = {
         width: 600,
         height: 300,
@@ -202,13 +188,11 @@ describe('StaticMap', () => {
       };
 
       map.addPolygon(polygon);
-      map.render()
-        .then(() => map.image.save('test/out/07-polygon.png'))
-        .then(done)
-        .catch(done);
+      await map.render()
+      await map.image.save('test/out/07-polygon.png');
     }).timeout(0);
 
-    it('Render StaticMap w/ multipolygon', (done) => {
+    it('Render StaticMap w/ multipolygon', async () => {
       const options = {
         width: 600,
         height: 300,
@@ -226,13 +210,11 @@ describe('StaticMap', () => {
       };
 
       map.addMultiPolygon(multipolygon);
-      map.render()
-        .then(() => map.image.save('test/out/07-multipolygon.png'))
-        .then(done)
-        .catch(done);
+      await map.render();
+      await map.image.save('test/out/07-multipolygon.png');
     }).timeout(0);
 
-    it('Render StaticMap w/ thousands of polygons', (done) => {
+    it('Render StaticMap w/ thousands of polygons', async () => {
       const options = {
         width: 600,
         height: 300,
@@ -250,15 +232,13 @@ describe('StaticMap', () => {
       };
 
       for (let i = 0; i < 10000; i++) map.addPolygon({ ...polygon });
-      map.render([13.437524, 52.4945528], 13)
-        .then(() => map.image.save('test/out/07-multiple-polygons.png'))
-        .then(done)
-        .catch(done);
+      await map.render([13.437524, 52.4945528], 13);
+      await map.image.save('test/out/07-multiple-polygons.png');
     }).timeout(0);
   });
 
   describe('Rendering circles ...', () => {
-    it('Render StaticMap w/ circle', (done) => {
+    it('Render StaticMap w/ circle', async () => {
       const options = {
         width: 600,
         height: 300,
@@ -285,15 +265,13 @@ describe('StaticMap', () => {
 
       map.addCircle(circle2);
       map.addCircle(circle);
-      map.render()
-        .then(() => map.image.save('test/out/099-circle.png'))
-        .then(done)
-        .catch(done);
+      await map.render();
+      await map.image.save('test/out/099-circle.png');
     }).timeout(0);
   });
 
   describe('Rendering text ...', () => {
-    it('Render StaticMap with text', (done) => {
+    it('Render StaticMap with text', async () => {
       const options = {
         width: 1200,
         height: 800,
@@ -313,13 +291,11 @@ describe('StaticMap', () => {
 
       map.addText(text);
 
-      map.render([13.437524, 52.4945528])
-        .then(() => map.image.save('test/out/08-text-center.png'))
-        .then(done)
-        .catch(done);
+      await map.render([13.437524, 52.4945528]);
+      await map.image.save('test/out/08-text-center.png');
     }).timeout(0);
 
-    it('Render text on NASA Blue Marble', (done) => {
+    it('Render text on NASA Blue Marble', async () => {
       const options = {
         width: 1200,
         height: 800,
@@ -342,33 +318,26 @@ describe('StaticMap', () => {
 
       map.addText(text);
 
-      map.render([13.437524, 52.4945528])
-        .then(() => map.image.save('test/out/09-text-nasabm.png'))
-        .then(done)
-        .catch(done);
+      await map.render([13.437524, 52.4945528]);
+      await map.image.save('test/out/09-text-nasabm.png');
     }).timeout(0);
   });
 
   describe('Rendering buffer ...', () => {
-    it('render w/ center', (done) => {
+    it('render w/ center', async () => {
       const options = {
         width: 600,
         height: 200,
       };
 
       const map = new StaticMaps(options);
-      map.render([13.437524, 52.4945528], 13)
-        .then(() => map.image.buffer('image/png'))
-        .then((buffer) => {
-          expect(buffer).to.be.an.instanceof(Buffer);
-          done();
-        })
-        .catch(done);
+      await map.render([13.437524, 52.4945528], 13);
+      await map.image.buffer('image/png');
     }).timeout(0);
   });
 
   describe('Fetch tiles from subdomains', () => {
-    it('should fetch from subdomains', (done) => {
+    it('should fetch from subdomains', async () => {
       const options = {
         width: 1024,
         height: 1024,
@@ -378,10 +347,8 @@ describe('StaticMap', () => {
 
       const map = new StaticMaps(options);
 
-      map.render([13.437524, 52.4945528], 13)
-        .then(() => map.image.save('test/out/10-subdomains.png'))
-        .then(done)
-        .catch(done);
+      await map.render([13.437524, 52.4945528], 13);
+      await map.image.save('test/out/10-subdomains.png');
     }).timeout(0);
   });
 });
