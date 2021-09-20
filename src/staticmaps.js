@@ -585,9 +585,19 @@ class StaticMaps {
 
           // If TTL expire, delete file
           if (seconds < this.tileCacheLifetime) {
-            const cacheData = JSON.parse(fs.readFileSync(cacheFile));
-            cacheData.tile.body = Buffer.from(cacheData.tile.body, 'base64');
-            resolve(cacheData);
+            let cacheData = JSON.parse(fs.readFileSync(cacheFile));
+            cacheData = Buffer.from(cacheData, 'base64');
+
+            const responseContent = {
+              success: true,
+              tile: {
+                url: data.url,
+                box: data.box,
+                body: cacheData,
+              },
+            };
+
+            resolve(responseContent);
             return;
           }
 
@@ -609,9 +619,7 @@ class StaticMaps {
         };
 
         if (this.tileCacheFolder !== null) {
-          const cacheContent = responseContent;
-          cacheContent.tile.body = cacheContent.tile.body.toString('base64');
-          fs.writeFile(cacheFile, JSON.stringify(cacheContent), (err) => {
+          fs.writeFile(cacheFile, JSON.stringify(responseContent.tile.body.toString('base64')), (err) => {
             if (err) {
               console.error(err);
             }
