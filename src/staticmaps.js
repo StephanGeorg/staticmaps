@@ -314,8 +314,8 @@ class StaticMaps {
    */
   renderText(text, imageMetadata) {
     const mapcoords = [
-      this.xToPx(geoutils.lonToX(text.coord[0], this.zoom)),
-      this.yToPx(geoutils.latToY(text.coord[1], this.zoom)),
+      this.xToPx(geoutils.lonToX(text.coord[0], this.zoom)) - text.offset[0],
+      this.yToPx(geoutils.latToY(text.coord[1], this.zoom)) - text.offset[1],
     ];
 
     const svgPath = `
