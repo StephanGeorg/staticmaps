@@ -4,7 +4,9 @@ import find from 'lodash.find';
 import uniqBy from 'lodash.uniqby';
 import url from 'url';
 import chunk from 'lodash.chunk';
-
+import { createHash } from 'crypto';
+import fs from 'fs';
+import path from 'path';
 import Image from './image';
 import IconMarker from './marker';
 import Polyline from './polyline';
@@ -29,6 +31,9 @@ class StaticMaps {
     this.padding = [this.paddingX, this.paddingY];
     this.tileUrl = this.options.tileUrl || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
     this.tileSize = this.options.tileSize || 256;
+    this.tileCacheFolder = this.options.tileCacheFolder || null;
+    this.tileCacheLifetime = this.options.tileCacheLifetime || 86400;
+
     this.subdomains = this.options.subdomains || [];
     this.tileRequestTimeout = this.options.tileRequestTimeout;
     this.tileRequestHeader = this.options.tileRequestHeader;
@@ -567,19 +572,54 @@ class StaticMaps {
         headers: this.tileRequestHeader || {},
         timeout: this.tileRequestTimeout,
       };
+      let cacheFile = null;
+
+      if (this.tileCacheFolder !== null) {
+        const cacheKey = createHash('sha256').update(data.url).digest('hex');
+        cacheFile = path.join(this.tileCacheFolder, cacheKey);
+
+        if (fs.existsSync(cacheFile)) {
+          const stats = fs.statSync(cacheFile);
+
+          const seconds = (new Date().getTime() - stats.mtime) / 1000;
+
+          // If TTL expire, delete file
+          if (seconds < this.tileCacheLifetime) {
+            const cacheData = JSON.parse(fs.readFileSync(cacheFile));
+            cacheData.tile.body = new Buffer(cacheData.tile.body, 'base64');
+            resolve(cacheData);
+            return;
+          }
+
+          fs.rmSync(cacheFile);
+        }
+      }
 
       // const defaultAgent = `staticmaps@${pjson.version}`;
       // options.headers['User-Agent'] = options.headers['User-Agent'] || defaultAgent;
 
       got.get(options).then((res) => {
-        resolve({
+        const responseContent = {
           success: true,
           tile: {
             url: data.url,
             box: data.box,
             body: res.body,
           },
-        });
+        };
+
+        if (this.tileCacheFolder !== null) {
+          const cacheContent = responseContent;
+          cacheContent.tile.body = cacheContent.tile.body.toString('base64');
+          fs.writeFile(cacheFile, JSON.stringify(cacheContent), (err) => {
+            if (err) {
+              console.error(err);
+            }
+            // file written successfully
+          });
+        }
+
+        resolve(responseContent);
       }).catch((error) => resolve({
         success: false,
         error,
