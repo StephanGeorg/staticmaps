@@ -9,5 +9,10 @@ export default class Text {
     this.size = this.options.size || 12;
     this.font = this.options.font || 'Arial';
     this.anchor = this.options.anchor || 'start';
+    this.offsetX = Number.isFinite(this.options.offsetX)
+      ? Number(this.options.offsetX) : 0;
+    this.offsetY = Number.isFinite(this.options.offsetY)
+      ? Number(this.options.offsetY) : 0;
+    this.offset = [this.offsetX, this.offsetY];
   }
 }
