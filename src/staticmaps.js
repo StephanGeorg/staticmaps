@@ -617,6 +617,10 @@ class StaticMaps {
             }
             // file written successfully
           });
+
+          if (typeof responseContent.tile.body === 'string') {
+            responseContent.tile.body = Buffer.from(responseContent.tile.body, 'base64');
+          }
         }
 
         resolve(responseContent);
