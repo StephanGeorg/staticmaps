@@ -280,6 +280,8 @@ describe('StaticMap', () => {
       const map = new StaticMaps(options);
       const text = {
         coord: [13.437524, 52.4945528],
+        offsetX: 100,
+        offsetY: 50,
         text: 'TEXT',
         size: 50,
         width: '1px',

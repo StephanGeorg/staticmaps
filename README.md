@@ -230,12 +230,14 @@ Parameter         | Default   | Description
 ----------------- | --------- | --------------
 coord             | Required  | Coordinates of the text ([x, y])
 text              | Required  | The text to render
-color             | #000000BB | Stroke color of the text
-width             | 1px       | Stroke width of the text
-fill              | #000000   | Fill color of the text
-size              | 12        | Font-size of the text
-font              | Arial     | Font-family of the text
-anchor            | start     | Anchor of the text (`start`, `middle` or `end`)
+color             | #000000BB | (optional) Stroke color of the text
+width             | 1px       | (optional) Stroke width of the text
+fill              | #000000   | (optional) Fill color of the text
+size              | 12        | (optional) Font-size of the text
+font              | Arial     | (optional) Font-family of the text
+anchor            | start     | (optional) Anchor of the text (`start`, `middle` or `end`)
+offsetX           | 0         | (optional) X offset of the text in px.
+offsetY           | 0         | (optional) Y offset of the text in px.
 
 ##### Usage example
 ```javascript
