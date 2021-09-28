@@ -125,7 +125,41 @@ class StaticMaps {
       this.drawBaselayer(),
       this.loadMarker(),
     ]);
+
+    if (this.tileCacheFolder !== null) {
+      this.clearCache();
+    }
+
     return this.drawFeatures();
+  }
+
+  async clearCache() {
+    if (this.tileCacheFolder !== null) {
+      // Only clean cache in 20% of all requests
+      if (Math.random() * 10 >= 1) return;
+
+      const now = new Date().getTime();
+
+      fs.readdir(this.tileCacheFolder, (err, files) => {
+        files.forEach((file, index) => {
+          fs.stat(path.join(this.tileCacheFolder, file), (err, stat) => {
+            if (err) {
+              return console.error(err);
+            }
+
+            const endTime = new Date(stat.ctime).getTime() + this.tileCacheLifetime * 1000;
+
+            if (now > endTime) {
+              return fs.unlink(path.join(this.tileCacheFolder, file), (err) => {
+                if (err) {
+                  return console.error(err);
+                }
+              });
+            }
+          });
+        });
+      });
+    }
   }
 
   /**
