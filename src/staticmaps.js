@@ -27,7 +27,7 @@ class StaticMaps {
     this.paddingX = this.options.paddingX || 0;
     this.paddingY = this.options.paddingY || 0;
     this.padding = [this.paddingX, this.paddingY];
-    this.tileUrl = this.options.tileUrl || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+    this.tileUrl = 'tileUrl' in this.options ? this.options.tileUrl : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
     this.tileSize = this.options.tileSize || 256;
     this.subdomains = this.options.subdomains || [];
     this.tileRequestTimeout = this.options.tileRequestTimeout;
@@ -228,6 +228,10 @@ class StaticMaps {
   }
 
   async drawBaselayer() {
+    if (!this.tileUrl) {
+      // Early return if we shouldn't draw a base layer
+      return this.image.draw([]);
+    }
     const xMin = Math.floor(this.centerX - (0.5 * this.width / this.tileSize));
     const yMin = Math.floor(this.centerY - (0.5 * this.height / this.tileSize));
     const xMax = Math.ceil(this.centerX + (0.5 * this.width / this.tileSize));
