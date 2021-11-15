@@ -47,7 +47,7 @@ width               | Required            | Width of the output image in px
 height              | Required            | Height of the output image in px
 paddingX            | 0                   | (optional) Minimum distance in px between map features and map border
 paddingY            | 0                   | (optional) Minimum distance in px between map features and map border
-tileUrl             |                     | (optional) Tile server URL for the map base layer
+tileUrl             |                     | (optional) Tile server URL for the map base layer or `null` for empty base layer
 tileSize            | 256                 | (optional) Tile size in pixel
 subdomains          | []                  | (optional) Subdomains of tile server, usage ['a', 'b', 'c']
 tileRequestTimeout  |                     | (optional) Timeout for the tiles request
