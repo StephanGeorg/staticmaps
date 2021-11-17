@@ -135,6 +135,57 @@ describe('StaticMap', () => {
       await map.render();
       await map.image.save('test/out/05-marker-nocenter.png');
     }).timeout(0);
+
+    it('render w/out base layer', async () => {
+      const options = {
+        width: 800,
+        height: 800,
+        paddingX: 0,
+        paddingY: 0,
+        quality: 10,
+        tileUrl: undefined,
+      };
+      const map = new StaticMaps(options);
+
+      const coords = Route.routes[0].geometry.coordinates;
+
+      const marker = {
+        img: markerPath,
+        offsetX: 24,
+        offsetY: 48,
+        width: 48,
+        height: 48,
+      };
+      [marker.coord] = coords;
+      map.addMarker(marker);
+      marker.coord = coords[coords.length - 1];
+      map.addMarker(marker);
+
+      const polyline = {
+        coords,
+        color: '#0000FF66',
+        width: 3,
+      };
+      map.addLine(polyline);
+
+      const text = {
+        coord: coords[Math.round(coords.length / 2)],
+        offsetX: 100,
+        offsetY: 50,
+        text: 'TEXT',
+        size: 50,
+        width: '1px',
+        fill: '#000000',
+        color: '#ffffff',
+        font: 'Impact',
+        anchor: 'middle',
+      };
+
+      map.addText(text);
+
+      await map.render();
+      await map.image.save('test/out/05-annotations-nobaselayer.png');
+    }).timeout(0);
   });
 
   describe('Rendering w/ polylines ...', () => {

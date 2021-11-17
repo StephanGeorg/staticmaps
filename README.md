@@ -11,7 +11,8 @@ Image manipulation is based on **[Sharp](https://sharp.pixelplumbing.com/)**. Pr
 
 Version           | sharp            | node.js (pre-compiled)
 ----------------- | ---------------- | -------------
-1.6.0+            | 0.29.0           | 12.13.0+
+1.7.0+            | 0.29.3           | 12.13.0+
+1.6.1             | 0.29.0           | 12.13.0+
 1.5.2             | 0.28.3           | 10.16.0+
 1.4.4             | 0.27.1           | 10.16.0+
 1.3.4             | 0.25.2           | 10+
@@ -47,7 +48,7 @@ width               | Required            | Width of the output image in px
 height              | Required            | Height of the output image in px
 paddingX            | 0                   | (optional) Minimum distance in px between map features and map border
 paddingY            | 0                   | (optional) Minimum distance in px between map features and map border
-tileUrl             |                     | (optional) Tile server URL for the map base layer
+tileUrl             |                     | (optional) Tile server URL for the map base layer or `null` for empty base layer
 tileSize            | 256                 | (optional) Tile size in pixel
 subdomains          | []                  | (optional) Subdomains of tile server, usage ['a', 'b', 'c']
 tileRequestTimeout  |                     | (optional) Timeout for the tiles request
