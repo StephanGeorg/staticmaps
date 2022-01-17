@@ -1,6 +1,6 @@
 import bbox from '@turf/bbox';
 
-export default class Circle {
+export default class Bound {
   constructor(options = {}) {
     this.options = options;
     this.coords = this.options.coords;
