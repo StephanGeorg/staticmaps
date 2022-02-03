@@ -5,18 +5,20 @@ A Node.js library for creating map images with markers, polylines, polygons and 
 
 ## Prerequisites
 
-Image manipulation is based on **[Sharp](https://sharp.pixelplumbing.com/)**. Pre-compiled binaries for sharp are provided for use with Node versions 10+ on 64-bit Windows, OS X and Linux platforms. For other OS or using with **Heroku, Docker, AWS Lambda** please refer to [sharp installation instructions](https://sharp.pixelplumbing.com/install).
+Image manipulation is based on **[Sharp](https://sharp.pixelplumbing.com/)**. Pre-compiled [libvips](https://github.com/libvips/libvips) binaries for sharp are provided for use with Node.js versions 12+ on macOS (x64, ARM64), Linux (x64, ARM64) and Windows (x64, x86) platforms. For other OS or using with **Heroku, Docker, AWS Lambda** please refer to [sharp installation instructions](https://sharp.pixelplumbing.com/install).
 
 ## Releases
 
-Version           | sharp            | node.js (pre-compiled)
------------------ | ---------------- | -------------
-1.6.0+            | 0.29.0           | 12.13.0+
-1.5.2             | 0.28.3           | 10.16.0+
-1.4.4             | 0.27.1           | 10.16.0+
-1.3.4             | 0.25.2           | 10+
-1.2.6             | 0.23.2           | 8, 10, 12, 13
-1.2.3             | 0.22.1           | 6, 8, 10, 11, 12
+Version           | sharp            | libvips | Node.js (pre-compiled)
+----------------- | ---------------- | ------- | -------------
+1.8.0+            | 0.30.0           | 8.12.2  | 12.13.0+
+1.7.1             | 0.29.3           | 8.11.3  | 12.13.0+
+1.6.1             | 0.29.0           | 8.11.3  | 12.13.0+
+1.5.2             | 0.28.3           | 8.10.6  | 10.16.0+
+1.4.4             | 0.27.1           | 8.10.5  | 10.16.0+
+1.3.4             | 0.25.2           | 8.9.1   | 10+
+1.2.6             | 0.23.2           | 8.8.1   | 8, 10, 12, 13
+1.2.3             | 0.22.1           | 8.7.4   | 6, 8, 10, 11, 12
 
 [Changelog](https://github.com/StephanGeorg/staticmaps/releases)
 
@@ -47,7 +49,7 @@ width               | Required            | Width of the output image in px
 height              | Required            | Height of the output image in px
 paddingX            | 0                   | (optional) Minimum distance in px between map features and map border
 paddingY            | 0                   | (optional) Minimum distance in px between map features and map border
-tileUrl             |                     | (optional) Tile server URL for the map base layer
+tileUrl             |                     | (optional) Tile server URL for the map base layer or `null` for empty base layer
 tileCacheFolder     |                     | (optional) When set to an existing folder, a file cache is used
 tileCacheLifetime   | 86400               | (optional) Time before tile in cache expire and will be reloaded
 tileSize            | 256                 | (optional) Tile size in pixel
