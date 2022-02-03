@@ -52,6 +52,7 @@ paddingY            | 0                   | (optional) Minimum distance in px be
 tileUrl             |                     | (optional) Tile server URL for the map base layer or `null` for empty base layer
 tileCacheFolder     |                     | (optional) When set to an existing folder, a file cache is used
 tileCacheLifetime   | 86400               | (optional) Time before tile in cache expire and will be reloaded
+tileCacheAutoPurge  | true                | (optional) Should the Filebased TileCache automatically purged
 tileSize            | 256                 | (optional) Tile size in pixel
 subdomains          | []                  | (optional) Subdomains of tile server, usage ['a', 'b', 'c']
 tileRequestTimeout  |                     | (optional) Timeout for the tiles request
@@ -71,6 +72,7 @@ Method              |  Description
 [addMultiPolygon](#addmultipolygon-options)     | Adds a multipolygon to the map
 [addCircle](#addcircle-options)           | Adds a circle to the map
 [addText](#addtext-options)             | Adds text to the map
+[clearCache](#clearcache)             | Adds text to the map
 [render](#render-center-zoom)              | Renders the map and added features
 [image.save](#imagesave-filename-outputoptions)          | Saves the map image to a file 
 [image.buffer](#imagebuffer-mime-outputoptions)        | Saves the map image to a buffer
@@ -273,6 +275,12 @@ center              |           | (optional) Set center of map to a specific coo
 zoom                |           | (optional) Set a specific zoom level.      
 
 ***
+#### clearCache ()
+clear the file based Tile cache.  
+Can be used, if tileCacheAutoPurge is set to false to clear the cache
+```
+map.clearCache();
+```
 
 #### image.save (fileName, [outputOptions])
 Saves the image to a file in `fileName`.

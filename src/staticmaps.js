@@ -32,6 +32,8 @@ class StaticMaps {
     this.tileUrl = 'tileUrl' in this.options ? this.options.tileUrl : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
     this.tileSize = this.options.tileSize || 256;
     this.tileCacheFolder = this.options.tileCacheFolder || null;
+    this.tileCacheAutoPurge = typeof this.options.tileCacheAutoPurge !== 'undefined' ? 
+      this.options.tileCacheAutoPurge : true;
     this.tileCacheLifetime = this.options.tileCacheLifetime || 86400;
 
     this.subdomains = this.options.subdomains || [];
@@ -126,9 +128,10 @@ class StaticMaps {
       this.loadMarker(),
     ]);
 
-    if (this.tileCacheFolder !== null) {
+    if (this.tileCacheFolder !== null 
+      && this.tileCacheAutoPurge === true) {
       this.clearCache();
-    }
+  }
 
     return this.drawFeatures();
   }
