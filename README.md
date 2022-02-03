@@ -5,7 +5,7 @@ A Node.js library for creating map images with markers, polylines, polygons and 
 
 ## Prerequisites
 
-Image manipulation is based on **[Sharp](https://sharp.pixelplumbing.com/)**. Pre-compiled binaries for sharp are provided for use with Node versions 10+ on 64-bit Windows, OS X and Linux platforms. For other OS or using with **Heroku, Docker, AWS Lambda** please refer to [sharp installation instructions](https://sharp.pixelplumbing.com/install).
+Image manipulation is based on **[Sharp](https://sharp.pixelplumbing.com/)**. Pre-compiled [libvips](https://github.com/libvips/libvips) binaries for sharp are provided for use with Node.js versions 12+ on 64-bit Windows, OS X and Linux platforms. For other OS or using with **Heroku, Docker, AWS Lambda** please refer to [sharp installation instructions](https://sharp.pixelplumbing.com/install).
 
 ## Releases
 
