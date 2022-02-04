@@ -35,6 +35,7 @@ class StaticMaps {
     this.tileCacheAutoPurge = typeof this.options.tileCacheAutoPurge !== 'undefined' ? 
       this.options.tileCacheAutoPurge : true;
     this.tileCacheLifetime = this.options.tileCacheLifetime || 86400;
+    this.tileCacheHits = 0;
 
     this.subdomains = this.options.subdomains || [];
     this.tileRequestTimeout = this.options.tileRequestTimeout;
@@ -128,19 +129,23 @@ class StaticMaps {
       this.loadMarker(),
     ]);
 
+    // when a cache folder is configured and auto purge is enable
+    // clear cache in 10% of all executions
     if (this.tileCacheFolder !== null 
-      && this.tileCacheAutoPurge === true) {
+      && this.tileCacheAutoPurge === true
+      && Math.random() * 10 <= 1) {
       this.clearCache();
   }
 
     return this.drawFeatures();
   }
 
+  getTileCacheHits() {
+    return this.tileCacheHits;
+  }
+
   async clearCache() {
     if (this.tileCacheFolder !== null) {
-      // Only clean cache in 20% of all requests
-      if (Math.random() * 10 >= 1) return;
-
       const now = new Date().getTime();
 
       fs.readdir(this.tileCacheFolder, (err, files) => {
@@ -150,9 +155,9 @@ class StaticMaps {
               return console.error(err);
             }
 
-            const endTime = new Date(stat.ctime).getTime() + this.tileCacheLifetime * 1000;
+            const fileMTime = new Date(stat.mtime).getTime() + this.tileCacheLifetime * 1000;
 
-            if (now > endTime) {
+            if (now > fileMTime) {
               return fs.unlink(path.join(this.tileCacheFolder, file), (err) => {
                 if (err) {
                   return console.error(err);
@@ -637,6 +642,8 @@ class StaticMaps {
                 body: cacheData,
               },
             };
+
+            this.tileCacheHits++;
 
             resolve(responseContent);
             return;
