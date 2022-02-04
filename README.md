@@ -72,7 +72,7 @@ Method              |  Description
 [addMultiPolygon](#addmultipolygon-options)     | Adds a multipolygon to the map
 [addCircle](#addcircle-options)           | Adds a circle to the map
 [addText](#addtext-options)             | Adds text to the map
-[clearCache](#clearcache)             | Adds text to the map
+[clearCache](#clearcache)             | Manually clear the base layer tile cache
 [render](#render-center-zoom)              | Renders the map and added features
 [image.save](#imagesave-filename-outputoptions)          | Saves the map image to a file 
 [image.buffer](#imagebuffer-mime-outputoptions)        | Saves the map image to a buffer
