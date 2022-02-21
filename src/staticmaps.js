@@ -16,7 +16,7 @@ import Bound from './bound';
 import asyncQueue from './helper/asyncQueue';
 import geoutils from './helper/geo';
 
-const LINE_RENDER_CHUNK_SIZE = 1000;
+const RENDER_CHUNK_SIZE = 1000;
 
 class StaticMaps {
   constructor(options = {}) {
@@ -270,101 +270,83 @@ class StaticMaps {
     return this.image.draw(tiles.filter((v) => v.success).map((v) => v.tile));
   }
 
+  async drawSVG(features, svgFunction) {
+    if (!features.length) return;
+
+    // Chunk for performance
+    const chunks = chunk(features, RENDER_CHUNK_SIZE);
+
+    const baseImage = sharp(this.image.image);
+    const imageMetadata = await baseImage.metadata();
+
+    const processedChunks = chunks.map((c) => {
+      const svg = `
+        <svg
+          width="${imageMetadata.width}px"
+          height="${imageMetadata.height}px"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg">
+          ${c.map((f) => svgFunction(f)).join('\n')}
+        </svg>
+      `;
+      return { input: Buffer.from(svg), top: 0, left: 0 };
+    });
+
+    this.image.image = await baseImage
+      .composite(processedChunks)
+      .toBuffer();
+  }
+
   /**
    *  Render a circle to SVG
    */
-  renderCircle(circle, imageMetadata) {
+  circleToSVG(circle) {
     const latCenter = circle.coord[1];
     const radiusInPixel = geoutils.meterToPixel(circle.radius, this.zoom, latCenter);
     const x = this.xToPx(geoutils.lonToX(circle.coord[0], this.zoom));
     const y = this.yToPx(geoutils.latToY(circle.coord[1], this.zoom));
-    const svgPath = `
-            <svg
-              width="${imageMetadata.width}px"
-              height="${imageMetadata.height}"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg">
-              <circle
-                cx="${x}"
-                cy="${y}"
-                r="${radiusInPixel}"
-                style="fill-rule: inherit;"
-                stroke="${circle.color}"
-                fill="${circle.fill}"
-                stroke-width="${circle.width}"
-                />
-            </svg>`;
-    return { input: Buffer.from(svgPath), top: 0, left: 0 };
-  }
-
-  /**
-   *  Draw circles to the basemap
-   */
-  async drawCircles() {
-    if (!this.circles.length) return true;
-    const baseImage = sharp(this.image.image);
-    const imageMetadata = await baseImage.metadata();
-
-    const mpSvgs = this.circles
-      .map((circle) => this.renderCircle(circle, imageMetadata));
-
-    this.image.image = await baseImage.composite(mpSvgs).toBuffer();
-
-    return true;
+    return `
+      <circle
+        cx="${x}"
+        cy="${y}"
+        r="${radiusInPixel}"
+        style="fill-rule: inherit;"
+        stroke="${circle.color}"
+        fill="${circle.fill}"
+        stroke-width="${circle.width}"
+        />
+    `;
   }
 
   /**
    * Render text to SVG
    */
-  renderText(text, imageMetadata) {
+  textToSVG(text) {
     const mapcoords = [
       this.xToPx(geoutils.lonToX(text.coord[0], this.zoom)) - text.offset[0],
       this.yToPx(geoutils.latToY(text.coord[1], this.zoom)) - text.offset[1],
     ];
 
-    const svgPath = `
-      <svg
-        width="${imageMetadata.width}px"
-        height="${imageMetadata.height}px"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg">
-        <text
-          x="${mapcoords[0]}"
-          y="${mapcoords[1]}"
-          style="fill-rule: inherit; font-family: ${text.font};"
-          font-size="${text.size}pt"
-          stroke="${text.color}"
-          fill="${text.fill ? text.fill : 'none'}"
-          stroke-width="${text.width}"
-          text-anchor="${text.anchor}"
-        >
-            ${text.text}</text>
-      </svg>`;
-
-    return { input: Buffer.from(svgPath), top: 0, left: 0 };
-  }
-
-  /**
-   *  Draw texts to the baemap
-   */
-  async drawText() {
-    if (!this.text.length) return null;
-
-    const baseImage = sharp(this.image.image);
-    const imageMetadata = await baseImage.metadata();
-
-    const txtSvgs = this.text
-      .map((text) => this.renderText(text, imageMetadata));
-
-    this.image.image = await baseImage.composite(txtSvgs).toBuffer();
-
-    return true;
+    return `
+      <text
+        x="${mapcoords[0]}"
+        y="${mapcoords[1]}"
+        style="fill-rule: inherit; font-family: ${text.font};"
+        font-size="${text.size}pt"
+        stroke="${text.color}"
+        fill="${text.fill ? text.fill : 'none'}"
+        stroke-width="${text.width}"
+        text-anchor="${text.anchor}"
+      >
+          ${text.text}
+      </text>
+    `;
   }
 
   /**
    *  Render MultiPolygon to SVG
    */
-  multipolygonToPath(multipolygon) {
+  multiPolygonToSVG(multipolygon) {
     const shapeArrays = multipolygon.coords.map((shape) => shape.map((coord) => [
       this.xToPx(geoutils.lonToX(coord[0], this.zoom)),
       this.yToPx(geoutils.latToY(coord[1], this.zoom)),
@@ -391,89 +373,25 @@ class StaticMaps {
   }
 
   /**
-   *  Render MultiPolygon to SVG
-   */
-  renderMultiPolygon(multipolygon, imageMetadata) {
-    const svgPath = `
-            <svg
-              width="${imageMetadata.width}px"
-              height="${imageMetadata.height}"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg">
-              ${this.multipolygonToPath(multipolygon)}
-            </svg>`;
-    return { input: Buffer.from(svgPath), top: 0, left: 0 };
-  }
-
-  /**
-   *  Draw Multipolygon to the basemap
-   */
-  async drawMultiPolygons() {
-    if (!this.multipolygons.length) return true;
-
-    const baseImage = sharp(this.image.image);
-    const imageMetadata = await baseImage.metadata();
-
-    const mpSvgs = this.multipolygons
-      .map((multipolygon) => this.renderMultiPolygon(multipolygon, imageMetadata));
-
-    this.image.image = await baseImage.composite(mpSvgs).toBuffer();
-
-    return true;
-  }
-
-  /**
    *  Render Polyline to SVG
    */
-  lineToSvg(line) {
+  lineToSVG(line) {
     const points = line.coords.map((coord) => [
       this.xToPx(geoutils.lonToX(coord[0], this.zoom)),
       this.yToPx(geoutils.latToY(coord[1], this.zoom)),
     ]);
     return `<${(line.type === 'polyline') ? 'polyline' : 'polygon'}
-                style="fill-rule: inherit;"
-                points="${points.join(' ')}"
-                stroke="${line.color}"
-                fill="${line.fill ? line.fill : 'none'}"
-                stroke-width="${line.width}"/>`;
-  }
-
-  /**
-   *  Render Polyline / Polygon to SVG
-   */
-  renderLine(lines, imageMetadata) {
-    const svgPath = `
-            <svg
-              width="${imageMetadata.width}px"
-              height="${imageMetadata.height}"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg">
-              ${lines.map((line) => this.lineToSvg(line))}
-            </svg>`;
-    return { input: Buffer.from(svgPath), top: 0, left: 0 };
-  }
-
-  /**
-   *  Draw polylines / polygons to the basemap
-   */
-  async drawLines() {
-    if (!this.lines.length) return true;
-    const chunks = chunk(this.lines, LINE_RENDER_CHUNK_SIZE);
-    const baseImage = sharp(this.image.image);
-    const imageMetadata = await baseImage.metadata();
-    const processedChunks = chunks.map((c) => this.renderLine(c, imageMetadata));
-
-    this.image.image = await baseImage
-      .composite(processedChunks)
-      .toBuffer();
-
-    return true;
+              style="fill-rule: inherit;"
+              points="${points.join(' ')}"
+              stroke="${line.color}"
+              fill="${line.fill ? line.fill : 'none'}"
+              stroke-width="${line.width}"/>`;
   }
 
   /**
    *  Draw markers to the basemap
    */
-  drawMarker() {
+  drawMarkers() {
     const queue = [];
     this.markers.forEach((marker) => {
       queue.push(async () => {
@@ -503,11 +421,11 @@ class StaticMaps {
    *  Draw all features to the basemap
    */
   async drawFeatures() {
-    await this.drawLines();
-    await this.drawMultiPolygons();
-    await this.drawMarker();
-    await this.drawText();
-    await this.drawCircles();
+    await this.drawSVG(this.lines, (c) => this.lineToSVG(c));
+    await this.drawSVG(this.multipolygons, (c) => this.multiPolygonToSVG(c));
+    await this.drawMarkers();
+    await this.drawSVG(this.text, (c) => this.textToSVG(c));
+    await this.drawSVG(this.circles, (c) => this.circleToSVG(c));
   }
 
   /**
