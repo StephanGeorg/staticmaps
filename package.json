@@ -1,6 +1,6 @@
 {
   "name": "staticmaps",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "A Node.js library for creating map images with markers, polylines, polygons and text.",
   "author": "Stephan Georg <s.georg@hey.com>",
   "license": "MIT",
