@@ -50,9 +50,9 @@ width               | Required            | Width of the output image in px
 height              | Required            | Height of the output image in px
 paddingX            | 0                   | (optional) Minimum distance in px between map features and map border
 paddingY            | 0                   | (optional) Minimum distance in px between map features and map border
-tileUrl             |                     | (optional) Tile server URL for the map base layer or `null` for empty base layer
+tileUrl             |                     | (optional) Tile server URL for the map base layer or `null` for empty base layer. `{x},{y},{z}` or `{quadkey}` supported.
+tileSubdomains      | []                  | (optional) Subdomains of tile server, usage `['a', 'b', 'c']`
 tileSize            | 256                 | (optional) Tile size in pixel
-subdomains          | []                  | (optional) Subdomains of tile server, usage ['a', 'b', 'c']
 tileRequestTimeout  |                     | (optional) Timeout for the tiles request
 tileRequestHeader   | {}                  | (optional) Additional headers for the tiles request (default: {})
 tileRequestLimit    | 2                   | (optional) Limit concurrent connections to the tiles server
@@ -478,8 +478,8 @@ const options = {
 const options = {
     width: 1024,
     height: 1024,
-    subdomains: ['a', 'b', 'c'],
-    tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    tileSubdomains: ['a', 'b', 'c'],
 };
 
 const map = new StaticMaps(options);

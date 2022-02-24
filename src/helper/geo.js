@@ -28,4 +28,19 @@ export default {
     const meterProPixel = (156543.03392 * Math.cos(latitudeRadians)) / 2 ** zoom;
     return meter / meterProPixel;
   },
+
+  tileXYToQuadKey(x, y, z) {
+    const quadKey = [];
+    for (let i = z; i > 0; i--) {
+      let digit = '0';
+      const mask = 1 << (i - 1);
+      if ((x & mask) !== 0) digit++;
+      if ((y & mask) !== 0) {
+        digit++;
+        digit++;
+      }
+      quadKey.push(digit);
+    }
+    return quadKey.join('');
+  },
 };
