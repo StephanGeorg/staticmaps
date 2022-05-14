@@ -52,6 +52,7 @@ paddingX            | 0                   | (optional) Minimum distance in px be
 paddingY            | 0                   | (optional) Minimum distance in px between map features and map border
 tileUrl             |                     | (optional) Tile server URL for the map base layer or `null` for empty base layer. `{x},{y},{z}` or `{quadkey}` supported.
 tileSubdomains      | []                  | (optional) Subdomains of tile server, usage `['a', 'b', 'c']`
+tileLayers          | []                  | (optional) Tile layers to use, usage `[{tileUrl: ..., tileSubdomains: ...}, {tileUrl: ..., tileSubdomains: ...}]` (replaces `tileUrl` and `tileSubdomains` if set)
 tileSize            | 256                 | (optional) Tile size in pixel
 tileRequestTimeout  |                     | (optional) Timeout for the tiles request
 tileRequestHeader   | {}                  | (optional) Additional headers for the tiles request (default: {})
@@ -488,6 +489,30 @@ await map.render([13.437524, 52.4945528], 13);
 await map.image.save('test/out/subdomains.png');
 ```
 
+### Mulitple tile layers
+{s} - subdomain (subdomain), is necessary in order not to fall into the limit for requests to the same domain. Some servers can block your IP if you get tiles from one of subdomains of tile server.
+```javascript
+const options = {
+    width: 1024,
+    height: 1024,
+    tileLayers: [
+        {
+          tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          tileSubdomains: ['a', 'b', 'c'],
+        },
+        {
+          tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          tileSubdomains: ['a', 'b', 'c'],
+        }
+    ],
+};
+
+const map = new StaticMaps(options);
+
+await map.render([13.437524, 52.4945528], 13);
+await map.image.save('test/out/subdomains.png');
+```
+
 # Contributers
 
 + [Jordi Casadevall Franco](https://github.com/JOGUI22)
@@ -500,3 +525,4 @@ await map.image.save('test/out/subdomains.png');
 + [Sergey Averyanov](https://github.com/saveryanov)
 + [boxcc](https://github.com/boxcc)
 + [Maksim Skutin](https://github.com/mskutin)
++ [Jorgen Phillips](https://github.com/JorgenPhi)

@@ -57,19 +57,24 @@ export default class Image {
   }
 
   async draw(tiles) {
-    // Generate baseimage
-    const baselayer = sharp({
-      create: {
-        width: this.width,
-        height: this.height,
-        channels: 4,
-        background: {
-          r: 0, g: 0, b: 0, alpha: 0,
+    this.tempBuffer = null;
+    if (!this.image) {
+      // Generate baseimage
+      const baselayer = sharp({
+        create: {
+          width: this.width,
+          height: this.height,
+          channels: 4,
+          background: {
+            r: 0, g: 0, b: 0, alpha: 0,
+          },
         },
-      },
-    });
-    // Save baseImage as buffer
-    let tempBuffer = await baselayer.png().toBuffer();
+      });
+      // Save baseImage as buffer
+      this.tempBuffer = await baselayer.png().toBuffer();
+    } else {
+      this.tempBuffer = this.image;
+    }
 
     // Prepare tiles for composing baselayer
     const tileParts = [];
@@ -89,11 +94,11 @@ export default class Image {
         return { input: data, ...position };
       });
 
-    tempBuffer = await sharp(tempBuffer)
+    this.tempBuffer = await sharp(this.tempBuffer)
       .composite(preparedTilesForSharp)
       .toBuffer();
 
-    this.image = tempBuffer;
+    this.image = this.tempBuffer;
     return true;
   }
 
