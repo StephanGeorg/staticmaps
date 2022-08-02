@@ -5,11 +5,18 @@ import GeoJSON from './static/geojson';
 import MultiPolygonGeometry from './static/multipolygonGeometry';
 import Route from './static/routeLong';
 
-const { expect } = require('chai');
+import * as chai from "chai";
+import { chaiImage } from "chai-image";
+
+chai.use(chaiImage);
+const expect = chai.expect;
+
+const fs = require('fs');
 
 const markerPath = path.join(__dirname, 'marker.png');
 
 describe('StaticMap', () => {
+
   describe('Initializing ...', () => {
     it('without any arguments', () => {
       expect(() => {
@@ -96,7 +103,7 @@ describe('StaticMap', () => {
       await map.render([13.437524, 52.4945528], 12);
       await map.image.save('test/out/04-marker.png');
     }).timeout(0);
-
+    /*
     it('render w/ remote url icon', async () => {
       const options = {
         width: 500,
@@ -198,6 +205,7 @@ describe('StaticMap', () => {
       await map.render();
       await map.image.save('test/out/05-annotations-nobaselayer.png');
     }).timeout(0);
+    */
   });
 
   describe('Rendering w/ polylines ...', () => {
@@ -415,5 +423,123 @@ describe('StaticMap', () => {
       await map.render([13.437524, 52.4945528], 13);
       await map.image.save('test/out/10-subdomains.png');
     }).timeout(0);
+  }); 
+
+  describe('Tile cache', () => {
+    var cacheFolder = path.resolve(__dirname, 'cache');
+
+    if (!fs.existsSync(cacheFolder)){
+      fs.mkdirSync(cacheFolder);
+    }
+    
+    function sleep(ms) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    }
+
+    function clearCache() {
+      return new Promise((resolve) => {
+        let files = fs.readdirSync(cacheFolder);
+    
+        files.forEach(file => {
+          fs.unlinkSync(path.join(cacheFolder, file));
+        });
+
+        resolve();
+      });
+    }    
+    
+    it('call clearCache manually', async () => {
+      await clearCache();
+      let files = fs.readdirSync(cacheFolder);
+      expect(files.length).to.be.equal(0, 'cache must start empty');
+      const testFilepath = path.join(cacheFolder, 'testfile');
+      fs.writeFileSync(testFilepath, 'nothing');
+      files = fs.readdirSync(cacheFolder);
+      expect(files.length).to.be.equal(1, 'we created a single testfile');
+
+      const options = {
+        width: 500,
+        height: 500,
+        tileCacheFolder: cacheFolder,
+        tileCacheAutoPurge: false,
+        tileCacheLifetime: 86400
+      };
+
+      const map = new StaticMaps(options);
+      map.clearCache();
+      
+      // we must wait, until cache is cleared
+      await sleep(1000);
+
+      files = fs.readdirSync(cacheFolder);
+      expect(files.length).to.be.equal(1, 'cache folder must be contain testfile, because within Lifetime');
+
+      const time = new Date('2000-01-01 18:00:00');
+      fs.utimesSync(testFilepath, time, time);
+
+      map.clearCache();
+      
+      // we must wait, until cache is cleared      
+      await sleep(1000);
+
+      files = fs.readdirSync(cacheFolder);
+      expect(files.length).to.be.equal(0, 'cache folder must be empty after clearCache');
+    }).timeout(0);
+
+    it('generate map with cache', async () => {
+      await clearCache();
+
+      const options = {
+        width: 500,
+        height: 500,
+        tileCacheFolder: cacheFolder,
+        tileCacheAutoPurge: false,
+        tileCacheLifetime: 86400
+      };
+
+      let map = new StaticMaps(options);
+
+      const marker = {
+        img: markerPath,
+        offsetX: 24,
+        offsetY: 48,
+        width: 48,
+        height: 48,
+      };
+
+      marker.coord = [13.437524, 52.4945528];
+      map.addMarker(marker);
+
+      marker.coord = [13.430524, 52.4995528];
+      map.addMarker(marker);
+
+      await map.render([13.437524, 52.4945528], 12);
+      await map.image.save('test/out/11-marker.png');
+
+      expect(map.getTileCacheHits()).to.be.equal(0);
+
+      let files = fs.readdirSync(cacheFolder);
+
+      map = new StaticMaps(options);
+
+      marker.coord = [13.437524, 52.4945528];
+      map.addMarker(marker);
+
+      marker.coord = [13.430524, 52.4995528];
+      map.addMarker(marker);
+
+      await map.render([13.437524, 52.4945528], 12);
+      const bugCompare = fs.readFileSync('test/out/11-marker.png');
+
+      const bufActual = await map.image.buffer('image/png');
+
+      // must use all existing cache files
+      expect(map.getTileCacheHits()).to.be.equal(files.length);
+      // must match image without cache
+      expect(bufActual).to.matchImage(bugCompare);
+    }).timeout(0);
+
   });
 });

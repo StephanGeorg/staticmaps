@@ -4,7 +4,9 @@ import find from 'lodash.find';
 import uniqBy from 'lodash.uniqby';
 import url from 'url';
 import chunk from 'lodash.chunk';
-
+import { createHash } from 'crypto';
+import fs from 'fs';
+import path from 'path';
 import Image from './image';
 import IconMarker from './marker';
 import Polyline from './polyline';
@@ -29,6 +31,13 @@ class StaticMaps {
     this.padding = [this.paddingX, this.paddingY];
     this.tileUrl = 'tileUrl' in this.options ? this.options.tileUrl : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
     this.tileSize = this.options.tileSize || 256;
+
+    this.tileCacheFolder = this.options.tileCacheFolder || null;
+    this.tileCacheAutoPurge = typeof this.options.tileCacheAutoPurge !== 'undefined' ? 
+      this.options.tileCacheAutoPurge : true;
+    this.tileCacheLifetime = this.options.tileCacheLifetime || 86400;
+    this.tileCacheHits = 0;
+
     this.tileSubdomains = this.options.tileSubdomains || this.options.subdomains || [];
     this.tileRequestTimeout = this.options.tileRequestTimeout;
     this.tileRequestHeader = this.options.tileRequestHeader;
@@ -120,7 +129,46 @@ class StaticMaps {
       this.drawBaselayer(),
       this.loadMarker(),
     ]);
+
+    // when a cache folder is configured and auto purge is enable
+    // clear cache in 10% of all executions
+    if (this.tileCacheFolder !== null 
+      && this.tileCacheAutoPurge === true
+      && Math.random() * 10 <= 1) {
+      this.clearCache();
+  }
+
     return this.drawFeatures();
+  }
+
+  getTileCacheHits() {
+    return this.tileCacheHits;
+  }
+
+  async clearCache() {
+    if (this.tileCacheFolder !== null) {
+      const now = new Date().getTime();
+
+      fs.readdir(this.tileCacheFolder, (err, files) => {
+        files.forEach((file, index) => {
+          fs.stat(path.join(this.tileCacheFolder, file), (err, stat) => {
+            if (err) {
+              return console.error(err);
+            }
+
+            const fileMTime = new Date(stat.mtime).getTime() + this.tileCacheLifetime * 1000;
+
+            if (now > fileMTime) {
+              return fs.unlink(path.join(this.tileCacheFolder, file), (err) => {
+                if (err) {
+                  return console.error(err);
+                }
+              });
+            }
+          });
+        });
+      });
+    }
   }
 
   /**
@@ -487,6 +535,7 @@ class StaticMaps {
    *  Fetching tile from endpoint
    */
   async getTile(data) {
+    
     const options = {
       url: data.url,
       responseType: 'buffer',
@@ -496,14 +545,61 @@ class StaticMaps {
     };
 
     try {
-      const res = await got.get(options);
-      const { body, headers } = res;
+      let cacheFile = null;
+
+      if (this.tileCacheFolder !== null) {
+        const cacheKey = createHash('sha256').update(data.url).digest('hex');
+        cacheFile = path.join(this.tileCacheFolder, cacheKey);
+
+        if (fs.existsSync(cacheFile)) {
+          const stats = fs.statSync(cacheFile);
+
+          const seconds = (new Date().getTime() - stats.mtime) / 1000;
+
+          // If TTL expire, delete file
+          if (seconds < this.tileCacheLifetime) {
+            let cacheData;
+            try {
+              cacheData = JSON.parse(fs.readFileSync(cacheFile));
+            } catch(e) {
+              try {
+                cacheData = JSON.parse(fs.readFileSync(cacheFile));
+              } catch(e) {}
+            }
+
+            if(cacheData && cacheData.length > 0) {
+              try {
+                cacheData = Buffer.from(cacheData, 'base64');
+
+                if(cacheData && cacheData.length > 0) {
+                  const responseContent = {
+                    success: true,
+                    tile: {
+                      url: data.url,
+                      box: data.box,
+                      body: cacheData,
+                    },
+                  };
+
+                  this.tileCacheHits++;
+
+                  return responseContent;
+                }
+              } catch (e) {}
+            }
+          }
+
+          fs.rmSync(cacheFile);
+        }
+      }
+
+      let res = await got.get(options);
+      const { body, headers } = res;      
 
       const contentType = headers['content-type'];
       if (!contentType.startsWith('image/')) throw new Error('Tiles server response with wrong data');
-      // console.log(headers);
 
-      return {
+      const responseContent = {
         success: true,
         tile: {
           url: data.url,
@@ -511,6 +607,22 @@ class StaticMaps {
           body,
         },
       };
+
+      if (this.tileCacheFolder !== null) {
+        fs.writeFile(cacheFile, JSON.stringify(responseContent.tile.body.toString('base64')), (err) => {
+          if (err) {
+            console.error(err);
+          }
+          // file written successfully
+        });
+
+        if (typeof responseContent.tile.body === 'string') {
+          responseContent.tile.body = Buffer.from(responseContent.tile.body, 'base64');
+        }
+      }
+
+      return responseContent;
+
     } catch (error) {
       return {
         success: false,
