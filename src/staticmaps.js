@@ -486,33 +486,37 @@ class StaticMaps {
   /**
    *  Fetching tile from endpoint
    */
-  getTile(data) {
-    return new Promise((resolve) => {
-      const options = {
-        url: data.url,
-        responseType: 'buffer',
-        resolveWithFullResponse: true,
-        headers: this.tileRequestHeader || {},
-        timeout: this.tileRequestTimeout,
+  async getTile(data) {
+    const options = {
+      url: data.url,
+      responseType: 'buffer',
+      // resolveWithFullResponse: true,
+      headers: this.tileRequestHeader || {},
+      timeout: this.tileRequestTimeout,
+    };
+
+    try {
+      const res = await got.get(options);
+      const { body, headers } = res;
+
+      const contentType = headers['content-type'];
+      if (!contentType.startsWith('image/')) throw new Error('Tiles server response with wrong data');
+      // console.log(headers);
+
+      return {
+        success: true,
+        tile: {
+          url: data.url,
+          box: data.box,
+          body,
+        },
       };
-
-      // const defaultAgent = `staticmaps@${pjson.version}`;
-      // options.headers['User-Agent'] = options.headers['User-Agent'] || defaultAgent;
-
-      got.get(options).then((res) => {
-        resolve({
-          success: true,
-          tile: {
-            url: data.url,
-            box: data.box,
-            body: res.body,
-          },
-        });
-      }).catch((error) => resolve({
+    } catch (error) {
+      return {
         success: false,
         error,
-      }));
-    });
+      };
+    }
   }
 
   /**
