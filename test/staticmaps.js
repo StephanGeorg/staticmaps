@@ -41,6 +41,18 @@ describe('StaticMap', () => {
       await map.image.save('test/out/01-center.jpg');
     }).timeout(0);
 
+    it('render quadKeys based map', async () => {
+      const options = {
+        width: 600,
+        height: 200,
+        tileUrl: 'http://ak.dynamic.{s}.tiles.virtualearth.net/comp/ch/{quadkey}?mkt=en-US&it=G,L&shading=hill&og=1757&n=z',
+        tileSubdomains: ['t0', 't1', 't2', 't3'],
+      };
+      const map = new StaticMaps(options);
+      await map.render([13.437524, 52.4945528], 13);
+      await map.image.save('test/out/01a-quadkeys.jpg');
+    }).timeout(0);
+
     it('render w/ center from custom', async () => {
       const options = {
         width: 600,
@@ -402,7 +414,7 @@ describe('StaticMap', () => {
       const options = {
         width: 1024,
         height: 1024,
-        subdomains: ['a', 'b', 'c'],
+        tileSubdomains: ['a', 'b', 'c'],
         tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       };
 

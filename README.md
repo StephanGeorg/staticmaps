@@ -11,14 +11,10 @@ Image manipulation is based on **[Sharp](https://sharp.pixelplumbing.com/)**. Pr
 
 Version           | sharp            | libvips | Node.js (pre-compiled)
 ----------------- | ---------------- | ------- | -------------
-1.8.0+            | 0.30.0           | 8.12.2  | 12.13.0+
+1.10.0+           | 0.30.7           | 8.12.2  | 12.13.0+
+1.9.1             | 0.30.1           | 8.12.2  | 12.13.0+
+1.8.0             | 0.30.0           | 8.12.2  | 12.13.0+
 1.7.1             | 0.29.3           | 8.11.3  | 12.13.0+
-1.6.1             | 0.29.0           | 8.11.3  | 12.13.0+
-1.5.2             | 0.28.3           | 8.10.6  | 10.16.0+
-1.4.4             | 0.27.1           | 8.10.5  | 10.16.0+
-1.3.4             | 0.25.2           | 8.9.1   | 10+
-1.2.6             | 0.23.2           | 8.8.1   | 8, 10, 12, 13
-1.2.3             | 0.22.1           | 8.7.4   | 6, 8, 10, 11, 12
 
 [Changelog](https://github.com/StephanGeorg/staticmaps/releases)
 
@@ -49,12 +45,12 @@ width               | Required            | Width of the output image in px
 height              | Required            | Height of the output image in px
 paddingX            | 0                   | (optional) Minimum distance in px between map features and map border
 paddingY            | 0                   | (optional) Minimum distance in px between map features and map border
-tileUrl             |                     | (optional) Tile server URL for the map base layer or `null` for empty base layer
+tileUrl             |                     | (optional) Tile server URL for the map base layer or `null` for empty base layer. `{x},{y},{z}` or `{quadkey}` supported.
 tileCacheFolder     |                     | (optional) When set to an existing folder, a file cache is used
 tileCacheLifetime   | 86400               | (optional) Time before tile in cache expire and will be reloaded
 tileCacheAutoPurge  | true                | (optional) Should the Filebased TileCache automatically purged
+tileSubdomains      | []                  | (optional) Subdomains of tile server, usage `['a', 'b', 'c']`
 tileSize            | 256                 | (optional) Tile size in pixel
-subdomains          | []                  | (optional) Subdomains of tile server, usage ['a', 'b', 'c']
 tileRequestTimeout  |                     | (optional) Timeout for the tiles request
 tileRequestHeader   | {}                  | (optional) Additional headers for the tiles request (default: {})
 tileRequestLimit    | 2                   | (optional) Limit concurrent connections to the tiles server
@@ -487,8 +483,8 @@ const options = {
 const options = {
     width: 1024,
     height: 1024,
-    subdomains: ['a', 'b', 'c'],
-    tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    tileSubdomains: ['a', 'b', 'c'],
 };
 
 const map = new StaticMaps(options);
