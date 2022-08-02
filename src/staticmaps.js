@@ -411,6 +411,25 @@ class StaticMaps {
           || left > this.width
         ) return;
 
+        // check if we needs to resize marker image
+        if(marker.drawWidth !== marker.width || 
+          marker.drawHeight !== marker.height) {
+          let resizeData = {
+            fit: marker.resizeMode,
+          };
+
+          if(marker.drawWidth !== marker.width) {
+            resizeData.width = marker.drawWidth;
+          }
+          if(marker.drawHeight !== marker.height) {
+            resizeData.height = marker.drawHeight;
+          }
+
+          marker.imgData = await sharp(marker.imgData)
+            .resize(resizeData)
+            .toBuffer();
+        }
+
         this.image.image = await sharp(this.image.image)
           .composite([{
             input: marker.imgData,

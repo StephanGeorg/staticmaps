@@ -8,10 +8,15 @@ export default class {
     this.img = this.options.img;
     this.height = Number(this.options.height);
     this.width = Number(this.options.width);
+    this.drawWidth = Number(this.options.drawWidth || this.options.width);
+    this.drawHeight = Number(this.options.drawHeight || this.options.height);
+    this.resizeMode = this.options.resizeMode || 'fit';
+    
     this.offsetX = Number.isFinite(this.options.offsetX)
-      ? Number(this.options.offsetX) : this.width / 2;
-    this.offsetY = Number.isFinite(this.options.offsetY)
-      ? Number(this.options.offsetY) : this.height;
+      ? Number(this.options.offsetX) : this.drawWidth / 2;
+    
+      this.offsetY = Number.isFinite(this.options.offsetY)
+      ? Number(this.options.offsetY) : this.drawHeight;
     this.offset = [this.offsetX, this.offsetY];
   }
 

@@ -78,6 +78,9 @@ coord               | Required  | Coordinates of the marker ([Lng, Lat])
 img                 | Required  | Marker image path or URL
 height              | Required  | Height of the marker image
 width               | Required  | Width of the marker image
+drawHeight          | height    | Height of marker, when it is draw (can contain resizing)
+drawWidth           | width     | Width of marker, when it is draw (can contain resizing)
+resizeMode          | cover     | Define, which mode is used to calculate target size, when drawWidth and drawHeight was changed. Available: cover, contain, fill, inside, outside (See here)[https://sharp.pixelplumbing.com/api-resize]
 offsetX             | width/2   | (optional) X offset of the marker image
 offsetY             | height    | (optional) Y offset of the marker image
 ##### Usage example
