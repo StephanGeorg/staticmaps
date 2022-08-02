@@ -535,6 +535,7 @@ class StaticMaps {
    *  Fetching tile from endpoint
    */
   async getTile(data) {
+    
     const options = {
       url: data.url,
       responseType: 'buffer',
@@ -544,22 +545,6 @@ class StaticMaps {
     };
 
     try {
-      let res = await got.get(options);
-      const { body, headers } = res;
-
-      const contentType = headers['content-type'];
-      if (!contentType.startsWith('image/')) throw new Error('Tiles server response with wrong data');
-      // console.log(headers);
-/*
-      return {
-        success: true,
-        tile: {
-          url: data.url,
-          box: data.box,
-          body,
-        },
-      };
-*/
       let cacheFile = null;
 
       if (this.tileCacheFolder !== null) {
@@ -608,14 +593,18 @@ class StaticMaps {
         }
       }
 
-      res = await got.get(options);
+      let res = await got.get(options);
+      const { body, headers } = res;      
+
+      const contentType = headers['content-type'];
+      if (!contentType.startsWith('image/')) throw new Error('Tiles server response with wrong data');
 
       const responseContent = {
         success: true,
         tile: {
           url: data.url,
           box: data.box,
-          body: res.body,
+          body,
         },
       };
 
