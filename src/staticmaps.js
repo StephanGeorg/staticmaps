@@ -411,9 +411,10 @@ class StaticMaps {
           || left > this.width
         ) return;
 
+        const markerInstance = await sharp(marker.imgData);
+
         if(marker.width === null || marker.height === null) {
-          const metadata = await sharp(marker.imgData)
-            .metadata();
+          const metadata = await markerInstance.metadata();
 
           if(Number.isFinite(metadata.width) && Number.isFinite(metadata.height)) {
             marker.setSize(metadata.width, metadata.height);
@@ -432,18 +433,18 @@ class StaticMaps {
           if(marker.drawWidth !== marker.width) {
             resizeData.width = marker.drawWidth;
           }
+
           if(marker.drawHeight !== marker.height) {
             resizeData.height = marker.drawHeight;
           }
 
-          marker.imgData = await sharp(marker.imgData)
-            .resize(resizeData)
-            .toBuffer();
+          await markerInstance
+            .resize(resizeData);
         }
 
         this.image.image = await sharp(this.image.image)
           .composite([{
-            input: marker.imgData,
+            input: await markerInstance.toBuffer(),
             top,
             left,
           }])
