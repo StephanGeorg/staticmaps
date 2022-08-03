@@ -2,8 +2,6 @@ export default class {
   constructor(options = {}) {
     this.options = options;
 
-//    if (!(options.width && options.height)) throw new Error('Please specify width and height of the marker image.');
-
     this.coord = this.options.coord;
     this.img = this.options.img;
 
@@ -31,7 +29,7 @@ export default class {
     if(isNaN(this.drawWidth)) {
       this.drawWidth = this.width;
     }
-    
+
     if(isNaN(this.drawHeight)) {
       this.drawHeight = this.height;
     }
