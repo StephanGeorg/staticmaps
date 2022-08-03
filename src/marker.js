@@ -12,7 +12,7 @@ export default class {
 
     this.drawWidth = Number(this.options.drawWidth || this.options.width);
     this.drawHeight = Number(this.options.drawHeight || this.options.height);
-    this.resizeMode = this.options.resizeMode || 'fit';
+    this.resizeMode = this.options.resizeMode || 'cover';
     
     this.offsetX = Number.isFinite(this.options.offsetX)
       ? Number(this.options.offsetX) : this.drawWidth / 2;
