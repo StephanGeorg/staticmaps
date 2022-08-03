@@ -411,6 +411,17 @@ class StaticMaps {
           || left > this.width
         ) return;
 
+        if(marker.width === null || marker.height === null) {
+          const metadata = await sharp(marker.imgData)
+            .metadata();
+
+          if(Number.isFinite(metadata.width) && Number.isFinite(metadata.height)) {
+            marker.setSize(metadata.width, metadata.height);
+          } else {
+            throw new Error('Cannot detectimage size of marker ' + marker.img + ". Please define manually!");
+          }
+        }
+
         // check if we needs to resize marker image
         if(marker.drawWidth !== marker.width || 
           marker.drawHeight !== marker.height) {
