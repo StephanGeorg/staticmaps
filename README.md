@@ -21,7 +21,7 @@ Version           | sharp            | libvips | Node.js (pre-compiled)
 ## Installation
 
 ```bash
-> npm i staticmaps
+npm i staticmaps
 ```
 
 ## Getting Started
