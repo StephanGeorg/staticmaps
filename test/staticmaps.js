@@ -421,7 +421,7 @@ describe('StaticMap', () => {
     it('should assemble layers', async () => {
       const options = {
         width: 1024,
-        height: 1024,
+        height: 600,
         tileLayers: [{
           tileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         }, {
