@@ -506,8 +506,7 @@ await map.image.save('test/out/multipleLayers.png');
 ```
 
 #### Output
-![11-layers](https://user-images.githubusercontent.com/7861660/213998960-8d462b42-40fa-4d53-a9f4-017267964e02.png)
-
+![11-layers](https://user-images.githubusercontent.com/7861660/213999766-a6c7d2bc-5c90-4da4-9df7-08bcb08442ce.png)
 
 
 # Contributers
