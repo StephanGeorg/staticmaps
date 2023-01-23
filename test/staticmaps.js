@@ -416,4 +416,29 @@ describe('StaticMap', () => {
       await map.image.save('test/out/10-subdomains.png');
     }).timeout(0);
   });
+
+  describe('Fetch tiles from multiple layers', () => {
+    it('should assemble layers', async () => {
+      const options = {
+        width: 1024,
+        height: 1024,
+        tileLayers: [
+          {
+            tileSubdomains: ['a', 'b', 'c'],
+            tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          },
+          {
+            // Need a public tile server with a transparent layer to truely test this
+            tileSubdomains: ['a', 'b', 'c'],
+            tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          },
+        ],
+      };
+
+      const map = new StaticMaps(options);
+
+      await map.render([13.437524, 52.4945528], 13);
+      await map.image.save('test/out/11-layers.png');
+    }).timeout(0);
+  });
 });

@@ -4,6 +4,7 @@ import find from 'lodash.find';
 import uniqBy from 'lodash.uniqby';
 import url from 'url';
 import chunk from 'lodash.chunk';
+import { mapSeries } from 'modern-async';
 
 import Image from './image';
 import IconMarker from './marker';
@@ -12,6 +13,7 @@ import MultiPolygon from './multipolygon';
 import Circle from './circle';
 import Text from './text';
 import Bound from './bound';
+import TileServerConfig from './tileserverconfig';
 
 import asyncQueue from './helper/asyncQueue';
 import geoutils from './helper/geo';
@@ -22,14 +24,30 @@ class StaticMaps {
   constructor(options = {}) {
     this.options = options;
 
+    this.tileLayers = [];
+
+    if (typeof this.options.tileLayers === 'undefined') {
+      // Pulling from old options for backwards compatibility
+      const baseLayerOptions = {};
+      if (this.options.tileUrl) {
+        baseLayerOptions.tileUrl = this.options.tileUrl;
+      }
+      if (this.options.tileSubdomains) {
+        baseLayerOptions.tileSubdomains = this.options.tileSubdomains;
+      }
+      this.tileLayers.push(new TileServerConfig(baseLayerOptions));
+    } else {
+      this.options.tileLayers.forEach((layerConfig) => {
+        this.tileLayers.push(new TileServerConfig(layerConfig));
+      });
+    }
+
     this.width = this.options.width;
     this.height = this.options.height;
     this.paddingX = this.options.paddingX || 0;
     this.paddingY = this.options.paddingY || 0;
     this.padding = [this.paddingX, this.paddingY];
-    this.tileUrl = 'tileUrl' in this.options ? this.options.tileUrl : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
     this.tileSize = this.options.tileSize || 256;
-    this.tileSubdomains = this.options.tileSubdomains || this.options.subdomains || [];
     this.tileRequestTimeout = this.options.tileRequestTimeout;
     this.tileRequestHeader = this.options.tileRequestHeader;
     this.tileRequestLimit = Number.isFinite(this.options.tileRequestLimit)
@@ -116,10 +134,12 @@ class StaticMaps {
 
     this.image = new Image(this.options);
 
-    await Promise.all([
-      this.drawBaselayer(),
-      this.loadMarker(),
-    ]);
+    // Await this.drawLayer for each tile layer
+    await mapSeries(this.tileLayers, async (layer) => {
+      await this.drawLayer(layer);
+    });
+
+    await this.loadMarker();
     return this.drawFeatures();
   }
 
@@ -227,9 +247,10 @@ class StaticMaps {
     return Number(Math.round(px));
   }
 
-  async drawBaselayer() {
-    if (!this.tileUrl) {
+  async drawLayer(config) {
+    if (!config || !config.tileUrl) {
       // Early return if we shouldn't draw a base layer
+      console.log(1);
       return this.image.draw([]);
     }
     const xMin = Math.floor(this.centerX - (0.5 * this.width / this.tileSize));
@@ -248,16 +269,16 @@ class StaticMaps {
         if (this.reverseY) tileY = ((1 << this.zoom) - tileY) - 1;
 
         let tileUrl;
-        if (this.tileUrl.includes('{quadkey}')) {
+        if (config.tileUrl.includes('{quadkey}')) {
           const quadKey = geoutils.tileXYToQuadKey(tileX, tileY, this.zoom);
-          tileUrl = this.tileUrl.replace('{quadkey}', quadKey);
+          tileUrl = config.tileUrl.replace('{quadkey}', quadKey);
         } else {
-          tileUrl = this.tileUrl.replace('{z}', this.zoom).replace('{x}', tileX).replace('{y}', tileY);
+          tileUrl = config.tileUrl.replace('{z}', this.zoom).replace('{x}', tileX).replace('{y}', tileY);
         }
 
-        if (this.tileSubdomains.length > 0) {
+        if (config.tileSubdomains.length > 0) {
           // replace subdomain with random domain from tileSubdomains array
-          tileUrl = tileUrl.replace('{s}', this.tileSubdomains[Math.floor(Math.random() * this.tileSubdomains.length)]);
+          tileUrl = tileUrl.replace('{s}', config.tileSubdomains[Math.floor(Math.random() * config.tileSubdomains.length)]);
         }
 
         result.push({
