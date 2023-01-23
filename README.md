@@ -491,16 +491,11 @@ await map.image.save('test/out/subdomains.png');
 const options = {
     width: 1024,
     height: 1024,
-    tileLayers: [
-        {
-          tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          tileSubdomains: ['a', 'b', 'c'],
-        },
-        {
-          tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          tileSubdomains: ['a', 'b', 'c'],
-        }
-    ],
+    tileLayers: [{
+      tileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    }, {
+      tileUrl: 'http://www.openfiremap.de/hytiles/{z}/{x}/{y}.png',
+    }],
 };
 
 const map = new StaticMaps(options);

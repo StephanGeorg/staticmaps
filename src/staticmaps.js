@@ -108,7 +108,7 @@ class StaticMaps {
     */
   async render(center, zoom) {
     if (!this.lines && !this.markers && !this.multipolygons && !(center && zoom)) {
-      throw new Error('Cannot render empty map: Add  center || lines || markers || polygons.');
+      throw new Error('Cannot render empty map: Add  center || lines || markers || polygons.');
     }
 
     this.center = center;

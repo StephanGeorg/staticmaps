@@ -422,17 +422,11 @@ describe('StaticMap', () => {
       const options = {
         width: 1024,
         height: 1024,
-        tileLayers: [
-          {
-            tileSubdomains: ['a', 'b', 'c'],
-            tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          },
-          {
-            // Need a public tile server with a transparent layer to truely test this
-            tileSubdomains: ['a', 'b', 'c'],
-            tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          },
-        ],
+        tileLayers: [{
+          tileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        }, {
+          tileUrl: 'http://www.openfiremap.de/hytiles/{z}/{x}/{y}.png',
+        }],
       };
 
       const map = new StaticMaps(options);
