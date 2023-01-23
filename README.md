@@ -486,7 +486,8 @@ await map.image.save('test/out/subdomains.png');
 ```
 
 ### Mulitple tile layers
-{s} - subdomain (subdomain), is necessary in order not to fall into the limit for requests to the same domain. Some servers can block your IP if you get tiles from one of subdomains of tile server.
+
+
 ```javascript
 const options = {
     width: 1024,
@@ -501,8 +502,13 @@ const options = {
 const map = new StaticMaps(options);
 
 await map.render([13.437524, 52.4945528], 13);
-await map.image.save('test/out/subdomains.png');
+await map.image.save('test/out/multipleLayers.png');
 ```
+
+#### Output
+![11-layers](https://user-images.githubusercontent.com/7861660/213998960-8d462b42-40fa-4d53-a9f4-017267964e02.png)
+
+
 
 # Contributers
 
