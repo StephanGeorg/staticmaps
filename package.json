@@ -30,7 +30,7 @@
     "@babel/runtime": "^7.20.13",
     "@turf/bbox": "^6.5.0",
     "@turf/circle": "^6.5.0",
-    "got": "^11.8.6",
+    "got": "^12.5.3",
     "lodash.chunk": "^4.2.0",
     "lodash.find": "^4.6.0",
     "lodash.first": "^3.0.0",
