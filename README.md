@@ -197,9 +197,9 @@ fill                | #000000BB | Fill color of the multipolygon
 #### addCircle (options)
 Adds a circle to the map.
 ```
-map.addPolygon(options);
+map.addCircle(options);
 ```
-##### Polygon options
+##### Circle options
 Parameter           | Default   | Description
 ------------------- | --------- | -------------
 coord               | Required  | Coordinate of center of circle
