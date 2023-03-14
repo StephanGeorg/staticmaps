@@ -81,8 +81,8 @@ describe('StaticMap', () => {
 
       const marker = {
         img: markerPath,
-        // offsetX: 24,
-        // offsetY: 48,
+        // offsetX: 24, // default
+        // offsetY: 48, // default
         width: 48,
         height: 48,
       };
