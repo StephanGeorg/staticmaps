@@ -6,18 +6,18 @@ export default class {
     this.img = this.options.img;
 
     this.height = Number.isFinite(this.options.height)
-     ? Number(this.options.height) : null;
+      ? Number(this.options.height) : null;
     this.width = Number.isFinite(this.options.width)
-     ? Number(this.options.width) : null;
+      ? Number(this.options.width) : null;
 
     this.drawWidth = Number(this.options.drawWidth || this.options.width);
     this.drawHeight = Number(this.options.drawHeight || this.options.height);
     this.resizeMode = this.options.resizeMode || 'cover';
-    
+
     this.offsetX = Number.isFinite(this.options.offsetX)
       ? Number(this.options.offsetX) : this.drawWidth / 2;
-    
-      this.offsetY = Number.isFinite(this.options.offsetY)
+
+    this.offsetY = Number.isFinite(this.options.offsetY)
       ? Number(this.options.offsetY) : this.drawHeight;
     this.offset = [this.offsetX, this.offsetY];
   }
@@ -26,11 +26,11 @@ export default class {
     this.width = Number(width);
     this.height = Number(height);
 
-    if(isNaN(this.drawWidth)) {
+    if (Number.isNaN(this.drawWidth)) {
       this.drawWidth = this.width;
     }
 
-    if(isNaN(this.drawHeight)) {
+    if (Number.isNaN(this.drawHeight)) {
       this.drawHeight = this.height;
     }
   }

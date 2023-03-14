@@ -434,28 +434,30 @@ class StaticMaps {
 
         const markerInstance = await sharp(marker.imgData);
 
-        if(marker.width === null || marker.height === null) {
+        if (marker.width === null || marker.height === null) {
           const metadata = await markerInstance.metadata();
 
-          if(Number.isFinite(metadata.width) && Number.isFinite(metadata.height)) {
+          if (Number.isFinite(metadata.width) && Number.isFinite(metadata.height)) {
             marker.setSize(metadata.width, metadata.height);
           } else {
-            throw new Error('Cannot detectimage size of marker ' + marker.img + ". Please define manually!");
+            throw new Error(`Cannot detectimage size of marker ${marker.img}. Please define manually!`);
           }
         }
 
-        // check if we needs to resize marker image
-        if(marker.drawWidth !== marker.width || 
-          marker.drawHeight !== marker.height) {
-          let resizeData = {
+        // Check if resize marker image is needed
+        if (
+          marker.drawWidth !== marker.width
+          || marker.drawHeight !== marker.height
+        ) {
+          const resizeData = {
             fit: marker.resizeMode,
           };
 
-          if(marker.drawWidth !== marker.width) {
+          if (marker.drawWidth !== marker.width) {
             resizeData.width = marker.drawWidth;
           }
 
-          if(marker.drawHeight !== marker.height) {
+          if (marker.drawHeight !== marker.height) {
             resizeData.height = marker.drawHeight;
           }
 

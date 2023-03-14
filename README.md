@@ -11,7 +11,8 @@ Image manipulation is based on **[Sharp](https://sharp.pixelplumbing.com/)**. Pr
 
 Version           | sharp            | libvips | Node.js (pre-compiled)
 ----------------- | ---------------- | ------- | -------------
-1.11.1+           | 0.31.3           | 8.13.3  | 14.15.0+
+1.12.0+           | 0.31.3           | 8.13.3  | 14.15.0+
+1.11.1            | 0.31.3           | 8.13.3  | 14.15.0+
 1.10.0            | 0.30.7           | 8.12.2  | 12.13.0+
 1.9.1             | 0.30.1           | 8.12.2  | 12.13.0+
 1.8.0             | 0.30.0           | 8.12.2  | 12.13.0+
@@ -78,13 +79,13 @@ Parameter           | Default   | Description
 ------------------- | --------- | -------------
 coord               | Required  | Coordinates of the marker ([Lng, Lat])
 img                 | Required  | Marker image path or URL
-height              | Required  | Height of the marker image
-width               | Required  | Width of the marker image
-drawHeight          | height    | Height of marker, when it is drawn (can contain resizing if set)
-drawWidth           | width     | Width of marker, when it is drawn (can contain resizing if set)
-resizeMode          | cover     | Define, which mode is used to calculate target size, when drawWidth and drawHeight was changed. Available: cover, contain, fill, inside, outside (See here)[https://sharp.pixelplumbing.com/api-resize]
-offsetX             | width/2   | (optional) X offset of the marker image
-offsetY             | height    | (optional) Y offset of the marker image
+height              | Required  | Height of marker image in px
+width               | Required  | Width of marker image in px
+drawHeight          | height    | (optional) Resize marker image to height in px
+drawWidth           | width     | (optional) Resize marker image to width in px
+resizeMode          | cover     | (optional) Applied resize method if needed. See: [https://sharp.pixelplumbing.com/api-resize]
+offsetX             | width/2   | (optional) X offset of the marker image in px
+offsetY             | height    | (optional) Y offset of the marker image in px
 ##### Usage example
 ```javascript
 const marker = {
@@ -103,9 +104,9 @@ Adds a polyline to the map.
 ##### Polyline options
 Parameter           | Default   | Description
 ------------------- | --------- |-------------
-coords              | Required  |Coordinates of the polyline ([[Lng, Lat], ... ,[Lng, Lat]])
-color               | #000000BB |Stroke color of the polyline
-width               | 3         |Stroke width of the polyline
+coords              | Required  | Coordinates of the polyline ([[Lng, Lat], ... ,[Lng, Lat]])
+color               | #000000BB | (optional) Stroke color of the polyline
+width               | 3         | (optional) Stroke width of the polyline
 ##### Usage example
 ```javascript
   const polyline = {
@@ -131,9 +132,9 @@ map.addPolygon(options);
 Parameter           | Default   | Description
 ------------------- | --------- | -------------
 coords              | Required  | Coordinates of the polygon ([[Lng, Lat], ... ,[Lng, Lat]])
-color               | #000000BB | Stroke color of the polygon  
-width               | 3         | Stroke width of the polygon
-fill                | #000000BB | Fill color of the polygon
+color               | #000000BB | (optional) Stroke color of the polygon  
+width               | 3         | (optional) Stroke width of the polygon
+fill                | #000000BB | (optional) Fill color of the polygon
 ##### Usage example
 ```javascript
   const polygon = {
@@ -160,9 +161,9 @@ map.addMultiPolygon(options);
 Parameter           | Default   | Description
 ------------------- | --------- | -------------
 coords              | Required  | Coordinates of the multipolygon ([[Lng, Lat], ... ,[Lng, Lat]])
-color               | #000000BB | Stroke color of the multipolygon  
-width               | 3         | Stroke width of the multipolygon
-fill                | #000000BB | Fill color of the multipolygon
+color               | #000000BB | (optional) Stroke color of the multipolygon  
+width               | 3         | (optional) Stroke width of the multipolygon
+fill                | #000000BB | (optional) Fill color of the multipolygon
 ##### Usage example
 ```javascript
   const multipolygon = {
@@ -207,9 +208,9 @@ Parameter           | Default   | Description
 ------------------- | --------- | -------------
 coord               | Required  | Coordinate of center of circle
 radius              | Required  | Circle radius in meter
-color               | #000000BB | Stroke color of the circle  
-width               | 3         | Stroke width of the circle
-fill                | #AA0000BB | Fill color of the circle
+color               | #000000BB | (optional) Stroke color of the circle  
+width               | 3         | (optional) Stroke width of the circle
+fill                | #AA0000BB | (optional) Fill color of the circle
 ##### Usage example
 ```javascript
   const circle = {
@@ -514,6 +515,7 @@ await map.image.save('test/out/multipleLayers.png');
 
 # Contributers
 
++ [Stefan Warnat](https://github.com/swarnat)
 + [Jordi Casadevall Franco](https://github.com/JOGUI22)
 + [Joe Beuckman](https://github.com/jbeuckm)
 + [Ergashev Adizbek](https://github.com/Adizbek)

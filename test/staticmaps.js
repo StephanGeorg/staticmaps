@@ -71,7 +71,7 @@ describe('StaticMap', () => {
       await map.image.save('test/out/03-bbox.png');
     }).timeout(0);
 
-    it('render w/ icon', async () => {
+    it('render w/ marker', async () => {
       const options = {
         width: 500,
         height: 500,
@@ -81,8 +81,8 @@ describe('StaticMap', () => {
 
       const marker = {
         img: markerPath,
-        offsetX: 24,
-        offsetY: 48,
+        // offsetX: 24,
+        // offsetY: 48,
         width: 48,
         height: 48,
       };
@@ -95,6 +95,32 @@ describe('StaticMap', () => {
 
       await map.render([13.437524, 52.4945528], 12);
       await map.image.save('test/out/04-marker.png');
+    }).timeout(0);
+
+    it('render w/ marker resized', async () => {
+      const options = {
+        width: 500,
+        height: 500,
+      };
+
+      const map = new StaticMaps(options);
+
+      const marker = {
+        img: markerPath,
+        // offsetX: 12,
+        // offsetY: 24,
+        drawWidth: 24,
+        drawHeight: 24,
+      };
+
+      marker.coord = [13.437524, 52.4945528];
+      map.addMarker(marker);
+
+      marker.coord = [13.430524, 52.4995528];
+      map.addMarker(marker);
+
+      await map.render([13.437524, 52.4945528], 12);
+      await map.image.save('test/out/04a-marker-resize.png');
     }).timeout(0);
 
     it('render w/ remote url icon', async () => {
