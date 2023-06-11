@@ -103,6 +103,59 @@ class StaticMaps {
     this.text.push(new Text(options));
   }
 
+  // geoJSON types according to RFC 7946
+  addGeoJSON(options) {
+    switch (options.geoJSON.type) {
+      case 'Point':
+        this.addMarker({
+          ...options.markerOptions,
+          coord: options.geoJSON.coordinates,
+        });
+        break;
+      case 'MultiPoint':
+        options.geoJSON.coordinates.forEach((coordinate) => {
+          this.addMarker({ ...options.markerOptions, coord: coordinate });
+        });
+        break;
+      case 'LineString':
+        this.addLine({
+          ...options.lineOptions,
+          coords: options.geoJSON.coordinates,
+        });
+        break;
+      case 'MultiLineString':
+        options.geoJSON.coordinates.forEach((coordinate) => {
+          this.addLine({ ...options.lineOptions, coords: coordinate });
+        });
+        break;
+      case 'Polygon':
+        this.addPolygon({
+          ...options.polygonOptions,
+          coords: options.geoJSON.coordinates,
+        });
+        break;
+      case 'MultiPolygon':
+        this.addMultiPolygon({
+          ...options.polygonOptions,
+          coords: options.geoJSON.coordinates,
+        });
+        break;
+      case 'GeometryCollection':
+        options.geoJSON.geometries.forEach((geometry) => {
+          this.addGeoJSON({ ...options, geoJSON: geometry });
+        });
+        break;
+      case 'Feature':
+        this.addGeoJSON({ ...options, geoJSON: options.geoJSON.geometry });
+        break;
+      case 'FeatureCollection':
+        options.geoJSON.features.forEach((feature) => {
+          this.addGeoJSON({ ...options, geoJSON: feature });
+        });
+        break;
+    }
+  }
+
   /**
     * Render static map with all map features that were added to map before
     */
