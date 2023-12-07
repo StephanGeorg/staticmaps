@@ -11,12 +11,10 @@ Image manipulation is based on **[Sharp](https://sharp.pixelplumbing.com/)**. Pr
 
 Version           | sharp            | libvips | Node.js (pre-compiled)
 ----------------- | ---------------- | ------- | -------------
-1.12.0+           | 0.31.3           | 8.13.3  | 14.15.0+
+1.13.0+           | 0.33.0           | 8.15.0  | 18.17.0+
+1.12.0            | 0.31.3           | 8.13.3  | 14.15.0+
 1.11.1            | 0.31.3           | 8.13.3  | 14.15.0+
 1.10.0            | 0.30.7           | 8.12.2  | 12.13.0+
-1.9.1             | 0.30.1           | 8.12.2  | 12.13.0+
-1.8.0             | 0.30.0           | 8.12.2  | 12.13.0+
-1.7.1             | 0.29.3           | 8.11.3  | 12.13.0+
 
 [Changelog](https://github.com/StephanGeorg/staticmaps/releases)
 
